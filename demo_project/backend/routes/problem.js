@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const scraper = require('../scraper');
+const scraper = require('../repositories/scraper');
 const Problem = require('../models/Problem');
 
 // Route for retrieving problems from Codeforces or HackerRank
