@@ -1,0 +1,46 @@
+.problem-details-container {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+  }
+  
+  .problem-details-container h2 {
+    color: #333;
+  }
+  
+  .statement {
+    margin-top: 20px;
+  }
+  
+  .statement h3 {
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .statement p {
+    color: #666;
+  }
+  
+  .statement ul {
+    margin-top: 10px;
+  }
+  
+  .statement ul li {
+    margin-bottom: 5px;
+  }
+  
+  a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  a:hover {
+    background-color: #0056b3;
+  }
+  
