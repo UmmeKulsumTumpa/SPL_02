@@ -33,4 +33,14 @@ router.get('/retrieve/:type/:pid', async (req, res) => {
   }
 });
 
+// Retrieve all problems
+router.get('/', async (req, res) => {
+  try {
+    const problems = await Problem.find();
+    res.json(problems);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
