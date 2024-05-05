@@ -3,6 +3,7 @@
     "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.19.2",
-    "mongoose": "^8.3.3"
+    "mongoose": "^8.3.3",
+    "puppeteer": "^22.7.1"
   }
 }

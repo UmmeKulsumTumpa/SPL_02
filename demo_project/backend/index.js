@@ -16,9 +16,11 @@ app.use(express.json());
 
 // Import routes
 const problemsRouter = require('./routes/problem');
+const solutionRouter = require('./routes/solution');
 
 // Use routes
 app.use('/api/problem', problemsRouter);
+app.use('/api/solution', solutionRouter);
 
 // Start the server
 app.listen(PORT, () => {
