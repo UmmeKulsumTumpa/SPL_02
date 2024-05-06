@@ -12,6 +12,11 @@ function ProblemDetails({ problem }) {
     // Extracting elements from the statement object
     const { text, inputSpec, outputSpec, notes } = JSON.parse(statement);
 
+    // Function to copy text to clipboard
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+    };
+
     return (
         <div className="problem-details-container">
             <h2>{title}</h2>
@@ -48,20 +53,42 @@ function ProblemDetails({ problem }) {
                 {/* Displaying each test case on separate lines */}
                 {testCasesArray.map((test, index) => (
                     <div key={index} className="testCase">
-                        <div className="testInputOutput">
-                            <div>
-                                <strong>Input:</strong>
-                                {test.input.split('\n').map((line, idx) => (
-                                    <p key={idx}>{line}</p>
-                                ))}
-                            </div>
-                            <div>
-                                <strong>Output:</strong>
-                                {test.output.split('\n').map((line, idx) => (
-                                    <p key={idx}>{line}</p>
-                                ))}
-                            </div>
-                        </div>
+                        <table className="testTable">
+                            <thead>
+                                <tr>
+                                    <th className="tableHead">
+                                        <div>
+                                            Input
+                                            <button className="copyButton" onClick={() => copyToClipboard(test.input)}>Copy</button>
+                                        </div>
+                                    </th>
+                                    <th className="tableHead">
+                                        <div>
+                                            Output
+                                            <button className="copyButton" onClick={() => copyToClipboard(test.output)}>Copy</button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            {test.input.split('\n').map((line, idx) => (
+                                                <p key={idx}>{line}</p>
+                                            ))}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {test.output.split('\n').map((line, idx) => (
+                                                <p key={idx}>{line}</p>
+                                            ))}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 ))}
             </div>

@@ -30,36 +30,31 @@
   margin-bottom: 5px;
 }
 
-.testInputOutput {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.testInputOutput div {
-  flex: 1;
-  /* margin-right: 10px; */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-}
-
-.testInputOutput div strong {
-  display: block;
-  margin-bottom: 5px;
-  color: #555;
-}
-
-a {
-  display: inline-block;
+.testCases {
   margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 5px;
 }
 
-a:hover {
-  background-color: #0056b3;
+.testCase {
+  margin-bottom: 20px;
+}
+
+.testTable {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.testTable th {
+  background-color: lightgrey; /* Changed to lightgrey */
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.testTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.copyButton {
+  float: right;
 }
