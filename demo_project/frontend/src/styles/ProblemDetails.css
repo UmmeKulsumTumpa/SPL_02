@@ -3,10 +3,12 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 20px;
+  font-family: Georgia, serif;
 }
 
 .problem-details-container h2 {
   color: #333;
+  font-size: 24px;
 }
 
 .statement {
@@ -16,10 +18,12 @@
 .statement h3 {
   color: #555;
   margin-bottom: 10px;
+  font-size: 18px; /* Increased font size */
 }
 
 .statement p {
   color: #666;
+  font-size: 16px; /* Increased font size */
 }
 
 .statement ul {
@@ -44,10 +48,11 @@
 }
 
 .testTable th {
-  background-color: lightgrey; /* Changed to lightgrey */
+  background-color: lightgrey;
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  font-weight: bold;
 }
 
 .testTable td {
@@ -57,4 +62,31 @@
 
 .copyButton {
   float: right;
+  background-color: #bbb;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
 }
+
+.copyButton:hover {
+  background-color: #aaa;
+}
+
+.submitButton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.submitButton:hover {
+  background-color: #0056b3;
+}
+

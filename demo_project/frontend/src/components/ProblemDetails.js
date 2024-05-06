@@ -104,7 +104,9 @@ function ProblemDetails({ problem }) {
             )}
 
             {/* Submit Button */}
-            <a href={problem.submitLink} target="_blank" rel="noopener noreferrer">Submit Solution</a>
+<button className="submitButton" onClick={() => window.open(problem.submitLink, '_blank')}>
+  Submit Solution
+</button>
         </div>
     );
 }
