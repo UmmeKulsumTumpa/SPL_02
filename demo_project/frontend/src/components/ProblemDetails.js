@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/ProblemDetails.css';
+import SubmitSolution from './SubmitSolution';
+
+function initializeState() {
+    return {
+        submittedSolution: '',
+        verdict: '',
+        showSubmitModal: false
+    };
+}
 
 function ProblemDetails({ problem }) {
+    const [state, setState] = useState(initializeState);
+
+    useEffect(() => {
+        // Reset state when a new problem is selected
+        setState(initializeState());
+    }, [problem]);
+
     if (!problem) return null;
 
     const { pid, title, testCase, statement, constraints } = problem;
@@ -15,6 +31,33 @@ function ProblemDetails({ problem }) {
     // Function to copy text to clipboard
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
+    };
+
+    // Function to handle submission of solution
+    const handleSubmit = (solution) => {
+        // Send the solution to the backend
+        fetch('http://localhost:8000/api/solution/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: 'CF',
+                pid: problem.pid,
+                solution: solution,
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Check if the response contains the expected data
+                if (data && data[0] && data[0].verdict) {
+                    // Update state with submitted solution and verdict
+                    setState({ ...state, submittedSolution: data[0].solution, verdict: data[0].verdict, showSubmitModal: false });
+                } else {
+                    console.error('Invalid response from the server:', data);
+                }
+            })
+            .catch(error => console.error('Error submitting solution:', error));
     };
 
     return (
@@ -104,9 +147,25 @@ function ProblemDetails({ problem }) {
             )}
 
             {/* Submit Button */}
-<button className="submitButton" onClick={() => window.open(problem.submitLink, '_blank')}>
-  Submit Solution
-</button>
+            <button className="submitButton" onClick={() => setState({ ...state, showSubmitModal: true })}>
+                Submit Solution
+            </button>
+
+            {/* Modal for submitting solution */}
+            {state.showSubmitModal && (
+                <SubmitSolution onSubmit={handleSubmit} onClose={() => setState({ ...state, showSubmitModal: false })} />
+            )}
+
+            {/* Displaying the submitted solution and verdict */}
+            {(state.submittedSolution !== '' || state.verdict !== '') && (
+                <div>
+                    <h3>Submitted Solution:</h3>
+                    <p>{state.submittedSolution}</p>
+                    <h3>Verdict:</h3>
+                    <p>{state.verdict}</p>
+                </div>
+            )}
+
         </div>
     );
 }
