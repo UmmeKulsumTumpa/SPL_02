@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Draggable from 'react-draggable';
 import '../styles/SubmitSolution.css';
 
 function SubmitSolution({ onSubmit, onClose }) {
@@ -29,22 +30,24 @@ function SubmitSolution({ onSubmit, onClose }) {
   };
 
   return (
-    <div className="submit-solution-modal">
-      <div className="modal-header">
-        <h2>Submit Solution</h2>
-        <button className="close-button" onClick={onClose}>✕</button>
+    <Draggable>
+      <div className="submit-solution-modal">
+        <div className="modal-header">
+          <h2>Submit Solution</h2>
+          <button className="close-button" onClick={onClose}>✕</button>
+        </div>
+        <textarea
+          className="solution-input"
+          placeholder="Paste your solution..."
+          value={solution}
+          onChange={handleInputChange}
+        />
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <button className="submit-button" onClick={handleSubmit}>
+          Submit
+        </button>
       </div>
-      <textarea
-        className="solution-input"
-        placeholder="Paste your solution..."
-        value={solution}
-        onChange={handleInputChange}
-      />
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <button className="submit-button" onClick={handleSubmit}>
-        Submit
-      </button>
-    </div>
+    </Draggable>
   );
 }
 
