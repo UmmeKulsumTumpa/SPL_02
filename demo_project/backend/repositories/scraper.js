@@ -1,15 +1,23 @@
 const assert = require('assert');
-const axios = require('axios');
 const cheerio = require('cheerio');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const UserAgent = require('user-agents');
 
-// Function to retrieve problem details from Codeforces
+puppeteer.use(StealthPlugin());
+
 async function getCodeforcesProblem({ contest, problem }) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  const userAgent = new UserAgent();
+  await page.setUserAgent(userAgent.toString());
+
   try {
     const url = `https://codeforces.com/contest/${contest}/problem/${problem}`;
-    const response = await axios.get(url, { maxRedirects: 0 });
-    assert.strictEqual(response.status, 200);
+    await page.goto(url, { waitUntil: 'networkidle2' });
 
-    const $ = cheerio.load(response.data);
+    const content = await page.content();
+    const $ = cheerio.load(content);
 
     // Define Cheerio prototype methods for text extraction
     $.prototype.justtext = function () {
@@ -35,6 +43,8 @@ async function getCodeforcesProblem({ contest, problem }) {
       sampleTests.push({ input, output });
     }
 
+    await browser.close();
+
     // Return extracted problem details
     return {
       title: header.find('.title').text().trim(),
@@ -53,6 +63,7 @@ async function getCodeforcesProblem({ contest, problem }) {
       submitLink: `https://codeforces.com/contest/${contest}/submit`,
     };
   } catch (err) {
+    await browser.close();
     console.error(err);
     throw new Error('Could not find or parse problem');
   }
