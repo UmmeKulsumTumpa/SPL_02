@@ -71,9 +71,6 @@ async function loginToCodeforces(handle, password) {
 		// Check if login was successful
 		const isLoggedIn = page.url().includes("https://codeforces.com/");
 
-		// Close the browser
-		//await browser.close();
-
 		return { isLoggedIn, page };
 	} catch (error) {
 		throw new Error(`Failed to login to Codeforces: ${error.message}`);
@@ -82,58 +79,59 @@ async function loginToCodeforces(handle, password) {
 
 async function submitToCodeforces(problemDetails, solutionFile, page) {
 	try {
-		// const browser = await puppeteer.launch({ headless: true });
-		// const page = await browser.newPage();
+		await page.goto(problemDetails.submitLink, { waitUntil: 'networkidle2' });
 
-	await page.goto(problemDetails.submitLink, { waitUntil: 'networkidle2' });
-    //console.log("Submission page loaded");
+		// Wait for the problem index selector to appear
+		await page.waitForSelector('select[name="submittedProblemIndex"]');
 
-    // Wait for the problem index selector to appear
-    await page.waitForSelector('select[name="submittedProblemIndex"]');
+		// Select the problem index
+		await page.select('select[name="submittedProblemIndex"]', problemDetails.problemIndex);
 
-    // Select the problem index
-    await page.select('select[name="submittedProblemIndex"]', problemDetails.problemIndex);
+		// Wait for the language selection dropdown to appear
+		await page.waitForSelector('select[name="programTypeId"]');
 
-    // Wait for the language selection dropdown to appear
-    await page.waitForSelector('select[name="programTypeId"]');
+		// Select the language from the dropdown
+		await page.select('select[name="programTypeId"]', problemDetails.language);
 
-    // Select the language from the dropdown
-    await page.select('select[name="programTypeId"]', problemDetails.language);
+		// Upload the solution file
+		const inputUploadHandle = await page.$('input[name="sourceFile"]');
+		await inputUploadHandle.uploadFile(solutionFile);
 
-    // Upload the solution file
-    const inputUploadHandle = await page.$('input[name="sourceFile"]');
-    await inputUploadHandle.uploadFile(solutionFile);
+		// Ensure the submit button is interactive before clicking
+		await page.waitForSelector('.submit');
+		await page.waitForFunction(
+			'document.querySelector(".submit").disabled === false',
+			{ timeout: 10000 }
+		);
 
-    // Submit the form
-    await Promise.all([
-      page.waitForNavigation(), // Wait for navigation to complete
-      page.click('.submit'), // Click the submit button
-    ]);
+		// Submit the form
+		await Promise.all([
+			page.waitForNavigation({ waitUntil: 'networkidle2' }), // Wait for navigation to complete
+			page.click('.submit'), // Click the submit button
+		]);
 
-	const validVerdicts = new Set([
-		'FAILED', 'OK', 'PARTIAL', 'COMPILATION_ERROR', 'RUNTIME_ERROR', 
-		'WRONG_ANSWER', 'PRESENTATION_ERROR', 'TIME_LIMIT_EXCEEDED', 
-		'MEMORY_LIMIT_EXCEEDED', 'IDLENESS_LIMIT_EXCEEDED', 'SECURITY_VIOLATED', 
-		'CRASHED', 'INPUT_PREPARATION_CRASHED', 'CHALLENGED', 'SKIPPED', 
-		'REJECTED'
-	]);
-	
-	let submissionResult;
-	do {
-		submissionResult = await getVerdict(1, 1); // Assuming we want to check only the latest submission
-		
-		if (validVerdicts.has(submissionResult[0].verdict)) {
-			break; // Break the loop if the verdict is present and valid
-		}
-		
-		await wait(2000);
-	
-	} while (true); // Infinite loop, will break when conditions are met
-	
-	console.log(submissionResult[0].verdict);
-	return submissionResult;
-	
+		const validVerdicts = new Set([
+			'FAILED', 'OK', 'PARTIAL', 'COMPILATION_ERROR', 'RUNTIME_ERROR',
+			'WRONG_ANSWER', 'PRESENTATION_ERROR', 'TIME_LIMIT_EXCEEDED',
+			'MEMORY_LIMIT_EXCEEDED', 'IDLENESS_LIMIT_EXCEEDED', 'SECURITY_VIOLATED',
+			'CRASHED', 'INPUT_PREPARATION_CRASHED', 'CHALLENGED', 'SKIPPED',
+			'REJECTED'
+		]);
 
+		let submissionResult;
+		do {
+			submissionResult = await getVerdict(1, 1); // Assuming we want to check only the latest submission
+
+			if (validVerdicts.has(submissionResult[0].verdict)) {
+				break; // Break the loop if the verdict is present and valid
+			}
+
+			await wait(2000);
+
+		} while (true); // Infinite loop, will break when conditions are met
+
+		console.log(submissionResult[0].verdict);
+		return submissionResult;
 
 	} catch (err) {
 		throw new Error(`Failed to submit problem to Codeforces: ${err.message}`);
@@ -142,9 +140,9 @@ async function submitToCodeforces(problemDetails, solutionFile, page) {
 
 async function wait(ms) {
 	return new Promise((resolve) => {
-	  setTimeout(resolve, ms);
+		setTimeout(resolve, ms);
 	});
-  }
+}
 
 async function getVerdict(from, count) {
 	try {
