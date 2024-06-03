@@ -1,22 +1,39 @@
-const https = require('https');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const UserAgent = require('user-agents');
+
+puppeteer.use(StealthPlugin());
 
 const handle = 'Tumpa-1307';
 const from = 1;
 const count = 10;
-
 const url = `https://codeforces.com/api/user.status?handle=${handle}&from=${from}&count=${count}`;
 
-https.get(url, (response) => {
-  let data = '';
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  const userAgent = new UserAgent();
+  await page.setUserAgent(userAgent.toString());
+  
+  try {
+    await page.goto(url, { waitUntil: 'networkidle2' });
 
-  // A chunk of data has been received.
-  response.on('data', (chunk) => {
-    data += chunk;
-  });
+    // Ensure Cloudflare challenge is passed
+    await page.waitForSelector('pre', { timeout: 60000 });
 
-  // The whole response has been received.
-  response.on('end', () => {
-    const jsonData = JSON.parse(data);
+    const content = await page.evaluate(() => document.querySelector('pre').innerText);
+    
+    let jsonData;
+    try {
+      jsonData = JSON.parse(content);
+    } catch (e) {
+      console.error('Error parsing JSON response:', e.message);
+      console.log('Response data:', content);
+      await browser.close();
+      return;
+    }
+
     if (jsonData.status === 'OK') {
       const submissions = jsonData.result;
       submissions.forEach(submission => {
@@ -25,8 +42,9 @@ https.get(url, (response) => {
     } else {
       console.log(`Failed to retrieve submissions. Reason: ${jsonData.comment}`);
     }
-  });
-
-}).on('error', (error) => {
-  console.error(`Error retrieving data: ${error.message}`);
-});
+  } catch (error) {
+    console.error('Error:', error.message);
+  } finally {
+    await browser.close();
+  }
+})();
