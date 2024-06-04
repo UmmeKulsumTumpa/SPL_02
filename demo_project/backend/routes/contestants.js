@@ -1,45 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const Contestant = require('../models/Contestant');
+const {
+	getAllContestants,
+	addNewContestant,
+	removeContestant,
+	updateContestant,
+	getContestantByUsername,
+	getContestantByEmail,
+	submitProblemSolution
+} = require('../repositories/contestant_repo'); // Updated import
 
 // Route to get all contestants
-router.get('/', async (req, res) => {
-  try {
-    const contestants = await Contestant.find();
-    res.json(contestants);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+router.get('/', getAllContestants);
 
 // Route to add a new contestant
-router.post('/', async (req, res) => {
-  const { uid, username, password, email } = req.body;
+router.post('/add', addNewContestant);
 
-  try {
-    // Check if the username or email already exists
-    const existingContestant = await Contestant.findOne({
-      $or: [{ username }, { email }],
-    });
+// Route to remove a contestant by username
+router.delete('/remove/:username', removeContestant);
 
-    if (existingContestant) {
-      return res.status(400).json({ error: 'Username or email already exists' });
-    }
+// Route to update a contestant by username
+router.put('/update/:username', updateContestant);
 
-    // Create a new contestant
-    const newContestant = new Contestant({
-      uid,
-      username,
-      password,
-      email,
-    });
+// Route to retrieve a single contestant by username
+router.get('/username/:username', getContestantByUsername);
 
-    // Save the new contestant
-    const savedContestant = await newContestant.save();
-    res.json(savedContestant);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// Route to retrieve a single contestant by email
+router.get('/email/:email', getContestantByEmail);
+
+// Route to submit a problem solution
+router.post('/submit/:username', submitProblemSolution);
 
 module.exports = router;
