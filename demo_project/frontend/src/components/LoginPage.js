@@ -19,7 +19,7 @@ function LoginPage() {
 			console.log('Response data:', response.data);
 			if (response.data.success) {
 				login(username); // Call the login function from AuthContext
-				window.location.href = '/home';
+				window.location.href = '/';
 			} else {
 				setError('Invalid username or password');
 			}

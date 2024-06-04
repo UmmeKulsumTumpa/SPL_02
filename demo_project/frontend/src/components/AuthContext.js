@@ -1,9 +1,10 @@
+// AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [username, setUsername] = useState(null);
+    const [username, setUsername] = useState(''); // Initialize with an empty string
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
@@ -18,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        setUsername(null);
+        setUsername(''); // Set username to an empty string on logout
         localStorage.removeItem('username');
     };
 

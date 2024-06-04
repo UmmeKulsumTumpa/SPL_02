@@ -11,7 +11,7 @@ function Header() {
 			<nav className="nav">
 				<ul className="nav-links">
 					<li>
-						<Link to="/home">Home</Link>
+						<Link to="/">Home</Link>
 					</li>
 					<li>
 						<Link to="#">Contest</Link>
@@ -30,7 +30,7 @@ function Header() {
 							<button onClick={logout}>Logout</button>
 						</div>
 					) : (
-						<Link to="/">Login</Link>
+						<Link to="/login">Login</Link>
 					)}
 				</div>
 			</nav>

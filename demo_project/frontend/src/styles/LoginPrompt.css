@@ -1,0 +1,60 @@
+.login-prompt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.login-prompt-modal {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.login-prompt-content {
+    text-align: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+.login-prompt-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.login-link, .register-link {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.login-link:hover, .register-link:hover {
+    background-color: #0056b3;
+}

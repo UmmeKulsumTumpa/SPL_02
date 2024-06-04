@@ -1,9 +1,10 @@
 // ProblemDetails.js
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from './AuthContext';
-import { useLocation } from 'react-router-dom'; // Import useLocation
+import { useLocation } from 'react-router-dom';
 import '../styles/ProblemDetails.css';
 import SubmitSolution from './SubmitSolution';
+import LoginPrompt from './LoginPrompt';
 
 function initializeState() {
 	return {
@@ -21,18 +22,21 @@ function initializeState() {
 		memoryConsumedBytes: '',
 		points: '',
 		showSubmitModal: false,
+		showLoginPrompt: false,
 	};
 }
 
 function ProblemDetails() {
 	const { username } = useContext(AuthContext);
-	const location = useLocation(); // Access the location object
-	const { problem } = location.state; // Destructure the problem from state
-	const [state, setState] = useState(initializeState);
+	const location = useLocation();
+	const problem = location.state ? location.state.problem : null;
+	const [state, setState] = useState(initializeState());
 
 	useEffect(() => {
 		// Reset state when a new problem is selected
-		setState(initializeState());
+		if (problem) {
+			setState(initializeState());
+		}
 	}, [problem]);
 
 	if (!problem) return null;
@@ -52,6 +56,11 @@ function ProblemDetails() {
 
 	// Function to handle submission of solution
 	const handleSubmit = (solution) => {
+		if (!username) {
+			setState((prevState) => ({ ...prevState, showLoginPrompt: true }));
+			return;
+		}
+
 		// Send the solution to the backend
 		fetch(`http://localhost:8000/api/contestants/submit/${username}`, {
 			method: 'POST',
@@ -70,8 +79,8 @@ function ProblemDetails() {
 				if (data && data[0] && data[0].verdict) {
 					const submission = data[0];
 					// Update state with submitted solution and verdict
-					setState({
-						...state,
+					setState((prevState) => ({
+						...prevState,
 						verdict: submission.verdict,
 						id: submission.id,
 						contestId: submission.contestId,
@@ -86,12 +95,16 @@ function ProblemDetails() {
 						memoryConsumedBytes: submission.memoryConsumedBytes,
 						points: submission.points,
 						showSubmitModal: false,
-					});
+					}));
 				} else {
 					console.error('Invalid response from the server:', data);
 				}
 			})
 			.catch((error) => console.error('Error submitting solution:', error));
+	};
+
+	const handleCloseLoginPrompt = () => {
+		setState((prevState) => ({ ...prevState, showLoginPrompt: false }));
 	};
 
 	return (
@@ -185,13 +198,20 @@ function ProblemDetails() {
 			)}
 
 			{/* Submit Button */}
-			<button className="submitButton" onClick={() => setState({ ...state, showSubmitModal: true })}>
+			<button className="submitButton"
+				onClick={() => setState((prevState) => ({ ...prevState, showSubmitModal: true }))}>
 				Submit Solution
 			</button>
 
 			{/* Modal for submitting solution */}
 			{state.showSubmitModal && (
-				<SubmitSolution onSubmit={handleSubmit} onClose={() => setState({ ...state, showSubmitModal: false })} />
+				<SubmitSolution
+					onSubmit={handleSubmit}
+					onClose={() => setState((prevState) => ({ ...prevState, showSubmitModal: false }))} />
+			)}
+
+			{state.showLoginPrompt && (
+				<LoginPrompt onClose={handleCloseLoginPrompt} />
 			)}
 
 			{/* Displaying the submitted solution and verdict */}
