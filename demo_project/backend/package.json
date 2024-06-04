@@ -16,6 +16,7 @@
     "puppeteer": "^22.10.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "react-router-dom": "^6.23.1",
     "user-agents": "^1.1.224"
   },
   "devDependencies": {

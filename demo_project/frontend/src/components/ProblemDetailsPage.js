@@ -15,6 +15,7 @@ function ProblemDetailsPage() {
         // Fetch problem details from the backend
         const response = await axios.get(`http://localhost:8000/api/problem/retrieve/${type}/${id}`);
         setProblem(response.data);
+        console.log(response.data);
       } catch (err) {
         console.error('Error fetching problem:', err);
         setError(err.message || 'An error occurred');

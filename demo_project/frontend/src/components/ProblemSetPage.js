@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/ProblemSetPage.css';
-import ProblemDetails from './ProblemDetails';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function ProblemSetPage() {
   const [problems, setProblems] = useState([]);
-  const [selectedProblem, setSelectedProblem] = useState(null);
+  const navigate = useNavigate(); // Initialize navigate
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -23,7 +23,8 @@ function ProblemSetPage() {
   }, []);
 
   const handleProblemClick = (problem) => {
-    setSelectedProblem(problem);
+    // Navigate to the ProblemDetails page with the problem's ID
+    navigate(`/problem/${problem._id}`, { state: { problem } });
   };
 
   return (
@@ -45,8 +46,6 @@ function ProblemSetPage() {
           ))}
         </tbody>
       </table>
-      {/* Pass selected problem to ProblemDetailsPage */}
-      {selectedProblem && <ProblemDetails problem={selectedProblem} />}
     </div>
   );
 }
