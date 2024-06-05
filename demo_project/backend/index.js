@@ -22,12 +22,14 @@ app.use(express.json());
 const problemsRouter = require('./routes/problem');
 const solutionRouter = require('./routes/solution');
 const contestantsRouter = require('./routes/contestants');
+const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 
 // Use routes
 app.use('/api/problem', problemsRouter);
 app.use('/api/solution', solutionRouter);
 app.use('/api/contestants', contestantsRouter);
+app.use('/api/admin', adminRouter);
 app.use('/api/auth', authRouter);
 
 // Start the server
