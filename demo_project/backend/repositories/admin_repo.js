@@ -34,7 +34,7 @@ const addNewAdmin = async (req, res) => {
 
         // Save the new admin
         const savedAdmin = await newAdmin.save();
-        res.json(savedAdmin);
+        res.json({ success: true, admin: savedAdmin });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -130,6 +130,18 @@ const getAdminByUsername = async (req, res) => {
     }
 };
 
+// Function to check if a user exists
+const checkUserExists = async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const admin = await Admin.findOne({ username });
+        //console.log(admin);
+        res.json({ exists: !!admin });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 module.exports = {
     getAllAdmins,
@@ -139,4 +151,5 @@ module.exports = {
     updateAdminEmail,
     updateAdminPinCode,
     getAdminByUsername,
+    checkUserExists,
 };

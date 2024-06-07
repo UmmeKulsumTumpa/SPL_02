@@ -16,4 +16,6 @@ router.put('/update/pinCode/:username', adminRepo.updateAdminPinCode);
 
 router.get('/:username', adminRepo.getAdminByUsername);
 
+router.get('/checkUserExist/:username', adminRepo.checkUserExists);
+
 module.exports = router;
