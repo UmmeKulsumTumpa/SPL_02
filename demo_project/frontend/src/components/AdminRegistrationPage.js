@@ -26,7 +26,7 @@ function AdminRegistrationPage() {
             return;
         }
         try {
-            const response = await axios.post('/api/admin/add', formData);
+            const response = await axios.post('http://localhost:8000/api/admin/add', formData);
             console.log(response.data);
             // Redirect or display success message
         } catch (error) {
