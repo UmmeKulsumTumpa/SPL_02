@@ -34,7 +34,7 @@ const addNewContestant = async (req, res) => {
 
         // Save the new contestant
         const savedContestant = await newContestant.save();
-        res.json(savedContestant);
+        res.json({success: true, contestant: savedContestant});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -146,6 +146,18 @@ const submitProblemSolution = async (req, res) => {
     }
 };
 
+// Function to check if a user exists
+const checkContestantExists = async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const contestant = await Contestant.findOne({ username });
+        res.json({ exists: !!contestant });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 module.exports = {
     getAllContestants,
     addNewContestant,
@@ -154,4 +166,5 @@ module.exports = {
     getContestantByUsername,
     getContestantByEmail,
     submitProblemSolution,
+    checkContestantExists,
 };
