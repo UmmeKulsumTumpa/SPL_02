@@ -1,0 +1,63 @@
+.dashboard-container {
+    width: 70%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.contestant-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.username {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.rating, .contribution, .friends, .email, .last-visit, .registered {
+    margin: 5px 0;
+}
+
+.contestant-actions {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.contestant-actions button {
+    margin: 5px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.contestant-actions button:hover {
+    background-color: #45a049;
+}
+
+.activity-summary {
+    text-align: center;
+}
+
+.activity-graph {
+    width: 100%;
+    height: 300px;
+    background-color: #ddd;
+    margin-bottom: 20px;
+    /* Placeholder styles for the activity graph */
+}
+
+.activity-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.activity-details p {
+    margin: 5px 0;
+}

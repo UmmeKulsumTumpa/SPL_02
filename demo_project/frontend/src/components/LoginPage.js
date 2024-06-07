@@ -18,8 +18,7 @@ function LoginPage() {
             });
             console.log('Response data:', response.data);
             if (response.data.success) {
-                login(username, response.data.role);
-                window.location.href = '/';
+                await login(username, response.data.role);
             } else {
                 setError('Invalid username or password');
             }

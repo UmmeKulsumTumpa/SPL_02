@@ -9,6 +9,7 @@ import ProblemSetPage from './components/ProblemSetPage';
 import ProblemDetails from './components/ProblemDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ContestantDashboard from './components/ContestantDashboard';
 import { AuthProvider } from './components/AuthContext';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
 						<Route path="/register/contestant" element={<ContestantRegistrationPage />} />
                         <Route path="/problemset" element={<ProblemSetPage />} />
                         <Route path="/problem/:id" element={<ProblemDetails />} />
+                        <Route path='/contestant/dashboard' element={<ContestantDashboard/>} />
                     </Routes>
                     <Footer />
                 </div>

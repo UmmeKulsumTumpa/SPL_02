@@ -4,7 +4,7 @@ import { AuthContext } from './AuthContext';
 import '../styles/Header.css';
 
 function Header() {
-    const { username, logout } = useContext(AuthContext);
+    const { username, role, logout } = useContext(AuthContext);
 
     return (
         <header className="header">
@@ -26,7 +26,8 @@ function Header() {
                 <div className="login-section">
                     {username ? (
                         <div>
-                            <span>Welcome, {username}</span>
+                            <span><Link to={`/${role}/dashboard`}>{username}</Link></span>
+                            {/* <Link to={`/${role}/dashboard`}>Dashboard</Link> */}
                             <button onClick={logout}>Logout</button>
                         </div>
                     ) : (

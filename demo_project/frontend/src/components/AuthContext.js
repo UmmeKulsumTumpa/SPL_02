@@ -17,11 +17,12 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = (newUsername, newRole) => {
+    const login = async (newUsername, newRole) => {
         setUsername(newUsername);
         setRole(newRole);
         localStorage.setItem('username', newUsername);
         localStorage.setItem('role', newRole);
+        window.location.href = `/${newRole}/dashboard`;
     };
 
     const logout = () => {
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }) => {
         setRole(''); // Set role to an empty string on logout
         localStorage.removeItem('username');
         localStorage.removeItem('role');
+        window.location.href = '/';
     };
 
     return (
