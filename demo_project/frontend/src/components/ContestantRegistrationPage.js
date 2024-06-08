@@ -4,6 +4,8 @@ import '../styles/ContestantRegistrationPage.css';
 import { validateEmail, checkUsernameExists } from '../utils/contestantValidation';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 function ContestantRegistrationPage() {
     const [formData, setFormData] = useState({
@@ -98,49 +100,54 @@ function ContestantRegistrationPage() {
 
     return (
         <div className="register-container">
-            <h2>Contestant Sign Up</h2>
-            <form onSubmit={handleSubmit} noValidate>
-                <label>Username</label>
-                <input 
-                    type="text" 
-                    name="username" 
-                    placeholder="Enter a username..." 
-                    value={formData.username} 
-                    onChange={handleChange} 
-                />
-                {errors.username && <p className="error-message">{errors.username}</p>}
-                
-                <label>Email address</label>
-                <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Enter your email address..." 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                />
-                {errors.email && <p className="error-message">{errors.email}</p>}
-                
-                <label>Password</label>
-                <input 
-                    type="password" 
-                    name="password" 
-                    placeholder="Enter your password..." 
-                    value={formData.password} 
-                    onChange={handleChange} 
-                />
-                {errors.password && <p className="error-message">{errors.password}</p>}
-                
-                <label>Confirm Password</label>
-                <input 
-                    type="password" 
-                    name="confirmPassword" 
-                    placeholder="Enter your password again..." 
-                    value={formData.confirmPassword} 
-                    onChange={handleChange} 
-                />
-                {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
-                
-                <button type="submit">Sign up</button>
+            
+            <form onSubmit={handleSubmit} className="register-form" noValidate>
+                <h1 className="register-title">Contestant Sign Up</h1>
+                <div className="input-container">
+                    <FontAwesomeIcon icon={faUser} className="icon user-icon" />
+                    <input 
+                        type="text" 
+                        name="username" 
+                        placeholder="Enter a username..." 
+                        value={formData.username} 
+                        onChange={handleChange} 
+                    />
+                    {errors.username && <p className="error-message">{errors.username}</p>}
+                </div>
+                <div className="input-container">
+                    <FontAwesomeIcon icon={faEnvelope} className="icon envelope-icon" />
+                    <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="Enter your email address..." 
+                        value={formData.email} 
+                        onChange={handleChange} 
+                    />
+                    {errors.email && <p className="error-message">{errors.email}</p>}
+                </div>
+                <div className="input-container">
+                    <FontAwesomeIcon icon={faLock} className="icon lock-icon" />
+                    <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Enter your password..." 
+                        value={formData.password} 
+                        onChange={handleChange} 
+                    />
+                    {errors.password && <p className="error-message">{errors.password}</p>}
+                </div>
+                <div className="input-container">
+                    <FontAwesomeIcon icon={faLock} className="icon lock-icon" />
+                    <input 
+                        type="password" 
+                        name="confirmPassword" 
+                        placeholder="Enter your password again..." 
+                        value={formData.confirmPassword} 
+                        onChange={handleChange} 
+                    />
+                    {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
+                </div>
+                <button type="submit" className="register-button">Sign up</button>
                 {errors.form && <p className="error-message">{errors.form}</p>}
             </form>
         </div>

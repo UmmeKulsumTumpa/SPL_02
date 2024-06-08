@@ -1,60 +1,111 @@
 .register-container {
-    width: 100%;
-    min-height: 70vh;
-    height: 100%;
-    max-width: 450px;
-    margin: 0 auto;
-    margin-top: 5%;
-    margin-bottom: 5%;
-    padding: 10px;
-    background-color: #f4f4f4;
+
+    background-color: #2a4a6f;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 55vh;
+}
+
+/* .register-container .register-form {
+    background: #2a4a6f;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+} */
+
+.register-container .register-title {
+    color: #e0e0e0;
+    margin-top: -60px;
+    margin-bottom: 50px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
 }
 
-.register-container h2 {
-    margin-bottom: 20px;
-    font-weight: bolder;
+.register-container .input-container {
+    position: relative;
+    margin-bottom: 30px;
 }
 
-.register-container form {
-    display: flex;
-    flex-direction: column;
+.register-container .input-container input {
+    width: calc(100% - 60px);
+    padding: 10px 20px 10px 50px;
+    border: none;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 18px;
+    outline: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-.register-container label {
-    margin: 10px 0 5px;
-    font-size: large;
+.register-container .input-container input::placeholder {
+    color: #b0c4de;
 }
 
-.register-container input {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: medium;
+.register-container .icon {
+    position: absolute;
+    top: 43%;
+    transform: translateY(-50%);
+    background: #ffffff;
+    color: hsl(209, 77%, 23%);
+    padding: 13px;
+    border-radius: 50%;
+    font-size: 1.2em;
+    pointer-events: none;
 }
 
-.register-container button {
+.register-container .user-icon {
+    left: 0px;
+}
+
+.register-container .envelope-icon {
+    left: 0px;
+}
+
+.register-container .lock-icon {
+    left: 0px;
+}
+
+.register-container .register-button {
+    width: 100%;
     padding: 10px;
     border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 20px;
+    border-radius: 30px;
+    background: #ffffff;
+    color: #0d3b66;
+    font-size: 23px;
     cursor: pointer;
+    transition: background 0.3s;
+    font-weight: bolder;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-top: 30px;
+    margin-bottom: -30px;
 }
 
-.register-container button:hover {
-    background-color: #45a049;
+.register-container .register-button:hover {
+    background: #b0c4de;
 }
 
-.register-container p {
-    margin-top: 20px;
-}
-
-.register-container a {
-    color: #4CAF50;
-    text-decoration: none;
+.register-container .error-message {
+    color: #ff6b6b;
+    margin-top: 5px;
+    font-size: 14px;
+    text-align: left;
+    padding-left: 60px;
+    margin-top: -8px; /* Ensures error message is close to the input field */
+    position: absolute;
+    width: 100%;
+    top: 100%;
 }
