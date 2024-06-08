@@ -1,0 +1,84 @@
+.contest-page-container {
+    padding: 20px;
+}
+
+.contest-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.contest-page-tabs {
+    display: flex;
+}
+
+.contest-page-tab {
+    padding: 10px 20px;
+    border: none;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.contest-page-tab.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.contest-page-search {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.contest-page-search input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 200px;
+    margin-right: 10px;
+}
+
+.contest-create-button {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.contest-create-button button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.contest-create-button :hover {
+    background-color: #024d9c;
+}
+
+.contest-page-list {
+    overflow-x: auto;
+}
+
+.contest-page-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.contest-page-list th, .contest-page-list td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.contest-page-list th {
+    background-color: #f5f5f5;
+}
+
+.contest-page-list tr:hover {
+    background-color: #f1f1f1;
+}

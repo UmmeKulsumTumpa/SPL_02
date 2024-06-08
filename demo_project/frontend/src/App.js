@@ -10,6 +10,8 @@ import ProblemDetails from './components/ProblemDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ContestantDashboard from './components/ContestantDashboard';
+import ContestPage from './components/ContestPage';
+import CreateContestPage from './components/CreateContestPage';
 import { AuthProvider } from './components/AuthContext';
 
 function App() {
@@ -22,11 +24,13 @@ function App() {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
-						<Route path="/register/admin" element={<AdminRegistrationPage />} />
-						<Route path="/register/contestant" element={<ContestantRegistrationPage />} />
+                        <Route path="/register/admin" element={<AdminRegistrationPage />} />
+                        <Route path="/register/contestant" element={<ContestantRegistrationPage />} />
                         <Route path="/problemset" element={<ProblemSetPage />} />
                         <Route path="/problem/:id" element={<ProblemDetails />} />
-                        <Route path='/contestant/dashboard' element={<ContestantDashboard/>} />
+                        <Route path="/contestant/dashboard" element={<ContestantDashboard />} />
+                        <Route path="/contest" element={<ContestPage />} />
+                        <Route path="/create-contest" element={<CreateContestPage />} />
                     </Routes>
                     <Footer />
                 </div>
