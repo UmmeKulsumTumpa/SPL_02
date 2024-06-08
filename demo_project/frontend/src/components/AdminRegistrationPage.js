@@ -3,6 +3,8 @@ import axios from 'axios';
 import '../styles/AdminRegistrationPage.css';
 import { validateEmail, checkUsernameExists } from '../utils/adminValidation';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faLock, faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 
 function AdminRegistrationPage() {
     const [formData, setFormData] = useState({
@@ -93,61 +95,66 @@ function AdminRegistrationPage() {
     };
 
     return (
-        <div className="register-container">
-            <h2>Admin Sign Up</h2>
-            <form onSubmit={handleSubmit} noValidate>
-                <label>Username</label>
-                <input 
-                    type="text" 
-                    name="username" 
-                    placeholder="Enter a username..." 
-                    value={formData.username} 
-                    onChange={handleChange} 
-                />
-                {errors.username && <p className="error-message">{errors.username}</p>}
-                
-                <label>Email address</label>
-                <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Enter your email address..." 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                />
-                {errors.email && <p className="error-message">{errors.email}</p>}
-                
-                <label>Pin Code</label>
-                <input 
-                    type="text" 
-                    name="pinCode" 
-                    placeholder="Enter your pin code..." 
-                    value={formData.pinCode} 
-                    onChange={handleChange} 
-                />
-                {errors.pinCode && <p className="error-message">{errors.pinCode}</p>}
-                
-                <label>Password</label>
-                <input 
-                    type="password" 
-                    name="password" 
-                    placeholder="Enter your password..." 
-                    value={formData.password} 
-                    onChange={handleChange} 
-                />
-                {errors.password && <p className="error-message">{errors.password}</p>}
-                
-                <label>Confirm Password</label>
-                <input 
-                    type="password" 
-                    name="confirmPassword" 
-                    placeholder="Enter your password again..." 
-                    value={formData.confirmPassword} 
-                    onChange={handleChange} 
-                />
-                {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
-                
-                <button type="submit">Sign up</button>
-                {errors.form && <p className="error-message">{errors.form}</p>}
+        <div className="admin-register-container">
+            <form onSubmit={handleSubmit} className="admin-register-form" noValidate>
+                <h1 className="admin-register-title">Admin Sign Up</h1>
+                <div className="admin-input-container">
+                    <FontAwesomeIcon icon={faUser} className="admin-icon admin-user-icon" />
+                    <input 
+                        type="text" 
+                        name="username" 
+                        placeholder="Enter a username..." 
+                        value={formData.username} 
+                        onChange={handleChange} 
+                    />
+                    {errors.username && <p className="admin-error-message">{errors.username}</p>}
+                </div>
+                <div className="admin-input-container">
+                    <FontAwesomeIcon icon={faEnvelope} className="admin-icon admin-envelope-icon" />
+                    <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="Enter your email address..." 
+                        value={formData.email} 
+                        onChange={handleChange} 
+                    />
+                    {errors.email && <p className="admin-error-message">{errors.email}</p>}
+                </div>
+                <div className="admin-input-container">
+                    <FontAwesomeIcon icon={faKey} className="admin-icon admin-key-icon" />
+                    <input 
+                        type="text" 
+                        name="pinCode" 
+                        placeholder="Enter your pin code..." 
+                        value={formData.pinCode} 
+                        onChange={handleChange} 
+                    />
+                    {errors.pinCode && <p className="admin-error-message">{errors.pinCode}</p>}
+                </div>
+                <div className="admin-input-container">
+                    <FontAwesomeIcon icon={faLock} className="admin-icon admin-lock-icon" />
+                    <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Enter your password..." 
+                        value={formData.password} 
+                        onChange={handleChange} 
+                    />
+                    {errors.password && <p className="admin-error-message">{errors.password}</p>}
+                </div>
+                <div className="admin-input-container">
+                    <FontAwesomeIcon icon={faLock} className="admin-icon admin-lock-icon" />
+                    <input 
+                        type="password" 
+                        name="confirmPassword" 
+                        placeholder="Enter your password again..." 
+                        value={formData.confirmPassword} 
+                        onChange={handleChange} 
+                    />
+                    {errors.confirmPassword && <p className="admin-error-message">{errors.confirmPassword}</p>}
+                </div>
+                <button type="submit" className="admin-register-button">Sign up</button>
+                {errors.form && <p className="admin-error-message">{errors.form}</p>}
             </form>
         </div>
     );
