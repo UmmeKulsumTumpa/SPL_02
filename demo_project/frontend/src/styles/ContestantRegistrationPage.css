@@ -56,7 +56,7 @@
 
 .register-container .icon {
     position: absolute;
-    top: 43%;
+    top: 50%;
     transform: translateY(-50%);
     background: #ffffff;
     color: hsl(209, 77%, 23%);
@@ -104,7 +104,7 @@
     font-size: 14px;
     text-align: left;
     padding-left: 60px;
-    margin-top: -8px; /* Ensures error message is close to the input field */
+    margin-top: 5px; /* Ensures error message is close to the input field */
     position: absolute;
     width: 100%;
     top: 100%;
