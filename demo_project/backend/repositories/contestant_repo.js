@@ -1,5 +1,6 @@
 const Contestant = require('../models/Contestant');
 const axios = require('axios');
+const role = 'contestant';
 
 // Function to get all contestants
 const getAllContestants = async (req, res) => {
@@ -34,7 +35,7 @@ const addNewContestant = async (req, res) => {
 
         // Save the new contestant
         const savedContestant = await newContestant.save();
-        res.json({success: true, contestant: savedContestant});
+        res.json({success: true, contestant: savedContestant, role});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

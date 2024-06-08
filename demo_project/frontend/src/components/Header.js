@@ -1,10 +1,16 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import '../styles/Header.css';
 
 function Header() {
     const { username, role, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const handleRegister = () => {
+        navigate('/register', { state: { from: location.pathname } });
+    };
 
     return (
         <header className="header">
@@ -27,13 +33,12 @@ function Header() {
                     {username ? (
                         <div>
                             <span><Link to={`/${role}/dashboard`}>{username}</Link></span>
-                            {/* <Link to={`/${role}/dashboard`}>Dashboard</Link> */}
                             <button onClick={logout}>Logout</button>
                         </div>
                     ) : (
                         <div>
                             <Link to="/login">Login</Link>
-                            <Link to="/register">Register</Link>
+                            <button onClick={handleRegister}>Register</button>
                         </div>
                     )}
                 </div>

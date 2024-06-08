@@ -9,9 +9,9 @@ export const validateEmail = (email) => {
 // Check if username already exists in the database
 export const checkUsernameExists = async (username) => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/contestants/contestantExist/${username}`);
-        //console.log(response.statusText);
-        return response.data.exists;
+        const contestant_response = await axios.get(`http://localhost:8000/api/contestants/contestantExist/${username}`);
+        const admin_response = await axios.get(`http://localhost:8000/api/admin/checkUserExist/${username}`);
+        return contestant_response.data.exists || admin_response.data.exists;
     } catch (error) {
         console.error("Error checking username:", error);
         return false;

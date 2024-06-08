@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import '../styles/ContestantRegistrationPage.css';
 import { validateEmail, checkUsernameExists } from '../utils/contestantValidation';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
 function ContestantRegistrationPage() {
     const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ function ContestantRegistrationPage() {
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useContext(AuthContext);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,8 +55,6 @@ function ContestantRegistrationPage() {
             newErrors.username = "Username already exists";
         }
 
-        console.log(usernameExists);
-
         // If there are errors, set the errors state and return
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -73,7 +74,10 @@ function ContestantRegistrationPage() {
             });
 
             if (response.data.success) {
-                navigate('/'); // Redirect to the homepage on successful registration
+                await login(username, response.data.role);
+                // const from = location.state?.from || '/';
+                // console.log(`Redirecting to: ${from}`);
+                // navigate(from); // Redirect to the previous page or homepage
             } else {
                 setErrors({ form: response.data.error || "An error occurred during registration" });
             }
