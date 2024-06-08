@@ -1,66 +1,98 @@
-.header {
-  background-color: #f8f9fa;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.header-container {
+	background-color: #ffffff;
+	padding: 10px 0;
+	border-bottom: 1px solid #eaeaea;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	font-family: Arial, sans-serif;
 }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+.header-nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
 }
 
-.nav-links {
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
+.header-nav-links {
+	list-style: none;
+	display: flex;
+	margin: 0;
+	padding: 0;
 }
 
-.nav-links li {
-  margin-right: 20px;
+.header-nav-links li {
+	margin-right: 20px;
 }
 
-.nav-links li a {
-  text-decoration: none;
-  color: black;
-  font-size: 16px;
+.header-nav-links li a {
+	text-decoration: none;
+	color: #000000;
+	font-size: 16px;
+	padding: 5px 10px;
+	background-color: #f0f0f0;
+	border-radius: 5px;
 }
 
-.nav-links li a:hover {
-  text-decoration: underline;
+.header-nav-links li a:hover {
+	background-color: #e0e0e0;
 }
 
-.login-section {
-  display: flex;
-  align-items: center;
+.header-login-section {
+	display: flex;
+	align-items: center;
 }
 
-.login-section div {
-  display: flex;
-  align-items: center;
+.header-user {
+	display: flex;
+	align-items: center;
 }
 
-.login-section a {
-  text-decoration: none;
-  color: #007bff;
-  margin-right: 10px;
-  font-size: 16px;
+.header-link {
+	color: #007bff;
+	cursor: pointer;
+	font-size: 16px;
+	text-decoration: none;
+	padding: 0 5px;
 }
 
-.login-section button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 16px;
+.header-link:hover {
+	text-decoration: underline;
 }
 
-.login-section button:hover {
-  background-color: #0056b3;
+.header-link-button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	/* padding: 0; */
+
+	color: #007bff;
+	cursor: pointer;
+	font-size: 16px;
+	text-decoration: none;
+	padding: 0 5px;
+}
+
+.header-link-button:hover {
+	text-decoration: underline;
+}
+
+.header-auth-buttons {
+	display: flex;
+	align-items: center;
+}
+
+.header-auth-buttons .header-link {
+	margin: 0 5px;
+}
+
+.header-user .header-link {
+	margin: 0 5px;
+}
+
+.header-separator {
+	margin: 0 5px;
+	color: #000;
+	font-size: 16px;
 }

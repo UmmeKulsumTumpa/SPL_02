@@ -13,37 +13,31 @@ function Header() {
     };
 
     return (
-        <header className="header">
-            <nav className="nav">
-                <ul className="nav-links">
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="#">Contest</Link>
-                    </li>
-                    <li>
-                        <Link to="/problemset">Problem Set</Link>
-                    </li>
-                    <li>
-                        <Link to="#">Blog</Link>
-                    </li>
+        <div className="header-container">
+            <nav className="header-nav">
+                <ul className="header-nav-links">
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/contest">Contest</Link></li>
+                    <li><Link to="/problemset">Problem Set</Link></li>
+                    <li><Link to="/blog">Blog</Link></li>
                 </ul>
-                <div className="login-section">
+                <div className="header-login-section">
                     {username ? (
-                        <div>
-                            <span><Link to={`/${role}/dashboard`}>{username}</Link></span>
-                            <button onClick={logout}>Logout</button>
+                        <div className="header-user">
+                            <Link className="header-link" to={`/${role}/dashboard`}>{username}</Link>
+                            <span className="header-separator">|</span>
+                            <button className="header-link-button" onClick={logout}>Logout</button>
                         </div>
                     ) : (
-                        <div>
-                            <Link to="/login">Login</Link>
-                            <button onClick={handleRegister}>Register</button>
+                        <div className="header-auth-buttons">
+                            <Link className="header-link" to="/login">Login</Link>
+                            <span className="header-separator">|</span>
+                            <button className="header-link-button" onClick={handleRegister}>Register</button>
                         </div>
                     )}
                 </div>
             </nav>
-        </header>
+        </div>
     );
 }
 
