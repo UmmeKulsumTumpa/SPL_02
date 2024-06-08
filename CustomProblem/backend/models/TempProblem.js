@@ -1,20 +1,15 @@
-// models/TempProblem.js
 const mongoose = require('mongoose');
 
-const TempProblemSchema = new mongoose.Schema({
-  problemId: { type: String, unique: true },
-  problemTitle: String,
-  timeLimit: Number,
-  memoryLimit: Number,
-  problemDescription: Buffer,
-  problemDescriptionContentType: String,
-  testCases: String,
-  inputFile: Buffer,
-  inputFileContentType: String,
-  outputFile: Buffer,
-  outputFileContentType: String,
-}, { timestamps: true });
+const tempProblemSchema = new mongoose.Schema({
+  problemId: { type: String, required: true },
+  problemTitle: { type: String, required: true },
+  timeLimit: { type: String, required: true },
+  memoryLimit: { type: String, required: true },
+  problemDescription: { type: Buffer, contentType: String },
+  inputFile: { type: Buffer, contentType: String },
+  outputFile: { type: Buffer, contentType: String },
+});
 
-const TempProblem = mongoose.model('TempProblem', TempProblemSchema);
+const TempProblem = mongoose.model('TempProblem', tempProblemSchema);
 
 module.exports = TempProblem;
