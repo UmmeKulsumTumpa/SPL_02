@@ -2,6 +2,9 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import '../styles/LoginPage.css';
 import { AuthContext } from './AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import { forgetPassword } from '../utils/forgetPasswordHandle';
 
 function LoginPage() {
     const [username, setUsername] = useState('');
@@ -29,30 +32,31 @@ function LoginPage() {
 
     return (
         <div className="login-container">
-            <h1>Login</h1>
-            {error && <p className="error-message">{error}</p>}
             <form onSubmit={handleLogin} className="login-form">
-                <div>
-                    <label htmlFor="username">Username</label>
+                <h1 className="login-title">User Login</h1>
+                {error && <p className="error-message">{error}</p>}
+                <div className="input-container">
+                    <FontAwesomeIcon icon={faUser} className="icon user-icon" />
                     <input
                         type="text"
-                        id="username"
+                        placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label htmlFor="password">Password</label>
+                <div className="input-container">
                     <input
                         type="password"
-                        id="password"
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    <FontAwesomeIcon icon={faLock} className="icon lock-icon" />
                 </div>
-                <button type="submit" className="login-button">
-                    Login
-                </button>
+                <div className="forget-password" onClick={forgetPassword}>
+                    Forget Password?
+                </div>
+                <button type="submit" className="login-button">Login</button>
             </form>
         </div>
     );
