@@ -1,4 +1,3 @@
-// routes/tempProblem.js
 const express = require('express');
 const TempProblem = require('../models/TempProblem');
 
