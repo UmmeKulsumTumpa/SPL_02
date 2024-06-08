@@ -24,7 +24,7 @@ const solutionRouter = require('./routes/solution');
 const contestantsRouter = require('./routes/contestants');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
-const contestRouter = require('./routes/contest');
+const contestRouter = require('./routes/requested_contest');
 
 // Use routes
 app.use('/api/problem', problemsRouter);

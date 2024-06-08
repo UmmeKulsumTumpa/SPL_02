@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const contestRepo = require('../repositories/contest_repo');
+const contestRepo = require('../repositories/requested_contest_repo');
 
 // Get all contests
 router.get('/', contestRepo.getAllContests);

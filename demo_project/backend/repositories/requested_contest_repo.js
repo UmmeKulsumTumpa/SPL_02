@@ -1,19 +1,23 @@
-// repositories/contest_repo.js
-const Contest = require('../models/Contest');
-const Problem = require('../models/Problem');
+const Contest = require('../models/RequestedContest');
+const axios = require('axios');
 
 let contestCounter = 0;
 
 const getNextContestId = async () => {
     const highestContest = await Contest.findOne().sort({ cid: -1 });
-    contestCounter = highestContest ? parseInt(highestContest.cid.slice(1)) : 0;
+    contestCounter = highestContest ? parseInt(highestContest.cid.slice(2)) : 0; // Adjust slice to match 'CS' prefix
     return `CS${++contestCounter}`;
+};
+
+const fetchProblemDetails = async (type, pid) => {
+    const response = await axios.get(`http://localhost:8000/api/problem/retrieve/${type}/${pid}`);
+    return response.data;
 };
 
 // Get all contests
 const getAllContests = async (req, res) => {
     try {
-        const contests = await Contest.find().populate('problems');
+        const contests = await Contest.find();
         res.json(contests);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch contests', details: err.message });
@@ -23,7 +27,7 @@ const getAllContests = async (req, res) => {
 // Get a single contest by ID
 const getContestById = async (req, res) => {
     try {
-        const contest = await Contest.findOne({ cid: req.params.id }).populate('problems');
+        const contest = await Contest.findOne({ cid: req.params.id });
         if (!contest) {
             return res.status(404).json({ error: 'Contest not found' });
         }
@@ -44,8 +48,21 @@ const createContest = async (req, res) => {
 
         const cid = await getNextContestId();
         const problemDocs = await Promise.all(problems.map(async (prob, index) => {
-            const problem = new Problem({ ...prob, pid: `${cid}_P${index + 1}` });
-            return await problem.save();
+            if (prob.pid) {
+                const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
+                return {
+                    pid: `${prob.type}/${prob.pid}`,
+                    title: problemDetails.title,
+                    statement: JSON.stringify(problemDetails.statement),
+                    constraints: `Time Limit: ${problemDetails.timeLimit}\nMemory Limit: ${problemDetails.memoryLimit}\n${problemDetails.input}\n${problemDetails.output}`,
+                    testCase: JSON.stringify(problemDetails.statement.sampleTests)
+                };
+            } else {
+                return {
+                    ...prob,
+                    pid: `${cid}_P${index + 1}`
+                };
+            }
         }));
 
         const newContest = new Contest({
@@ -54,7 +71,7 @@ const createContest = async (req, res) => {
             description,
             startTime: new Date(startTime),
             endTime: new Date(endTime),
-            problems: problemDocs.map(p => p._id)
+            problems: problemDocs
         });
 
         const savedContest = await newContest.save();
@@ -72,21 +89,29 @@ const updateContest = async (req, res) => {
 
         if (problems) {
             const problemDocs = await Promise.all(problems.map(async (prob, index) => {
-                if (prob._id) {
-                    return await Problem.findByIdAndUpdate(prob._id, prob, { new: true });
+                if (prob.pid) {
+                    const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
+                    return {
+                        pid: prob.pid,
+                        title: problemDetails.title,
+                        statement: JSON.stringify(problemDetails.statement),
+                        constraints: `Time Limit: ${problemDetails.timeLimit}\nMemory Limit: ${problemDetails.memoryLimit}\n${problemDetails.input}\n${problemDetails.output}`,
+                        testCase: JSON.stringify(problemDetails.statement.sampleTests)
+                    };
+                } else if (prob._id) {
+                    return { ...prob };
                 } else {
-                    const problem = new Problem({ ...prob, pid: `${req.params.id}_P${index + 1}` });
-                    return await problem.save();
+                    return { ...prob, pid: `${req.params.id}_P${index + 1}` };
                 }
             }));
-            updatedFields.problems = problemDocs.map(p => p._id);
+            updatedFields.problems = problemDocs;
         }
 
         const updatedContest = await Contest.findOneAndUpdate(
             { cid: req.params.id },
             updatedFields,
             { new: true }
-        ).populate('problems');
+        );
 
         if (!updatedContest) {
             return res.status(404).json({ error: 'Contest not found' });
@@ -105,7 +130,6 @@ const deleteContest = async (req, res) => {
             return res.status(404).json({ error: 'Contest not found' });
         }
 
-        await Problem.deleteMany({ _id: { $in: contest.problems } });
         await Contest.findOneAndDelete({ cid: req.params.id });
 
         res.json({ message: 'Contest and its problems deleted successfully' });
