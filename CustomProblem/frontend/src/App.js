@@ -12,8 +12,10 @@ import {
   Input,
   Typography,
 } from '@mui/material';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import SubmitSolution from './SubmitSolution';
 
-function App() {
+function AddProblem() {
   const [problemTitle, setProblemTitle] = useState('');
   const [timeLimit, setTimeLimit] = useState('');
   const [memoryLimit, setMemoryLimit] = useState('');
@@ -127,7 +129,21 @@ function App() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Button component={Link} to="/submitSolution" variant="contained" color="secondary">
+        Submit Solution
+      </Button>
     </Box>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<AddProblem />} />
+        <Route path="/submitSolution" element={<SubmitSolution />} />
+      </Routes>
+    </Router>
   );
 }
 
