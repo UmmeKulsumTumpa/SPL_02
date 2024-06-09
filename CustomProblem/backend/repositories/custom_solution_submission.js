@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const { promisify } = require('util');
 const Solution = require('../models/Solution');
 const CustomProblem = require('../models/CustomProblem');
 
-const execPromise = promisify(exec);
+const execFilePromise = promisify(execFile);
 
 // Ensure the solutions directory exists
 const solutionsDir = path.join(os.tmpdir(), 'solutions');
@@ -52,30 +52,57 @@ const submitSolution = async (problemId, solutionFile) => {
     fs.writeFileSync(inputFilePath, problem.inputFile);
 
     const compileCommand = `g++ ${sourceFilePath} -o ${sourceFilePath}.out`;
-    const runCommand = `${sourceFilePath}.out < ${inputFilePath} > ${outputFilePath}`;
 
     try {
-        await execPromise(compileCommand);
+        await execFilePromise('g++', [sourceFilePath, '-o', `${sourceFilePath}.out`]);
     } catch (compileError) {
         console.error(`Compile error: ${compileError.stderr}`);
         newSolution.verdict = 'Compilation Error';
         await newSolution.save();
         fs.unlinkSync(sourceFilePath);
         fs.unlinkSync(inputFilePath);
-        return newSolution;
+        return {
+            verdict: newSolution.verdict,
+            output: compileError.stderr
+        };
     }
 
     const startTime = Date.now();
+    let execTime = 0;
+    let output = '';
+    const hardTimeLimit = 5; // Hard limit in seconds
+
+    const runPromise = new Promise((resolve, reject) => {
+        const child = execFile(`${sourceFilePath}.out`, {
+            stdio: ['pipe', 'pipe', 'pipe'],
+            timeout: hardTimeLimit * 1000
+        }, (error, stdout, stderr) => {
+            execTime = (Date.now() - startTime) / 1000;
+            if (error) {
+                if (error.killed || error.signal === 'SIGKILL') {
+                    reject(new Error('Time Limit Exceeded'));
+                } else {
+                    reject(new Error(stderr || 'Runtime Error'));
+                }
+            } else {
+                resolve(stdout);
+            }
+        });
+
+        // Write input to the child process
+        child.stdin.write(fs.readFileSync(inputFilePath));
+        child.stdin.end();
+    });
+
     try {
-        await execPromise(runCommand, { timeout: parseLimit(problem.timeLimit) * 1000 });
-        const execTime = (Date.now() - startTime) / 1000;
+        output = await runPromise;
+        output = output.trim().split('\n');
+        const expectedOutput = problem.outputFile.toString('utf-8').trim().split('\n');
 
-        const output = fs.readFileSync(outputFilePath, 'utf-8').trim();
-        const expectedOutput = problem.outputFile.toString('utf-8').trim();
-
-        if (execTime > parseLimit(problem.timeLimit)) {
+        const problemTimeLimit = parseLimit(problem.timeLimit);
+        if (execTime > problemTimeLimit) {
             newSolution.verdict = 'Time Limit Exceeded';
-        } else if (output !== expectedOutput) {
+        } else if (output.length !== expectedOutput.length || !output.every((val, index) => val === expectedOutput[index])) {
             newSolution.verdict = 'Wrong Answer';
         } else {
             newSolution.verdict = 'Accepted';
@@ -83,17 +110,31 @@ const submitSolution = async (problemId, solutionFile) => {
 
         newSolution.execTime = execTime;
     } catch (runError) {
-        console.error(`Runtime error: ${runError.stderr}`);
-        newSolution.verdict = 'Runtime Error';
+        if (runError.message === 'Time Limit Exceeded') {
+            console.error(`Execution timed out: ${runError.message}`);
+            newSolution.verdict = 'Time Limit Exceeded';
+        } else {
+            console.error(`Runtime error: ${runError.message}`);
+            newSolution.verdict = 'Runtime Error';
+            output = runError.message;
+        }
     }
 
     await newSolution.save();
 
-    fs.unlinkSync(sourceFilePath);
-    fs.unlinkSync(inputFilePath);
-    fs.unlinkSync(outputFilePath);
+    // Ensure that files are unlinked properly
+    try {
+        fs.unlinkSync(sourceFilePath);
+        fs.unlinkSync(inputFilePath);
+        fs.unlinkSync(outputFilePath);
+    } catch (err) {
+        console.error(`Error cleaning up files: ${err.message}`);
+    }
 
-    return newSolution;
+    return {
+        verdict: newSolution.verdict,
+        output
+    };
 };
 
 module.exports = { submitSolution };
