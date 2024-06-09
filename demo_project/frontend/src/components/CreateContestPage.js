@@ -188,7 +188,7 @@ const CreateContestPage = () => {
                                     >
                                         <option value="">Select OJ</option>
                                         <option value="CF">Codeforces</option>
-                                        <option value="CS">CodeChef</option>
+                                        <option value="CS">CodeSphere</option>
                                     </select>
                                     {errors[`problem-${index}-oj`] && <span className="error">{errors[`problem-${index}-oj`]}</span>}
                                     <input

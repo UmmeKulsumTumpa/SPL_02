@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import ContestantDashboard from './components/ContestantDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import ContestPage from './components/ContestPage';
+import ViewContestDetails from './components/contest/ViewContestDetails';
 import CreateContestPage from './components/CreateContestPage';
 import { AuthProvider } from './components/AuthContext';
 
@@ -37,6 +38,7 @@ function App() {
                         <Route path="/admin/dashboard" element={<AdminDashboard />} />
                         <Route path="/contest" element={<ContestPage />} />
                         <Route path="/create-contest" element={<CreateContestPage />} />
+                        <Route path="/contest/:contestId" element={<ViewContestDetails />} />
                     </Routes>
                     <Footer />
                 </div>
