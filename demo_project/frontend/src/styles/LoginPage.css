@@ -6,7 +6,7 @@
 	background: white;
 }
 
-.login-form {
+.login-container .login-form {
 	background: #2a4a6f; /* Slightly lighter color */
 	padding: 40px;
 	border-radius: 10px;
@@ -16,18 +16,18 @@
 	height: 60%;
 }
 
-.login-title {
+.login-container .login-title {
 	color: #e0e0e0; /* Lighter color for better visibility */
 	margin-bottom: 50px;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.input-container {
+.login-container .input-container {
 	position: relative;
 	margin-bottom: 30px;
 }
 
-.input-container input {
+.login-container .input-container input {
 	width: calc(100% - 60px); /* Adjust width to account for icon padding */
 	padding: 10px 20px 10px 50px; /* Adjust padding to make space for icons */
 	border: none;
@@ -39,11 +39,11 @@
 	font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-.input-container input::placeholder {
+.login-container .input-container input::placeholder {
 	color: #b0c4de;
 }
 
-.icon {
+.login-container .icon {
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
@@ -54,15 +54,15 @@
 	font-size: 1.2em;
 }
 
-.user-icon {
+.login-container .user-icon {
 	left: 0px;
 }
 
-.lock-icon {
+.login-container .lock-icon {
 	right: -10px; /* Move the lock icon to the rightmost corner */
 }
 
-.forget-password {
+.login-container .forget-password {
 	color: #ffffff;
 	cursor: pointer;
 	margin-top: 50px;
@@ -71,7 +71,7 @@
 	text-decoration: underline;
 }
 
-.login-button {
+.login-container .login-button {
 	width: 100%;
 	padding: 10px;
 	border: none;
@@ -85,11 +85,11 @@
 	font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-.login-button:hover {
+.login-container .login-button:hover {
 	background: #b0c4de;
 }
 
-.error-message {
+.login-container .error-message {
 	color: #ff6b6b; /* Beautiful color for error message */
 	margin-bottom: 20px;
 }

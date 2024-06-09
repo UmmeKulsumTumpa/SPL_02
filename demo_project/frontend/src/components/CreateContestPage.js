@@ -11,6 +11,7 @@ import {
     fetchProblemTitle,
     validateField
 } from '../utils/createContest';
+import CustomProblemForm from './CustomProblemForm';
 
 const CreateContestPage = () => {
     const { username } = useContext(AuthContext);
@@ -180,7 +181,9 @@ const CreateContestPage = () => {
                     {errors.problems && <span className="error">{errors.problems}</span>}
                     {problems.map((problem, index) => (
                         <div key={index} className="problem-entry">
+                            <h3>Problem #{index + 1}</h3>
                             {problem.type === 'oj' ? (
+                                // OJ problem form
                                 <>
                                     <select
                                         value={problem.oj}
@@ -188,7 +191,7 @@ const CreateContestPage = () => {
                                     >
                                         <option value="">Select OJ</option>
                                         <option value="CF">Codeforces</option>
-                                        <option value="CS">CodeSphere</option>
+                                        <option value="CS">CodeChef</option>
                                     </select>
                                     {errors[`problem-${index}-oj`] && <span className="error">{errors[`problem-${index}-oj`]}</span>}
                                     <input
@@ -211,35 +214,19 @@ const CreateContestPage = () => {
                                         readOnly
                                     />
                                 </>
+
                             ) : (
-                                <>
-                                    <input
-                                        type="text"
-                                        placeholder="Title"
-                                        value={problem.title}
-                                        onChange={(e) => handleProblemChange(index, 'title', e.target.value)}
-                                    />
-                                    {errors[`problem-${index}-title`] && <span className="error">{errors[`problem-${index}-title`]}</span>}
-                                    <textarea
-                                        placeholder="Statement"
-                                        value={problem.statement}
-                                        onChange={(e) => handleProblemChange(index, 'statement', e.target.value)}
-                                    ></textarea>
-                                    {errors[`problem-${index}-statement`] && <span className="error">{errors[`problem-${index}-statement`]}</span>}
-                                    <textarea
-                                        placeholder="Constraints"
-                                        value={problem.constraints}
-                                        onChange={(e) => handleProblemChange(index, 'constraints', e.target.value)}
-                                    ></textarea>
-                                    {errors[`problem-${index}-constraints`] && <span className="error">{errors[`problem-${index}-constraints`]}</span>}
-                                    <textarea
-                                        placeholder="Test Case"
-                                        value={problem.testCase}
-                                        onChange={(e) => handleProblemChange(index, 'testCase', e.target.value)}
-                                    ></textarea>
-                                    {errors[`problem-${index}-testCase`] && <span className="error">{errors[`problem-${index}-testCase`]}</span>}
-                                </>
+                                // Custom problem form
+                                <CustomProblemForm
+                                    problem={problem}
+                                    index={index}
+                                    onProblemChange={handleProblemChange}
+                                    errors={errors}
+                                    onDeleteProblem={handleDeleteProblem}
+                                    onMoveProblem={handleMoveProblem}
+                                />
                             )}
+
                             <div className="problem-actions">
                                 <button type="button" onClick={() => handleMoveProblem(index, index - 1)}>↑</button>
                                 <button type="button" onClick={() => handleMoveProblem(index, index + 1)}>↓</button>

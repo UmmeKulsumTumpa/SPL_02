@@ -56,7 +56,7 @@
     cursor: pointer;
 }
 
-.contest-create-button :hover {
+.contest-create-button button:hover {
     background-color: #024d9c;
 }
 

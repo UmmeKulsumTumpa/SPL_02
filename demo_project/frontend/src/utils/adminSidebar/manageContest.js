@@ -7,6 +7,7 @@ const ManageContest = ({ admin }) => {
     const [approvedContests, setApprovedContests] = useState([]);
     const [view, setView] = useState('requested');
     const [error, setError] = useState('');
+    const [approving, setApproving] = useState(false); // Track if approval is in progress
 
     useEffect(() => {
         fetchRequestedContests();
@@ -18,8 +19,7 @@ const ManageContest = ({ admin }) => {
             const response = await axios.get('http://localhost:8000/api/requested_contest');
             setRequestedContests(response.data);
         } catch (error) {
-            setError('Error fetching requested contests');
-            console.error('Error fetching requested contests', error);
+            showError('Error fetching requested contests');
         }
     };
 
@@ -28,12 +28,13 @@ const ManageContest = ({ admin }) => {
             const response = await axios.get('http://localhost:8000/api/approved_contest');
             setApprovedContests(response.data);
         } catch (error) {
-            setError('Error fetching approved contests');
-            console.error('Error fetching approved contests', error);
+            showError('Error fetching approved contests');
         }
     };
 
     const approveContest = async (contest) => {
+        if (approving) return; // Prevent multiple executions
+        setApproving(true);
         try {
             const approvedContest = {
                 ...contest,
@@ -44,13 +45,14 @@ const ManageContest = ({ admin }) => {
                 approvalTime: new Date()
             };
 
+            await axios.delete(`http://localhost:8000/api/requested_contest/delete/${contest.cid}`);
             await axios.post('http://localhost:8000/api/approved_contest/create', approvedContest);
-            await axios.delete(`http://localhost:8000/api/requested_contest/delete/${contest._id}`);
             fetchRequestedContests();
             fetchApprovedContests();
         } catch (error) {
-            setError('Error approving contest');
-            console.error('Error approving contest', error);
+            showError('Error approving contest');
+        } finally {
+            setApproving(false);
         }
     };
 
@@ -59,20 +61,21 @@ const ManageContest = ({ admin }) => {
             await axios.delete(`http://localhost:8000/api/requested_contest/delete/${id}`);
             fetchRequestedContests();
         } catch (error) {
-            setError('Error deleting contest');
-            console.error('Error deleting contest', error);
+            showError('Error deleting contest');
         }
     };
 
-    // Filter approved contests by author name matching the current admin's name
-    const filteredApprovedContests = approvedContests.filter(
-        contest => {
-            // console.log("Checking contest:", contest);
-            return contest.approvedBy && contest.approvedBy.adminName === admin.username;
-        }
-    );
+    const showError = (message) => {
+        setError(message);
+    };
 
-    // console.log("Filtered Approved Contests:", filteredApprovedContests);
+    const closeError = () => {
+        setError('');
+    };
+
+    const filteredApprovedContests = approvedContests.filter(
+        contest => contest.approvedBy && contest.approvedBy.adminName === admin.username
+    );
 
     return (
         <div className="manageContest-container">
@@ -80,7 +83,14 @@ const ManageContest = ({ admin }) => {
                 <button onClick={() => setView('requested')}>Requested Contests</button>
                 <button onClick={() => setView('approved')}>Approved Contests</button>
             </div>
-            {error && <div className="error-message">{error}</div>}
+            {error && (
+                <div className="error-popup">
+                    <div className="error-popup-content">
+                        <span className="close-button" onClick={closeError}>&times;</span>
+                        {error}
+                    </div>
+                </div>
+            )}
             {view === 'requested' && (
                 <div className="manageContest-table-container">
                     <h2>Requested Contests</h2>
@@ -100,7 +110,7 @@ const ManageContest = ({ admin }) => {
                                     <td>{contest.title}</td>
                                     <td>{contest.author ? contest.author.authorName : 'Unknown'}</td>
                                     <td>
-                                        <button onClick={() => approveContest(contest)}>Approve</button>
+                                        <button onClick={() => approveContest(contest)} disabled={approving}>Approve</button>
                                         <button onClick={() => deleteContest(contest.cid)}>Delete</button>
                                     </td>
                                 </tr>

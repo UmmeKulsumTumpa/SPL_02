@@ -5,7 +5,9 @@ import {
     formatDateTime,
     calculateLength,
     filterContestsByStatus,
-    calculateCountdown
+    calculateCountdown,
+    registerUserForContest, 
+    isUserRegistered
 } from '../utils/contestPage';
 import '../styles/ContestPage.css';
 
@@ -13,6 +15,7 @@ const ContestPage = () => {
     const [activeTab, setActiveTab] = useState('upcoming');
     const [searchValue, setSearchValue] = useState('');
     const [contestData, setContestData] = useState([]);
+    const [username, setUsername] = useState('currentUser'); // replace with actual current user
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,6 +44,17 @@ const ContestPage = () => {
         navigate('/create-contest');
     };
 
+    const handleRegister = async (contest) => {
+        const confirmation = window.confirm(`Registration for ${contest.title}\nStart Time: ${formatDateTime(contest.startTime)}\nAuthor: ${contest.author.authorName}`);
+        if (confirmation) {
+            const response = await registerUserForContest(contest.acid, username);
+            if (response) {
+                alert('Registered successfully');
+                setContestData((prev) => prev.map(c => c.acid === contest.acid ? { ...c, registeredUsers: [...c.registeredUsers, username] } : c));
+            }
+        }
+    };
+
     const renderContestList = (contests, status) => {
         const currentTime = new Date();
         const filteredContestData = filterContestsByStatus(contests, currentTime, status).filter(contest =>
@@ -58,7 +72,7 @@ const ContestPage = () => {
                             <th>Length</th>
                             <th>Owner</th>
                             {status === 'upcoming' && <th>Countdown</th>}
-                            {status === 'upcoming' && <th>Register</th>}
+                            {status === 'upcoming' && <th>Action</th>}
                             {status === 'previous' && <th>View</th>}
                         </tr>
                     </thead>
@@ -73,9 +87,15 @@ const ContestPage = () => {
                                 {status === 'upcoming' && <td>{calculateCountdown(contest.startTime)}</td>}
                                 {status === 'upcoming' && (
                                     <td>
-                                        <button onClick={() => navigate(`/register/${contest.acid}`)}>
-                                            Register
-                                        </button>
+                                        {contest.registeredUsers.includes(username) ? (
+                                            <button onClick={() => navigate(`/participate/${contest.acid}`)}>
+                                                Participate
+                                            </button>
+                                        ) : (
+                                            <button onClick={() => handleRegister(contest)}>
+                                                Register
+                                            </button>
+                                        )}
                                     </td>
                                 )}
                                 {status === 'previous' && (

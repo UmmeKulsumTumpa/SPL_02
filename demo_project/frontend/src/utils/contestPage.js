@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const formatDateTime = (dateTime) => {
     const date = new Date(dateTime);
     const day = String(date.getDate()).padStart(2, '0');
@@ -28,7 +30,7 @@ export const filterContestsByStatus = (contests, currentTime, status) => {
         const startTime = new Date(contest.startTime);
         const endTime = new Date(contest.endTime);
         if (status === 'upcoming') {
-            return endTime > currentTime;
+            return endTime > currentTime && startTime > currentTime;
         } else if (status === 'running') {
             return startTime <= currentTime && endTime > currentTime;
         } else if (status === 'previous') {
@@ -50,4 +52,24 @@ export const calculateCountdown = (startTime) => {
     const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
     return `${diffDays}d ${diffHrs}h ${diffMins}m`;
+};
+
+export const registerUserForContest = async (contestId, username) => {
+    try {
+        const response = await axios.post(`http://localhost:8000/api/approved_contest/register/${contestId}`, { username });
+        return response.data;
+    } catch (error) {
+        console.error('Error registering user for contest:', error);
+        return null;
+    }
+};
+
+export const isUserRegistered = async (contestId, username) => {
+    try {
+        const response = await axios.get(`http://localhost:8000/api/approved_contest/is_registered/${contestId}`, { params: { username } });
+        return response.data.isRegistered;
+    } catch (error) {
+        console.error('Error checking user registration status:', error);
+        return false;
+    }
 };
