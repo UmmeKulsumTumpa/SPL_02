@@ -1,13 +1,19 @@
+// ContestantDashboard.js
+
 import React, { useEffect, useState, useContext } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faFileAlt, faEnvelope, faBell, faMapMarkerAlt, faChartPie, faUser } from '@fortawesome/free-solid-svg-icons';
 import { AuthContext } from './AuthContext';
 import axios from 'axios';
 import '../styles/ContestantDashboard.css';
+import { Profile, Settings, Blog, Team, Submissions, Contests } from '../utils/contestantDashboard';
 
 const ContestantDashboard = () => {
     const { username } = useContext(AuthContext);
     const [contestant, setContestant] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState('profile');
 
     useEffect(() => {
         const fetchContestantData = async () => {
@@ -18,12 +24,10 @@ const ContestantDashboard = () => {
             }
 
             try {
-                console.log("Fetching data for username:", username);
                 const response = await axios.get(`http://localhost:8000/api/contestants/username/${username}`);
-                console.log("Response data:", response.data);
                 if (response.data) {
                     setContestant(response.data);
-                    setError(null); // Clear any previous errors
+                    setError(null);
                 } else {
                     setError("Username not found");
                 }
@@ -37,10 +41,6 @@ const ContestantDashboard = () => {
         fetchContestantData();
     }, [username]);
 
-    useEffect(() => {
-        console.log("Updated contestant state:", contestant);
-    }, [contestant]);
-
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -53,26 +53,62 @@ const ContestantDashboard = () => {
         return <div>No contestant data available</div>;
     }
 
+    const renderActiveTab = () => {
+        switch (activeTab) {
+            case 'profile':
+                return <Profile contestant={contestant} />;
+            case 'settings':
+                return <Settings />;
+            case 'blog':
+                return <Blog />;
+            case 'team':
+                return <Team />;
+            case 'submissions':
+                return <Submissions />;
+            case 'contests':
+                return <Contests />;
+            default:
+                return <Profile contestant={contestant} />;
+        }
+    };
+
     return (
-        <div className="dashboard-container">
-            <div className="contestant-info">
-                <h2 className="username">{contestant.username}</h2>
-                <p className="email">Email: {contestant.email}</p>
-            </div>
-            <div className="contestant-actions">
-                <button>My friends</button>
-                <button>Change settings</button>
-                <button>Start your own blog</button>
-                <button>View my talks</button>
-            </div>
-            <div className="activity-summary">
-                <h3>Activity Summary</h3>
-                <div className="activity-graph">
-                    {/* Placeholder for activity graph */}
+        <div className="contestant-dashboard-container">
+            <div className="contestant-dashboard-sidebar">
+                <div className="contestant-dashboard-profile-section">
+                    <div className="contestant-dashboard-profile-icon">
+                        <FontAwesomeIcon icon={faUser} size="3x" />
+                    </div>
+                    <h2 className="contestant-dashboard-username">{contestant.username}</h2>
+                    <p className="contestant-dashboard-email">{contestant.email}</p>
                 </div>
-                <div className="activity-details">
-                    {/* Activity details placeholders */}
-                </div>
+                <button className="contestant-dashboard-button contestant-dashboard-profile-button" onClick={() => setActiveTab('profile')}>
+                    <FontAwesomeIcon icon={faHome} className="contestant-dashboard-icon" />
+                    <span className="contestant-dashboard-span">Profile</span>
+                </button>
+                <button className="contestant-dashboard-button contestant-dashboard-settings-button" onClick={() => setActiveTab('settings')}>
+                    <FontAwesomeIcon icon={faFileAlt} className="contestant-dashboard-icon" />
+                    <span className="contestant-dashboard-span">Settings</span>
+                </button>
+                <button className="contestant-dashboard-button contestant-dashboard-blog-button" onClick={() => setActiveTab('blog')}>
+                    <FontAwesomeIcon icon={faEnvelope} className="contestant-dashboard-icon" />
+                    <span className="contestant-dashboard-span">Blog</span>
+                </button>
+                <button className="contestant-dashboard-button contestant-dashboard-team-button" onClick={() => setActiveTab('team')}>
+                    <FontAwesomeIcon icon={faBell} className="contestant-dashboard-icon" />
+                    <span className="contestant-dashboard-span">Team</span>
+                </button>
+                <button className="contestant-dashboard-button contestant-dashboard-submissions-button" onClick={() => setActiveTab('submissions')}>
+                    <FontAwesomeIcon icon={faMapMarkerAlt} className="contestant-dashboard-icon" />
+                    <span className="contestant-dashboard-span">Submissions</span>
+                </button>
+                <button className="contestant-dashboard-button contestant-dashboard-contests-button" onClick={() => setActiveTab('contests')}>
+                    <FontAwesomeIcon icon={faChartPie} className="contestant-dashboard-icon" />
+                    <span className="contestant-dashboard-span">Contests</span>
+                </button>
+            </div>
+            <div className="contestant-dashboard-content">
+                {renderActiveTab()}
             </div>
         </div>
     );

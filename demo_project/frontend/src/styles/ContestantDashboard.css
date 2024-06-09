@@ -1,63 +1,90 @@
-.dashboard-container {
-    width: 70%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+/* ContestantDashboard.css */
 
-.contestant-info {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.username {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.rating, .contribution, .friends, .email, .last-visit, .registered {
-    margin: 5px 0;
-}
-
-.contestant-actions {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.contestant-actions button {
-    margin: 5px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.contestant-actions button:hover {
-    background-color: #45a049;
-}
-
-.activity-summary {
-    text-align: center;
-}
-
-.activity-graph {
+.contestant-dashboard-container {
+    display: flex;
     width: 100%;
-    height: 300px;
-    background-color: #ddd;
-    margin-bottom: 20px;
-    /* Placeholder styles for the activity graph */
+    height: 90vh;
+    background-color: #f5f5f5;
 }
 
-.activity-details {
+.contestant-dashboard-container .contestant-dashboard-sidebar {
+    width: 20%;
+    background-color: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: white;
+}
+
+.contestant-dashboard-container .contestant-dashboard-profile-section {
+    text-align: center;
+    margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.activity-details p {
-    margin: 5px 0;
+.contestant-dashboard-container .contestant-dashboard-profile-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #34495e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: #34495e;
+}
+
+.contestant-dashboard-container .contestant-dashboard-username {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.contestant-dashboard-container .contestant-dashboard-email {
+    font-size: 17px;
+}
+
+.contestant-dashboard-container .contestant-dashboard-button {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #34495e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 16px;
+}
+
+.contestant-dashboard-container .contestant-dashboard-button:hover {
+    background-color: #2980b9;
+}
+
+.contestant-dashboard-container .contestant-dashboard-icon {
+    margin-right: 10px;
+}
+
+.contestant-dashboard-container .contestant-dashboard-content {
+    width: 80%;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.contestant-dashboard-container .profile-container,
+.contestant-dashboard-container .settings-container,
+.contestant-dashboard-container .blog-container,
+.contestant-dashboard-container .team-container,
+.contestant-dashboard-container .submissions-container,
+.contestant-dashboard-container .contests-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }

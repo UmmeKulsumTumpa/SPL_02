@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faHome, faFileAlt, faEnvelope, faBell, faMapMarkerAlt, faChartPie, faUser } from '@fortawesome/free-solid-svg-icons';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
@@ -13,6 +15,8 @@ import ContestantDashboard from './components/ContestantDashboard';
 import ContestPage from './components/ContestPage';
 import CreateContestPage from './components/CreateContestPage';
 import { AuthProvider } from './components/AuthContext';
+
+library.add(faHome, faFileAlt, faEnvelope, faBell, faMapMarkerAlt, faChartPie, faUser);
 
 function App() {
     return (
