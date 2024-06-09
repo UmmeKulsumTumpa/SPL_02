@@ -24,7 +24,8 @@ const contestSchema = new Schema({
         adminName: { type: String, required: true },
         adminEmail: { type: String, required: true }
     },
-    approvalTime: { type: Date, required: true }
+    approvalTime: { type: Date},
+    registeredUsers: [{ type: String }] // new field for storing registered users
 });
 
 const ApprovedContest = mongoose.model('ApprovedContest', contestSchema);

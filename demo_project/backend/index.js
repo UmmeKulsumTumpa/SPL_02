@@ -26,6 +26,8 @@ const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const requestedContestRouter = require('./routes/requested_contest');
 const approvedContestRouter = require('./routes/approved_contest');
+const addCustomProblemRouter = require('./routes/custom_problem');
+const submitCustomSolutionRouter = require('./routes/custom_solution');
 
 // Use routes
 app.use('/api/problem', problemsRouter);
@@ -35,6 +37,8 @@ app.use('/api/admin', adminRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/requested_contest', requestedContestRouter);
 app.use('/api/approved_contest', approvedContestRouter);
+app.use('/api/add_custom_problem', addCustomProblemRouter);
+app.use('/api/custom_solution_submit', submitCustomSolutionRouter);
 
 // Start the server
 app.listen(PORT, () => {
