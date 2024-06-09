@@ -12,6 +12,7 @@ import ProblemDetails from './components/ProblemDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ContestantDashboard from './components/ContestantDashboard';
+import AdminDashboard from './components/AdminDashboard';
 import ContestPage from './components/ContestPage';
 import CreateContestPage from './components/CreateContestPage';
 import { AuthProvider } from './components/AuthContext';
@@ -33,6 +34,7 @@ function App() {
                         <Route path="/problemset" element={<ProblemSetPage />} />
                         <Route path="/problem/:id" element={<ProblemDetails />} />
                         <Route path="/contestant/dashboard" element={<ContestantDashboard />} />
+                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
                         <Route path="/contest" element={<ContestPage />} />
                         <Route path="/create-contest" element={<CreateContestPage />} />
                     </Routes>
