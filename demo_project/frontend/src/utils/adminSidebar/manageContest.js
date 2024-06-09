@@ -44,10 +44,8 @@ const ManageContest = ({ admin }) => {
                 approvalTime: new Date()
             };
 
-            console.log(approveContest);
-
             await axios.post('http://localhost:8000/api/approved_contest/create', approvedContest);
-            await axios.delete(`http://localhost:8000/api/requested_contest/delete/${contest.cid}`);
+            await axios.delete(`http://localhost:8000/api/requested_contest/delete/${contest._id}`);
             fetchRequestedContests();
             fetchApprovedContests();
         } catch (error) {
@@ -65,6 +63,16 @@ const ManageContest = ({ admin }) => {
             console.error('Error deleting contest', error);
         }
     };
+
+    // Filter approved contests by author name matching the current admin's name
+    const filteredApprovedContests = approvedContests.filter(
+        contest => {
+            // console.log("Checking contest:", contest);
+            return contest.approvedBy && contest.approvedBy.adminName === admin.username;
+        }
+    );
+
+    // console.log("Filtered Approved Contests:", filteredApprovedContests);
 
     return (
         <div className="manageContest-container">
@@ -113,7 +121,7 @@ const ManageContest = ({ admin }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {approvedContests.map((contest, index) => (
+                            {filteredApprovedContests.map((contest, index) => (
                                 <tr key={contest._id}>
                                     <td>{index + 1}</td>
                                     <td>{contest.title}</td>
