@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 import '../styles/CreateContestPage.css';
 import {
     addProblem,
@@ -12,13 +13,28 @@ import {
 } from '../utils/createContest';
 
 const CreateContestPage = () => {
+    const { username } = useContext(AuthContext);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [problems, setProblems] = useState([]);
     const [errors, setErrors] = useState({});
+    const [authorEmail, setAuthorEmail] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchAuthorEmail = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/contestants/username/${username}`);
+                setAuthorEmail(response.data.email);
+            } catch (error) {
+                console.error('Error fetching author email:', error);
+            }
+        };
+        fetchAuthorEmail();
+    }, [username]);
 
     const handleAddProblem = (type) => {
         setProblems(addProblem(problems, type));
@@ -84,23 +100,33 @@ const CreateContestPage = () => {
         e.preventDefault();
         if (!validateForm()) return;
 
+        setIsSubmitting(true);
+
         // Prepare problems data for the request
         const requestData = problems.map(problem => ({
             type: problem.oj,
             pid: problem.pid
         }));
 
+        const requestTime = new Date().toISOString();
+
         try {
-            await axios.post('http://localhost:8000/api/contest/create', {
+            await axios.post('http://localhost:8000/api/requested_contest/create', {
                 title,
                 description,
                 startTime,
                 endTime,
                 problems: requestData,
+                author: {
+                    authorName: username,
+                    authorEmail: authorEmail
+                },
+                requestTime
             });
-            navigate('/contest');
+            navigate('/contest'); // should navigate to contestant/contest-management
         } catch (error) {
             console.error('Error creating contest:', error);
+            setIsSubmitting(false);
         }
     };
 
@@ -222,7 +248,7 @@ const CreateContestPage = () => {
                         </div>
                     ))}
                 </div>
-                <button type="submit">Create Contest</button>
+                <button type="submit" disabled={isSubmitting}>Create Contest</button>
             </form>
         </div>
     );

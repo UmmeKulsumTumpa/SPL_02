@@ -66,7 +66,7 @@ const AdminDashboard = () => {
             case 'submissions':
                 return <Submissions />;
             case 'contests':
-                return <Contests />;
+                return <Contests admin={admin}/>;
             default:
                 return <Profile admin={admin} />;
         }

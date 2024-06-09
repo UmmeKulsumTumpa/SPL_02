@@ -5,8 +5,8 @@ let contestCounter = 0;
 
 const getNextContestId = async () => {
     const highestContest = await Contest.findOne().sort({ cid: -1 });
-    contestCounter = highestContest ? parseInt(highestContest.cid.slice(2)) : 0; // Adjust slice to match 'CS' prefix
-    return `CS${++contestCounter}`;
+    contestCounter = highestContest ? parseInt(highestContest.cid.slice(7)) : 0; // Adjust slice to match 'CS-req' prefix
+    return `CS-req${++contestCounter}`;
 };
 
 const fetchProblemDetails = async (type, pid) => {
@@ -40,9 +40,9 @@ const getContestById = async (req, res) => {
 // Create a new contest
 const createContest = async (req, res) => {
     try {
-        const { title, description, startTime, endTime, problems } = req.body;
+        const { title, description, startTime, endTime, problems, author, requestTime } = req.body;
 
-        if (!title || !description || !startTime || !endTime || !problems) {
+        if (!title || !description || !startTime || !endTime || !problems || !author || !requestTime) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
@@ -71,7 +71,9 @@ const createContest = async (req, res) => {
             description,
             startTime: new Date(startTime),
             endTime: new Date(endTime),
-            problems: problemDocs
+            problems: problemDocs,
+            author,
+            requestTime: new Date(requestTime)
         });
 
         const savedContest = await newContest.save();
@@ -84,8 +86,8 @@ const createContest = async (req, res) => {
 // Update an existing contest
 const updateContest = async (req, res) => {
     try {
-        const { title, description, startTime, endTime, problems } = req.body;
-        const updatedFields = { title, description, startTime: new Date(startTime), endTime: new Date(endTime) };
+        const { title, description, startTime, endTime, problems, author, requestTime } = req.body;
+        const updatedFields = { title, description, startTime: new Date(startTime), endTime: new Date(endTime), author, requestTime: new Date(requestTime) };
 
         if (problems) {
             const problemDocs = await Promise.all(problems.map(async (prob, index) => {

@@ -15,7 +15,12 @@ const contestSchema = new Schema({
     description: { type: String, required: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
-    problems: [problemSchema]
+    problems: [problemSchema],
+    author: {
+        authorName: { type: String, required: true },
+        authorEmail: { type: String, required: true }
+    },
+    requestTime: { type: Date, required: true }
 });
 
 const Contest = mongoose.model('Contest', contestSchema);

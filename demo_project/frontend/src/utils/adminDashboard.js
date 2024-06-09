@@ -3,7 +3,7 @@ import ManageContest from './adminSidebar/manageContest';
 
 export const Profile = ({ admin }) => (
     <div className="adminDashboard-profile-container">
-        <p>Name: {admin.name}</p>
+        <p>Name: {admin.username}</p>
         <p>Email: {admin.email}</p>
         <p>Role: {admin.role}</p>
     </div>
@@ -38,8 +38,8 @@ export const Submissions = () => (
     </div>
 );
 
-export const Contests = () => (
+export const Contests = ({ admin }) => (
     <div className="adminDashboard-contests-container">
-        <ManageContest />
+        <ManageContest admin={admin} />
     </div>
 );
