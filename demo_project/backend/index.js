@@ -9,11 +9,11 @@ app.use(cors());
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://bsse1307:bsse1307@cluster0.nqcakei.mongodb.net/codesphere?retryWrites=true&w=majority&appName=Cluster0', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
 })
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('Error connecting to MongoDB:', err));
+	.then(() => console.log('Connected to MongoDB'))
+	.catch(err => console.error('Error connecting to MongoDB:', err));
 
 // Middleware
 app.use(express.json());
@@ -24,7 +24,8 @@ const solutionRouter = require('./routes/solution');
 const contestantsRouter = require('./routes/contestants');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
-const contestRouter = require('./routes/requested_contest');
+const requestedContestRouter = require('./routes/requested_contest');
+const approvedContestRouter = require('./routes/approved_contest');
 
 // Use routes
 app.use('/api/problem', problemsRouter);
@@ -32,9 +33,10 @@ app.use('/api/solution', solutionRouter);
 app.use('/api/contestants', contestantsRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/contest', contestRouter);
+app.use('/api/requested_contest', requestedContestRouter);
+app.use('/api/approved_contest', approvedContestRouter);
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+	console.log(`Server is running on port ${PORT}`);
 });
