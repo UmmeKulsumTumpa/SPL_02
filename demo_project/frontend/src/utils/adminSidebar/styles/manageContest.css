@@ -1,0 +1,76 @@
+/* manageContest.css */
+
+.manageContest-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.manageContest-button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.manageContest-button-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.manageContest-button-container button:hover {
+    background-color: #34495e;
+}
+
+.manageContest-table-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.manageContest-table-container h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.manageContest-contest-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.manageContest-contest-table th, .manageContest-contest-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.manageContest-contest-table th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.manageContest-contest-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.manageContest-contest-table tr:hover {
+    background-color: #ddd;
+}
+
+.manageContest-contest-table button {
+    padding: 5px 10px;
+    font-size: 14px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.manageContest-contest-table button:hover {
+    background-color: #34495e;
+    color: white;
+}

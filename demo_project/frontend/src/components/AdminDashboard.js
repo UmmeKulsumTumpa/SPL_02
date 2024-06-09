@@ -104,7 +104,7 @@ const AdminDashboard = () => {
                 </button>
                 <button className="admin-dashboard-button admin-dashboard-contests-button" onClick={() => setActiveTab('contests')}>
                     <FontAwesomeIcon icon={faChartPie} className="admin-dashboard-icon" />
-                    <span className="admin-dashboard-span">Contests</span>
+                    <span className="admin-dashboard-span">Manage Contest</span>
                 </button>
             </div>
             <div className="admin-dashboard-content">

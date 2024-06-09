@@ -1,7 +1,8 @@
 import React from 'react';
+import ManageContest from './adminSidebar/manageContest';
 
 export const Profile = ({ admin }) => (
-    <div className="profile-container">
+    <div className="adminDashboard-profile-container">
         <p>Name: {admin.name}</p>
         <p>Email: {admin.email}</p>
         <p>Role: {admin.role}</p>
@@ -9,7 +10,7 @@ export const Profile = ({ admin }) => (
 );
 
 export const Settings = () => (
-    <div className="settings-container">
+    <div className="adminDashboard-settings-container">
         <h2>Settings</h2>
         <p>Update Email</p>
         <p>Change Password</p>
@@ -17,29 +18,28 @@ export const Settings = () => (
 );
 
 export const Blog = () => (
-    <div className="blog-container">
+    <div className="adminDashboard-blog-container">
         <h2>Blog</h2>
         <p>Manage Blog Entries</p>
     </div>
 );
 
 export const Team = () => (
-    <div className="team-container">
+    <div className="adminDashboard-team-container">
         <h2>Team</h2>
         <p>Manage Teams</p>
     </div>
 );
 
 export const Submissions = () => (
-    <div className="submissions-container">
+    <div className="adminDashboard-submissions-container">
         <h2>Submissions</h2>
         <p>View Submissions</p>
     </div>
 );
 
 export const Contests = () => (
-    <div className="contests-container">
-        <h2>Contests</h2>
-        <p>Manage Contests</p>
+    <div className="adminDashboard-contests-container">
+        <ManageContest />
     </div>
 );

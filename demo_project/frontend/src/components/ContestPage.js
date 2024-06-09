@@ -13,7 +13,7 @@ const ContestPage = () => {
         // Fetch contest data from the backend API
         const fetchContestData = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/contest');
+                const response = await axios.get('http://localhost:8000/api/requested_contest');
                 setContestData(response.data);
             } catch (error) {
                 console.error('Error fetching contest data:', error);
