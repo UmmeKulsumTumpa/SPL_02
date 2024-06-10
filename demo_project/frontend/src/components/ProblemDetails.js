@@ -110,7 +110,7 @@ function ProblemDetails() {
 	return (
 		<div className="problem-details-container">
 			<h2>{title}</h2>
-			<p>Problem ID: {pid}</p>
+			{/* <p>Problem ID: {pid}</p> */}
 
 			{/* Constraints Section */}
 			<h3>Constraints:</h3>

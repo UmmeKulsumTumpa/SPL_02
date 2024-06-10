@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -6,16 +6,17 @@ import {
     calculateLength,
     filterContestsByStatus,
     calculateCountdown,
-    registerUserForContest, 
-    isUserRegistered
 } from '../utils/contestPage';
 import '../styles/ContestPage.css';
+import { AuthContext } from './AuthContext';
+import LoginPrompt from './LoginPrompt';
 
 const ContestPage = () => {
+    const { username } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('upcoming');
     const [searchValue, setSearchValue] = useState('');
     const [contestData, setContestData] = useState([]);
-    const [username, setUsername] = useState('currentUser'); // replace with actual current user
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,17 +42,18 @@ const ContestPage = () => {
     };
 
     const navigateToCreateContest = () => {
-        navigate('/create-contest');
+        if (username) {
+            navigate('/create-contest');
+        } else {
+            setShowLoginPrompt(true);
+        }
     };
 
-    const handleRegister = async (contest) => {
-        const confirmation = window.confirm(`Registration for ${contest.title}\nStart Time: ${formatDateTime(contest.startTime)}\nAuthor: ${contest.author.authorName}`);
-        if (confirmation) {
-            const response = await registerUserForContest(contest.acid, username);
-            if (response) {
-                alert('Registered successfully');
-                setContestData((prev) => prev.map(c => c.acid === contest.acid ? { ...c, registeredUsers: [...c.registeredUsers, username] } : c));
-            }
+    const handleParticipateClick = (contestId) => {
+        if (username) {
+            navigate(`/participate/${contestId}/${username}`);
+        } else {
+            setShowLoginPrompt(true);
         }
     };
 
@@ -72,7 +74,7 @@ const ContestPage = () => {
                             <th>Length</th>
                             <th>Owner</th>
                             {status === 'upcoming' && <th>Countdown</th>}
-                            {status === 'upcoming' && <th>Action</th>}
+                            {status === 'running' && <th>Action</th>}
                             {status === 'previous' && <th>View</th>}
                         </tr>
                     </thead>
@@ -85,17 +87,11 @@ const ContestPage = () => {
                                 <td>{calculateLength(contest.startTime, contest.endTime)}</td>
                                 <td>{contest.author.authorName}</td>
                                 {status === 'upcoming' && <td>{calculateCountdown(contest.startTime)}</td>}
-                                {status === 'upcoming' && (
+                                {status === 'running' && (
                                     <td>
-                                        {contest.registeredUsers.includes(username) ? (
-                                            <button onClick={() => navigate(`/participate/${contest.acid}`)}>
-                                                Participate
-                                            </button>
-                                        ) : (
-                                            <button onClick={() => handleRegister(contest)}>
-                                                Register
-                                            </button>
-                                        )}
+                                        <button onClick={() => handleParticipateClick(contest.acid)}>
+                                            Participate
+                                        </button>
                                     </td>
                                 )}
                                 {status === 'previous' && (
@@ -153,6 +149,7 @@ const ContestPage = () => {
             {activeTab === 'upcoming' && renderContestList(contestData, 'upcoming')}
             {activeTab === 'running' && renderContestList(contestData, 'running')}
             {activeTab === 'previous' && renderContestList(contestData, 'previous')}
+            {showLoginPrompt && <LoginPrompt onClose={() => setShowLoginPrompt(false)} />}
         </div>
     );
 };

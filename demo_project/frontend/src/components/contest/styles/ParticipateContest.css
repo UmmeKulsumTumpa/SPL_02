@@ -1,0 +1,109 @@
+.participate-contest__container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+.participate-contest__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.participate-contest__time-label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.participate-contest__time-value {
+    color: #555;
+}
+
+.participate-contest__progress-container {
+    margin-bottom: 20px;
+}
+
+.participate-contest__progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+    width: 100%;
+}
+
+.participate-contest__progress {
+    background-color: #007bff;
+    height: 100%;
+    transition: width 1s;
+}
+
+.participate-contest__status {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.participate-contest__info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.participate-contest__info h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.participate-contest__info p {
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.participate-contest__tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.participate-contest__tab {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.participate-contest__tab.active {
+    background-color: #0056b3;
+}
+
+.participate-contest__problems-container {
+    display: flex;
+    justify-content: center;
+}
+
+.participate-contest__problems {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+}
+
+.participate-contest__problems th,
+.participate-contest__problems td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.participate-contest__problems th {
+    background-color: #f2f2f2;
+}
+
+.participate-contest__rank {
+    text-align: center;
+    margin-top: 20px;
+    color: #777;
+}

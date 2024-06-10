@@ -1,0 +1,19 @@
+.leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.leaderboard th, .leaderboard td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.leaderboard th {
+    background-color: #f2f2f2;
+}
+
+.problem-solved {
+    background-color: lightgreen;
+}

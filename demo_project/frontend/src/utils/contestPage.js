@@ -56,6 +56,7 @@ export const calculateCountdown = (startTime) => {
 
 export const registerUserForContest = async (contestId, username) => {
     try {
+        console.log(contestId);
         const response = await axios.post(`http://localhost:8000/api/approved_contest/register/${contestId}`, { username });
         return response.data;
     } catch (error) {

@@ -16,6 +16,7 @@ import AdminDashboard from './components/AdminDashboard';
 import ContestPage from './components/ContestPage';
 import ViewContestDetails from './components/contest/ViewContestDetails';
 import CreateContestPage from './components/CreateContestPage';
+import ParticipateContest from './components/contest/ParticipateContest';
 import { AuthProvider } from './components/AuthContext';
 
 library.add(faHome, faFileAlt, faEnvelope, faBell, faMapMarkerAlt, faChartPie, faUser);
@@ -39,6 +40,7 @@ function App() {
                         <Route path="/contest" element={<ContestPage />} />
                         <Route path="/create-contest" element={<CreateContestPage />} />
                         <Route path="/contest/:contestId" element={<ViewContestDetails />} />
+                        <Route path="/participate/:contestId/:username" element={<ParticipateContest/>} />
                     </Routes>
                     <Footer />
                 </div>

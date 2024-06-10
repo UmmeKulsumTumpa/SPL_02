@@ -1,0 +1,145 @@
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import Leaderboard from './LeaderBoard';
+import ProblemDetails from './ProblemDetails';
+import './styles/ParticipateContest.css';
+
+const ParticipateContest = () => {
+    const { contestId, username } = useParams();
+    const [contestDetails, setContestDetails] = useState(null);
+    const [activeTab, setActiveTab] = useState('overview');
+    const [selectedProblem, setSelectedProblem] = useState(null);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        const fetchContestDetails = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/approved_contest/${contestId}`);
+                setContestDetails(response.data);
+                updateProgress(response.data.startTime, response.data.endTime);
+            } catch (error) {
+                console.error('Error fetching contest details:', error);
+            }
+        };
+
+        fetchContestDetails();
+    }, [contestId]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (contestDetails) {
+                updateProgress(contestDetails.startTime, contestDetails.endTime);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [contestDetails]);
+
+    const updateProgress = (startTime, endTime) => {
+        const currentTime = new Date();
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const totalDuration = end - start;
+        const elapsedTime = currentTime - start;
+        const progressPercentage = Math.min((elapsedTime / totalDuration) * 100, 100);
+        setProgress(progressPercentage);
+    };
+
+    const formatDateTime = (dateTime) => {
+        const date = new Date(dateTime);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+
+        return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
+    };
+
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+        setSelectedProblem(null); // Reset selected problem when switching tabs
+    };
+
+    const handleProblemClick = (problem) => {
+        setSelectedProblem(problem);
+        setActiveTab('problemDetails');
+    };
+
+    if (!contestDetails) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div className="participate-contest__container">
+            <div className="participate-contest__header">
+                <div>
+                    <span className="participate-contest__time-label">Begin:</span>
+                    <span className="participate-contest__time-value">{formatDateTime(contestDetails.startTime)}</span>
+                </div>
+                <div>
+                    <span className="participate-contest__time-label">End:</span>
+                    <span className="participate-contest__time-value">{formatDateTime(contestDetails.endTime)}</span>
+                </div>
+            </div>
+            <div className="participate-contest__progress-container">
+                <div className="participate-contest__progress-bar">
+                    <div className="participate-contest__progress" style={{ width: `${progress}%` }}></div>
+                </div>
+                <span className="participate-contest__status">In Progress</span>
+            </div>
+            <div className="participate-contest__info">
+                <h1>{contestDetails.title}</h1>
+                <p>Public. Prepared by {contestDetails.author.authorName}</p>
+                <p>Participant: {username}</p>
+            </div>
+            <div className="participate-contest__tabs">
+                <button
+                    className={`participate-contest__tab ${activeTab === 'overview' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('overview')}
+                >
+                    Overview
+                </button>
+                <button
+                    className={`participate-contest__tab ${activeTab === 'rank' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('rank')}
+                >
+                    Rank
+                </button>
+            </div>
+            {activeTab === 'overview' && !selectedProblem && (
+                <div className="participate-contest__problems-container">
+                    <table className="participate-contest__problems">
+                        <thead>
+                            <tr>
+                                <th>Serial Number</th>
+                                <th>Problem Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {contestDetails.problems.map((problem, index) => (
+                                <tr key={problem.pid} onClick={() => handleProblemClick(problem)}>
+                                    <td>{index + 1}</td>
+                                    <td>{problem.title}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            {activeTab === 'rank' && !selectedProblem && (
+                <Leaderboard contestId={contestId} />
+            )}
+            {activeTab === 'problemDetails' && selectedProblem && (
+                <ProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
+            )}
+        </div>
+    );
+};
+
+export default ParticipateContest;
