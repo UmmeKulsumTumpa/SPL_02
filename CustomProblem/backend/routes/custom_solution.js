@@ -15,14 +15,23 @@ router.post('/', upload.single('solutionFile'), async (req, res) => {
             return res.status(400).json({ error: 'Solution file is required' });
         }
 
-        console.log(`Submitting solution for problemId: ${problemId}`);
-
         const result = await submitSolution(problemId, solutionFile);
 
         res.json(result);
     } catch (error) {
         console.error('Error submitting solution:', error);
-        res.status(500).json({ error: 'Server error', details: error.message });
+        if (error.response) {
+            console.error('Error response data:', error.response.data);
+            console.error('Error response status:', error.response.status);
+            console.error('Error response headers:', error.response.headers);
+            res.status(error.response.status).json({ error: 'Piston API error', details: error.response.data });
+        } else if (error.request) {
+            console.error('Error request data:', error.request);
+            res.status(500).json({ error: 'No response from Piston API', details: error.message });
+        } else {
+            console.error('Error message:', error.message);
+            res.status(500).json({ error: 'Server error', details: error.message });
+        }
     }
 });
 

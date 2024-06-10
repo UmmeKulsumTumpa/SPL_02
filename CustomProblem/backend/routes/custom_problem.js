@@ -7,7 +7,6 @@ const upload = multer();
 
 // Define the route for creating a custom problem
 router.post('/', upload.fields([
-  { name: 'problemDescription' },
   { name: 'inputFile' },
   { name: 'outputFile' },
 ]), createCustomProblem);
