@@ -31,7 +31,7 @@ const Schema = mongoose.Schema;
 
 const baseProblemSchema = new Schema({
     type: { type: String, required: true, enum: ['CS', 'CF'] },
-    title: { type: String, required: true },
+    title: { type: String },
     problemDescription: { type: Buffer, contentType: String },
     pid: { type: String },
     statement: { type: String },

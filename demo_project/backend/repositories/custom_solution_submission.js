@@ -1,103 +1,146 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const axios = require('axios');
+const { execFile } = require('child_process');
+const { promisify } = require('util');
 const Solution = require('../models/Solution');
 const CustomProblem = require('../models/CustomProblem');
+
+const execFilePromise = promisify(execFile);
 
 // Ensure the solutions directory exists
 const solutionsDir = path.join(os.tmpdir(), 'solutions');
 if (!fs.existsSync(solutionsDir)) {
-	fs.mkdirSync(solutionsDir, { recursive: true });
+    fs.mkdirSync(solutionsDir, { recursive: true });
 }
 
 // Helper function to convert time and memory limits to appropriate units
 function parseLimit(limit) {
-	const value = parseFloat(limit);
-	if (limit.toLowerCase().includes('ms')) {
-		return value / 1000; // convert ms to seconds
-	}
-	if (limit.toLowerCase().includes('kb')) {
-		return value / 1024; // convert KB to MB
-	}
-	return value;
+    const value = parseFloat(limit);
+    if (limit.toLowerCase().includes('ms')) {
+        return value / 1000;
+    }
+    if (limit.toLowerCase().includes('kb')) {
+        return value / 1024;
+    }
+    return value;
 }
 
 const submitSolution = async (problemId, solutionFile) => {
-	// Find problem by problemId field
-	const problem = await CustomProblem.findOne({ problemId });
-	if (!problem) {
-		throw new Error('Problem not found');
-	}
+    console.log(`Received problemId: ${problemId}`);
 
-	const solutionCode = solutionFile.buffer.toString('utf-8');
+    const problem = await CustomProblem.findOne({ problemId: problemId });
+    if (!problem) {
+        console.error(`Problem with problemId ${problemId} not found`);
+        throw new Error('Problem not found');
+    }
 
-	const newSolution = new Solution({
-		problem: problem._id,
-		solutionCode
-	});
+    const solutionCode = solutionFile.buffer.toString('utf-8');
 
-	await newSolution.save();
+    const newSolution = new Solution({
+        problem: problem._id,
+        solutionCode
+    });
 
-	// Save the solution code to a temporary file for local processing (optional)
-	const solutionId = newSolution._id; // Get the solutionId from the newly saved solution
-	const filePath = path.join(solutionsDir, `${solutionId}.cpp`);
-	fs.writeFileSync(filePath, solutionCode);
+    await newSolution.save();
 
-	// Compile and run the solution using Piston API
-	const response = await axios.post('https://emkc.org/api/v2/piston/execute', {
-		language: 'cpp',
-		version: '10.2.0', // You can specify the version if needed
-		files: [{
-			name: 'solution.cpp',
-			content: solutionCode
-		}],
-		stdin: '', // You can provide input here if needed
-		args: [],
-		compile_timeout: 10000, // 10 seconds compile timeout
-		run_timeout: parseLimit(problem.timeLimit) * 1000, // Convert timeLimit to milliseconds
-		memory_limit: parseLimit(problem.memoryLimit) * 1024 * 1024 // Convert memoryLimit to bytes
-	});
+    const solutionId = newSolution._id;
+    const sourceFilePath = path.join(solutionsDir, `${solutionId}.cpp`);
+    const inputFilePath = path.join(solutionsDir, `${solutionId}_input.txt`);
+    const outputFilePath = path.join(solutionsDir, `${solutionId}_output.txt`);
+    fs.writeFileSync(sourceFilePath, solutionCode);
+    fs.writeFileSync(inputFilePath, problem.inputFile);
 
-	// Clean up the temporary file
-	fs.unlinkSync(filePath);
+    const compileCommand = `g++ ${sourceFilePath} -o ${sourceFilePath}.out`;
 
-	const result = response.data;
+    try {
+        await execFilePromise('g++', [sourceFilePath, '-o', `${sourceFilePath}.out`]);
+    } catch (compileError) {
+        console.error(`Compile error: ${compileError.stderr}`);
+        newSolution.verdict = 'Compilation Error';
+        await newSolution.save();
+        fs.unlinkSync(sourceFilePath);
+        fs.unlinkSync(inputFilePath);
+        return {
+            verdict: newSolution.verdict,
+            output: compileError.stderr
+        };
+    }
 
-	// Log the full API response for debugging
-	console.log('Piston API response:', result);
+    const startTime = Date.now();
+    let execTime = 0;
+    let output = '';
+    const hardTimeLimit = 5; // Hard limit in seconds
 
-	// Extract relevant data from the Piston API response
-	const output = result.run.output.trim();
-	const execTime = parseFloat(result.run.time) || 0;
-	const memoryUsage = parseFloat(result.run.memory) / (1024 * 1024) || 0; // Convert memory from bytes to MB
-	const expectedOutput = problem.outputFile.toString('utf-8').trim();
-	const timeLimit = parseLimit(problem.timeLimit);
-	const memoryLimit = parseLimit(problem.memoryLimit);
+    const runPromise = new Promise((resolve, reject) => {
+        const child = execFile(`${sourceFilePath}.out`, {
+            stdio: ['pipe', 'pipe', 'pipe'],
+            timeout: hardTimeLimit * 1000
+        }, (error, stdout, stderr) => {
+            execTime = (Date.now() - startTime) / 1000;
+            if (error) {
+                if (error.killed || error.signal === 'SIGKILL') {
+                    reject(new Error('Time Limit Exceeded'));
+                } else {
+                    reject(new Error(stderr || 'Runtime Error'));
+                }
+            } else {
+                resolve(stdout);
+            }
+        });
 
-	// Determine verdict based on the output and limits
-	let verdict;
-	if (result.compile && result.compile.stderr) {
-		verdict = 'Compilation Error';
-	} else if (result.run.signal) {
-		verdict = 'Runtime Error';
-	} else if (execTime > timeLimit) {
-		verdict = 'Time Limit Exceeded';
-	} else if (memoryUsage > memoryLimit) {
-		verdict = 'Memory Limit Exceeded';
-	} else if (output !== expectedOutput) {
-		verdict = 'Wrong Answer';
-	} else {
-		verdict = 'Accepted';
-	}
+        // Write input to the child process
+        child.stdin.write(fs.readFileSync(inputFilePath));
+        child.stdin.end();
+    });
 
-	// Update solution with verdict, execTime, and memoryUsage
-	newSolution.verdict = verdict;
-	newSolution.execTime = execTime;
-	newSolution.memoryUsage = memoryUsage;
-	await newSolution.save();
+    try {
+        output = await runPromise;
+        output = output.trim().split('\n');
+        const expectedOutput = problem.outputFile.toString('utf-8').trim().split('\n');
 
-	return { verdict, execTime, memoryUsage, output };
+        const problemTimeLimit = parseLimit(problem.timeLimit);
+        if (execTime > problemTimeLimit) {
+            newSolution.verdict = 'Time Limit Exceeded';
+        } else if (output.length !== expectedOutput.length || !output.every((val, index) => val === expectedOutput[index])) {
+            newSolution.verdict = 'Wrong Answer';
+        } else {
+            newSolution.verdict = 'Accepted';
+        }
+
+        newSolution.execTime = execTime;
+    } catch (runError) {
+        if (runError.message === 'Time Limit Exceeded') {
+            console.error(`Execution timed out: ${runError.message}`);
+            newSolution.verdict = 'Time Limit Exceeded';
+        } else {
+            console.error(`Runtime error: ${runError.message}`);
+            newSolution.verdict = 'Runtime Error';
+            output = runError.message;
+        }
+    }
+
+    await newSolution.save();
+
+    // Ensure that files are unlinked properly
+    try {
+        fs.unlinkSync(sourceFilePath);
+        fs.unlinkSync(inputFilePath);
+        fs.unlinkSync(outputFilePath);
+    } catch (err) {
+        console.error(`Error cleaning up files: ${err.message}`);
+    }
+
+    if (newSolution.verdict === 'Accepted' || newSolution.verdict === 'Wrong Answer') {
+        return {
+            verdict: newSolution.verdict,
+            output
+        };
+    } else {
+        return {
+            verdict: newSolution.verdict
+        };
+    }
 };
 
 module.exports = { submitSolution };

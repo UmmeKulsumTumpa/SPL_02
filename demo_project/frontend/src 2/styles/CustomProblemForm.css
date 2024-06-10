@@ -1,0 +1,49 @@
+.custom-problem-form {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.custom-problem-form .form-group {
+    margin-bottom: 15px;
+}
+
+.custom-problem-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.custom-problem-form input[type="text"],
+.custom-problem-form input[type="number"],
+.custom-problem-form textarea,
+.custom-problem-form input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.custom-problem-form .error {
+    color: red;
+    font-size: 12px;
+}
+
+.custom-problem-form button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-problem-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}

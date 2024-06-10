@@ -5,15 +5,15 @@ let reqcontestCounter = 0;
 
 const getNextContestId = async () => {
     const highestContest = await Contest.findOne().sort({ cid: -1 });
-    if (highestContest) {
-        console.log('Highest Contest CID:', highestContest.cid); // Debugging log
-    }
     reqcontestCounter = highestContest ? parseInt(highestContest.cid.replace('CS-req', '')) : 0;
     return `CS-req${++reqcontestCounter}`;
 };
 
 const fetchProblemDetails = async (type, pid) => {
-    const response = await axios.get(`http://localhost:8000/api/problem/retrieve/${type}/${pid}`);
+    const url = type === 'CF'
+        ? `http://localhost:8000/api/problem/retrieve/${type}/${pid}`
+        : `http://localhost:8000/api/add_custom_problem/get/${pid}`;
+    const response = await axios.get(url);
     return response.data;
 };
 
@@ -52,8 +52,8 @@ const createContest = async (req, res) => {
         const cid = await getNextContestId();
 
         const problemDocs = await Promise.all(problems.map(async (prob, index) => {
+            const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
             if (prob.type === 'CF') {
-                const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
                 const problemDoc = {
                     type: prob.type,
                     pid: `${prob.type}/${prob.pid}`,
@@ -66,8 +66,13 @@ const createContest = async (req, res) => {
                 return problemDoc;
             } else if (prob.type === 'CS') {
                 const problemDoc = {
-                    ...prob,
-                    problemDescription: prob.problemDescription
+                    type: prob.type,
+                    pid: `${prob.pid}`,
+                    title: problemDetails.problemTitle,
+                    problemDescription: problemDetails.problemDescription,
+                    testCases: problemDetails.testCases,
+                    constraints: `Time Limit: ${problemDetails.timeLimit}\nMemory Limit: ${problemDetails.memoryLimit}`,
+                    testCase: JSON.stringify(problemDetails.testCases)
                 };
                 if (prob.aliasName) problemDoc.aliasName = prob.aliasName;
                 return problemDoc;
@@ -75,6 +80,8 @@ const createContest = async (req, res) => {
                 throw new Error('Unsupported problem type');
             }
         }));
+
+        console.log(problemDocs);
 
         const newContest = new Contest({
             cid,
@@ -87,7 +94,10 @@ const createContest = async (req, res) => {
             requestTime: new Date(requestTime)
         });
 
+        console.log(newContest);
+
         const savedContest = await newContest.save();
+        console.log(savedContest);
         res.status(201).json(savedContest);
     } catch (err) {
         res.status(500).json({ error: 'Failed to create contest', details: err.message });
@@ -102,8 +112,8 @@ const updateContest = async (req, res) => {
 
         if (problems) {
             const problemDocs = await Promise.all(problems.map(async (prob, index) => {
+                const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
                 if (prob.type === 'CF') {
-                    const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
                     const problemDoc = {
                         type: prob.type,
                         pid: prob.pid,
@@ -115,19 +125,16 @@ const updateContest = async (req, res) => {
                     if (prob.aliasName) problemDoc.aliasName = prob.aliasName;
                     return problemDoc;
                 } else if (prob.type === 'CS') {
-                    if (prob._id) {
-                        const problemDoc = { ...prob };
-                        if (prob.aliasName) problemDoc.aliasName = prob.aliasName;
-                        return problemDoc;
-                    } else {
-                        const problemDoc = {
-                            ...prob,
-                            pid: `${req.params.id}_P${index + 1}`,
-                            problemDescription: prob.problemDescription
-                        };
-                        if (prob.aliasName) problemDoc.aliasName = prob.aliasName;
-                        return problemDoc;
-                    }
+                    const problemDoc = {
+                        type: prob.type,
+                        pid: `${prob.type}/${prob.pid}`,
+                        title: problemDetails.problemTitle,
+                        statement: problemDetails.problemDescription,
+                        constraints: `Time Limit: ${problemDetails.timeLimit}\nMemory Limit: ${problemDetails.memoryLimit}`,
+                        testCase: JSON.stringify(problemDetails.testCases)
+                    };
+                    if (prob.aliasName) problemDoc.aliasName = prob.aliasName;
+                    return problemDoc;
                 } else {
                     throw new Error('Unsupported problem type');
                 }
