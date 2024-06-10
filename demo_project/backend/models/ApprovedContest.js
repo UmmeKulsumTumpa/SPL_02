@@ -11,6 +11,20 @@ const approvedProblemSchema = new Schema({
     description: { type: Buffer, contentType: String }
 });
 
+const contestSubmittedProblem = new Schema({
+    type: String,
+    pid: String,
+    solution: String,
+    result: Schema.Types.Mixed,
+}, { _id: false });
+
+const leaderboardSchema = new Schema({
+    username: { type: String, required: true },
+    totalSolved: { type: Number, default: 0 },
+    totalSubmissionTime: { type: Number, default: 0 },
+    submittedProblems: [contestSubmittedProblem],
+});
+
 const contestSchema = new Schema({
     acid: { type: String, required: true },
     title: { type: String, required: true },
@@ -27,7 +41,8 @@ const contestSchema = new Schema({
         adminEmail: { type: String, required: true }
     },
     approvalTime: { type: Date },
-    registeredUsers: [{ type: String }]
+    participatedUsers: [{ type: String }],
+    leaderboard: [leaderboardSchema]
 });
 
 const ApprovedContest = mongoose.model('ApprovedContest', contestSchema);

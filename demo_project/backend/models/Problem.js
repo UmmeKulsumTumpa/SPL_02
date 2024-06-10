@@ -6,7 +6,8 @@ const problemSchema = new Schema({
 	title: { type: String, required: true },
 	testCase: { type: String, required: true },
 	statement: { type: String, required: true },
-	constraints: { type: String, required: true }
+	constraints: { type: String, required: true },
+	alias: {type: String}
 });
 
 const Problem = mongoose.model('Problem', problemSchema);

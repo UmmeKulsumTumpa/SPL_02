@@ -1,12 +1,9 @@
 const ApprovedContest = require('../models/ApprovedContest');
 const axios = require('axios');
 
-let contestCounter = 0;
-
 const getNextContestId = async () => {
-    const highestContest = await ApprovedContest.findOne().sort({ acid: -1 });
-    contestCounter = highestContest ? parseInt(highestContest.acid.slice(2)) : 0;
-    return `CS${++contestCounter}`;
+    const contestCount = await ApprovedContest.countDocuments();
+    return `CS${contestCount + 1}`;
 };
 
 // Get all approved contests
@@ -123,10 +120,95 @@ const deleteApprovedContest = async (req, res) => {
     }
 };
 
+// Register a user for a specific approved contest
+const registerUserForContest = async (req, res) => {
+    try {
+        const { username } = req.body;
+        const { id } = req.params;
+
+        // Find the contest by acid
+        const contest = await ApprovedContest.findOne({ acid: id });
+        if (!contest) {
+            return res.status(404).json({ error: 'Approved contest not found' });
+        }
+
+        // Check if the user is already registered
+        if (contest.participatedUsers.includes(username)) {
+            return res.status(400).json({ error: 'User is already registered for this contest' });
+        }
+
+        // Add the user to the participatedUsers array
+        contest.participatedUsers.push(username);
+
+        // Save the updated contest document
+        const updatedContest = await contest.save();
+
+        res.json(updatedContest);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to register user for contest', details: err.message });
+    }
+};
+
+// Submit a problem solution
+const submitProblemSolution = async (req, res) => {
+    const { acid, username } = req.params;
+    const { type, pid, solution } = req.body;
+
+    try {
+        // Call the solution route to submit the problem
+        const response = await axios.post('http://localhost:8000/api/solution/submit', {
+            type,
+            pid,
+            solution,
+        });
+
+        const submissionResult = response.data;
+
+        // Update the contest's leaderboard with the submission result
+        const contest = await ApprovedContest.findOne({ acid });
+        if (!contest) {
+            return res.status(404).json({ error: 'Contest not found' });
+        }
+
+        // Find the user in the leaderboard or add them if they don't exist
+        const leaderboardEntry = contest.leaderboard.find(entry => entry.username === username);
+        if (leaderboardEntry) {
+            leaderboardEntry.submittedProblems.push({
+                type,
+                pid,
+                solution,
+                result: submissionResult,
+            });
+            // Update total solved and total submission time if needed
+        } else {
+            contest.leaderboard.push({
+                username,
+                totalSolved: 0, // Update appropriately
+                totalSubmissionTime: 0, // Update appropriately
+                submittedProblems: [{
+                    type,
+                    pid,
+                    solution,
+                    result: submissionResult,
+                }],
+            });
+        }
+
+        // Save the updated contest
+        const updatedContest = await contest.save();
+
+        res.json(submissionResult);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 module.exports = {
     getAllApprovedContests,
     getApprovedContestById,
     createApprovedContest,
     updateApprovedContest,
-    deleteApprovedContest
+    deleteApprovedContest,
+    registerUserForContest,
+    submitProblemSolution
 };

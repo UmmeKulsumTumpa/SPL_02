@@ -17,4 +17,10 @@ router.put('/update/:id', approvedContestRepo.updateApprovedContest);
 // Delete an approved contest
 router.delete('/delete/:id', approvedContestRepo.deleteApprovedContest);
 
+// Register a user for a specific approved contest
+router.post('/register/:id', approvedContestRepo.registerUserForContest);
+
+// Submit a problem solution for a contest
+router.post('/submit/:acid/:username', approvedContestRepo.submitProblemSolution);
+
 module.exports = router;
