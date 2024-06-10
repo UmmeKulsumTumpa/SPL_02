@@ -1,37 +1,20 @@
 const CustomProblem = require('../models/CustomProblem');
 
+// Generate problem ID
 const generateProblemId = async () => {
-  let problemId;
-  let exists = true;
-  const prefix = "CS/";
-  
-  while (exists) {
-    const count = await CustomProblem.countDocuments();
-    problemId = `${prefix}${count + 1}T`;
-
-    // Check if the generated problemId already exists
-    exists = await CustomProblem.findOne({ problemId });
-  }
-
-  return problemId;
+  const count = await CustomProblem.countDocuments();
+  return `CS/${count + 1}T`;
 };
 
 // Logic for creating a custom problem
 const createCustomProblem = async (req, res) => {
   try {
-    const { problemTitle, timeLimit, memoryLimit } = req.body;
-    if (!problemTitle || !timeLimit || !memoryLimit) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
+    const { problemTitle, timeLimit, memoryLimit, problemDescription, testCases } = req.body;
+    const inputFile = req.files['inputFile'][0];
+    const outputFile = req.files['outputFile'][0];
 
-    if (req.files['problemDescription'][0].mimetype !== 'application/pdf') {
-      return res.status(400).json({ error: 'Problem description must be a PDF file' });
-    }
-    if (req.files['inputFile'][0].mimetype !== 'text/plain') {
-      return res.status(400).json({ error: 'Input file must be a TXT file' });
-    }
-    if (req.files['outputFile'][0].mimetype !== 'text/plain') {
-      return res.status(400).json({ error: 'Output file must be a TXT file' });
+    if (!problemTitle || !timeLimit || !memoryLimit || !problemDescription || !testCases) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
     const problemId = await generateProblemId();
@@ -41,16 +24,15 @@ const createCustomProblem = async (req, res) => {
       problemTitle,
       timeLimit,
       memoryLimit,
-      problemDescription: req.files['problemDescription'][0].buffer,
-      problemDescriptionContentType: req.files['problemDescription'][0].mimetype,
-      inputFile: req.files['inputFile'][0].buffer,
-      inputFileContentType: req.files['inputFile'][0].mimetype,
-      outputFile: req.files['outputFile'][0].buffer,
-      outputFileContentType: req.files['outputFile'][0].mimetype,
+      problemDescription,
+      testCases: JSON.parse(testCases), // Assuming test cases are sent as a JSON string
+      inputFile: inputFile.buffer,
+      inputFileContentType: inputFile.mimetype,
+      outputFile: outputFile.buffer,
+      outputFileContentType: outputFile.mimetype,
     });
 
     await customProblem.save();
-    console.log(`Problem created with ID: ${problemId}`); // Add logging
     res.json({ problemId });
   } catch (error) {
     console.error('Error saving problem:', error);

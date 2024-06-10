@@ -131,10 +131,16 @@ const submitSolution = async (problemId, solutionFile) => {
         console.error(`Error cleaning up files: ${err.message}`);
     }
 
-    return {
-        verdict: newSolution.verdict,
-        output
-    };
+    if (newSolution.verdict === 'Accepted' || newSolution.verdict === 'Wrong Answer') {
+        return {
+            verdict: newSolution.verdict,
+            output
+        };
+    } else {
+        return {
+            verdict: newSolution.verdict
+        };
+    }
 };
 
 module.exports = { submitSolution };
