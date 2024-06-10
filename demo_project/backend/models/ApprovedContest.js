@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const approvedProblemSchema = new Schema({
-    pid: { type: String, required: true },
+    type: { type: String, required: true },
+    pid: { type: String },
     title: { type: String, required: true },
-    statement: { type: String, required: true },
-    constraints: { type: String, required: true },
-    testCase: { type: String, required: true }
+    statement: { type: String },
+    constraints: { type: String },
+    testCase: { type: String },
+    description: { type: Buffer, contentType: String }
 });
 
 const contestSchema = new Schema({
@@ -24,8 +26,8 @@ const contestSchema = new Schema({
         adminName: { type: String, required: true },
         adminEmail: { type: String, required: true }
     },
-    approvalTime: { type: Date},
-    registeredUsers: [{ type: String }] // new field for storing registered users
+    approvalTime: { type: Date },
+    registeredUsers: [{ type: String }]
 });
 
 const ApprovedContest = mongoose.model('ApprovedContest', contestSchema);

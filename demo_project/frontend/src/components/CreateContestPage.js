@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
@@ -9,7 +9,6 @@ import {
     deleteProblem,
     moveProblem,
     fetchProblemTitle,
-    validateField
 } from '../utils/createContest';
 import CustomProblemForm from './CustomProblemForm';
 
@@ -25,6 +24,8 @@ const CreateContestPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
+    const customProblemRefs = useRef([]);
+
     useEffect(() => {
         const fetchAuthorEmail = async () => {
             try {
@@ -38,15 +39,19 @@ const CreateContestPage = () => {
     }, [username]);
 
     const handleAddProblem = (type) => {
-        setProblems(addProblem(problems, type));
+        setProblems(prevProblems => {
+            const newProblems = addProblem(prevProblems, type);
+            customProblemRefs.current.push(React.createRef());
+            return newProblems;
+        });
     };
 
     const handleProblemChange = (index, field, value) => {
         const updatedProblems = updateProblem(problems, index, field, value);
         setProblems(updatedProblems);
 
-        if (field === 'pid' && updatedProblems[index].type === 'oj') {
-            fetchProblemTitle(updatedProblems[index].oj, value)
+        if (field === 'pid' && updatedProblems[index].type === 'CF') {
+            fetchProblemTitle(updatedProblems[index].type, value)
                 .then(title => {
                     const updatedProblemsWithTitle = updateProblem(updatedProblems, index, 'title', title);
                     setProblems(updatedProblemsWithTitle);
@@ -57,7 +62,6 @@ const CreateContestPage = () => {
                 });
         }
 
-        // If no PID is given, show "No such problem exists!"
         if (field === 'pid' && !value) {
             const updatedProblemsWithNoPid = updateProblem(updatedProblems, index, 'title', 'No such problem exists!');
             setProblems(updatedProblemsWithNoPid);
@@ -66,10 +70,14 @@ const CreateContestPage = () => {
 
     const handleDeleteProblem = (index) => {
         setProblems(deleteProblem(problems, index));
+        customProblemRefs.current.splice(index, 1);
     };
 
     const handleMoveProblem = (fromIndex, toIndex) => {
         setProblems(moveProblem(problems, fromIndex, toIndex));
+        const temp = customProblemRefs.current[fromIndex];
+        customProblemRefs.current[fromIndex] = customProblemRefs.current[toIndex];
+        customProblemRefs.current[toIndex] = temp;
     };
 
     const validateForm = () => {
@@ -81,15 +89,15 @@ const CreateContestPage = () => {
         if (problems.length === 0) newErrors.problems = 'At least one problem is required';
 
         problems.forEach((problem, index) => {
-            if (problem.type === 'oj') {
+            if (problem.type === 'CF') {
                 if (!problem.pid) newErrors[`problem-${index}-pid`] = 'Problem number is required';
                 if (!problem.oj) newErrors[`problem-${index}-oj`] = 'OJ is required';
             }
-            if (problem.type === 'custom') {
-                if (!problem.title) newErrors[`problem-${index}-title`] = 'Title is required';
-                if (!problem.statement) newErrors[`problem-${index}-statement`] = 'Statement is required';
-                if (!problem.constraints) newErrors[`problem-${index}-constraints`] = 'Constraints are required';
-                if (!problem.testCase) newErrors[`problem-${index}-testCase`] = 'Test case is required';
+            if (problem.type === 'CS') {
+                const ref = customProblemRefs.current[index];
+                if (ref && !ref.current.validateFields()) {
+                    newErrors[`problem-${index}`] = 'Please correct the errors in the problem form';
+                }
             }
         });
 
@@ -103,13 +111,24 @@ const CreateContestPage = () => {
 
         setIsSubmitting(true);
 
-        // Prepare problems data for the request
-        const requestData = problems.map(problem => ({
-            type: problem.oj,
-            pid: problem.pid
-        }));
+        const requestData = problems.map((problem) => {
+            if (problem.type === 'CF') {
+                return {
+                    type: problem.type,
+                    pid: problem.pid,
+                };
+            } else if (problem.type === 'CS') {
+                return {
+                    type: problem.type,
+                    title: problem.title,
+                    problemDescription: problem.problemDescription,
+                };
+            }
+            return problem;
+        });
 
         const requestTime = new Date().toISOString();
+        console.log(requestData);
 
         try {
             await axios.post('http://localhost:8000/api/requested_contest/create', {
@@ -120,11 +139,11 @@ const CreateContestPage = () => {
                 problems: requestData,
                 author: {
                     authorName: username,
-                    authorEmail: authorEmail
+                    authorEmail: authorEmail,
                 },
-                requestTime
+                requestTime,
             });
-            navigate('/contest'); // should navigate to contestant/contest-management
+            navigate('/contest');
         } catch (error) {
             console.error('Error creating contest:', error);
             setIsSubmitting(false);
@@ -172,18 +191,17 @@ const CreateContestPage = () => {
                 </div>
                 <div className="form-group">
                     <label>Problems</label>
-                    <button type="button" onClick={() => handleAddProblem('custom')}>
+                    <button type="button" onClick={() => handleAddProblem('CS')}>
                         Add Custom Problem
                     </button>
-                    <button type="button" onClick={() => handleAddProblem('oj')}>
+                    <button type="button" onClick={() => handleAddProblem('CF')}>
                         Add OJ Problem
                     </button>
                     {errors.problems && <span className="error">{errors.problems}</span>}
                     {problems.map((problem, index) => (
                         <div key={index} className="problem-entry">
                             <h3>Problem #{index + 1}</h3>
-                            {problem.type === 'oj' ? (
-                                // OJ problem form
+                            {problem.type === 'CF' ? (
                                 <>
                                     <select
                                         value={problem.oj}
@@ -191,7 +209,7 @@ const CreateContestPage = () => {
                                     >
                                         <option value="">Select OJ</option>
                                         <option value="CF">Codeforces</option>
-                                        <option value="CS">CodeChef</option>
+                                        <option value="CS">CodeSphere</option>
                                     </select>
                                     {errors[`problem-${index}-oj`] && <span className="error">{errors[`problem-${index}-oj`]}</span>}
                                     <input
@@ -214,10 +232,9 @@ const CreateContestPage = () => {
                                         readOnly
                                     />
                                 </>
-
                             ) : (
-                                // Custom problem form
                                 <CustomProblemForm
+                                    ref={customProblemRefs.current[index]}
                                     problem={problem}
                                     index={index}
                                     onProblemChange={handleProblemChange}
@@ -226,7 +243,6 @@ const CreateContestPage = () => {
                                     onMoveProblem={handleMoveProblem}
                                 />
                             )}
-
                             <div className="problem-actions">
                                 <button type="button" onClick={() => handleMoveProblem(index, index - 1)}>↑</button>
                                 <button type="button" onClick={() => handleMoveProblem(index, index + 1)}>↓</button>

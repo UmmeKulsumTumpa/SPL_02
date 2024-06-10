@@ -45,10 +45,17 @@ const ManageContest = ({ admin }) => {
                 approvalTime: new Date()
             };
 
-            await axios.delete(`http://localhost:8000/api/requested_contest/delete/${contest.cid}`);
-            await axios.post('http://localhost:8000/api/approved_contest/create', approvedContest);
-            fetchRequestedContests();
-            fetchApprovedContests();
+            const [createResponse, deleteResponse] = await Promise.all([
+                axios.post('http://localhost:8000/api/approved_contest/create', approvedContest),
+                axios.delete(`http://localhost:8000/api/requested_contest/delete/${contest.cid}`)
+            ]);
+
+            if (createResponse.status === 201 && deleteResponse.status === 200) {
+                fetchRequestedContests();
+                fetchApprovedContests();
+            } else {
+                showError('Error approving contest');
+            }
         } catch (error) {
             showError('Error approving contest');
         } finally {

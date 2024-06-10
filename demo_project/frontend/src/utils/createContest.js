@@ -1,8 +1,7 @@
-// ../utils/createContest.js
 import axios from 'axios';
 
-export const createEmptyProblem = (type = 'custom') => ({
-    type, // 'custom' or 'oj'
+export const createEmptyProblem = (type) => ({
+    type, // Set type to 'CS' for custom problems
     oj: '',
     pid: '',
     title: '',
@@ -10,7 +9,8 @@ export const createEmptyProblem = (type = 'custom') => ({
     constraints: '',
     testCase: '',
     alias: '',
-    weight: ''
+    weight: '',
+    problemDescription: ''
 });
 
 export const addProblem = (problems, type) => [

@@ -5,7 +5,7 @@ let contestCounter = 0;
 
 const getNextContestId = async () => {
     const highestContest = await ApprovedContest.findOne().sort({ acid: -1 });
-    contestCounter = highestContest ? parseInt(highestContest.acid.slice(2)) : 0; // Adjust slice to match 'AC' prefix
+    contestCounter = highestContest ? parseInt(highestContest.acid.slice(2)) : 0;
     return `CS${++contestCounter}`;
 };
 
@@ -35,12 +35,23 @@ const getApprovedContestById = async (req, res) => {
 // Create a new approved contest
 const createApprovedContest = async (req, res) => {
     try {
-        const {title, description, startTime, endTime, problems, author, approvedBy, approvalTime } = req.body;
+        const { title, description, startTime, endTime, problems, author, approvedBy, approvalTime } = req.body;
         const acid = await getNextContestId();
 
         if (!title || !description || !startTime || !endTime || !problems || !author || !approvedBy || !approvalTime) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
+
+        const formattedProblems = problems.map(problem => {
+            const formattedProblem = { type: problem.type, pid: problem.pid, title: problem.title };
+            if (problem.statement) formattedProblem.statement = problem.statement;
+            if (problem.constraints) formattedProblem.constraints = problem.constraints;
+            if (problem.testCase) formattedProblem.testCase = problem.testCase;
+            if (problem.description) {
+                formattedProblem.description = { data: problem.description.data, contentType: problem.description.contentType };
+            }
+            return formattedProblem;
+        });
 
         const newApprovedContest = new ApprovedContest({
             acid,
@@ -48,7 +59,7 @@ const createApprovedContest = async (req, res) => {
             description,
             startTime: new Date(startTime),
             endTime: new Date(endTime),
-            problems,
+            problems: formattedProblems,
             author,
             approvedBy,
             approvalTime: new Date(approvalTime)
@@ -68,22 +79,16 @@ const updateApprovedContest = async (req, res) => {
         const updatedFields = { title, description, startTime: new Date(startTime), endTime: new Date(endTime), author, approvedBy, approvalTime: new Date(approvalTime) };
 
         if (problems) {
-            const problemDocs = await Promise.all(problems.map(async (prob, index) => {
-                if (prob.pid) {
-                    const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
-                    return {
-                        pid: prob.pid,
-                        title: problemDetails.title,
-                        statement: JSON.stringify(problemDetails.statement),
-                        constraints: `Time Limit: ${problemDetails.timeLimit}\nMemory Limit: ${problemDetails.memoryLimit}\n${problemDetails.input}\n${problemDetails.output}`,
-                        testCase: JSON.stringify(problemDetails.statement.sampleTests)
-                    };
-                } else if (prob._id) {
-                    return { ...prob };
-                } else {
-                    return { ...prob, pid: `${req.params.id}_P${index + 1}` };
+            const problemDocs = problems.map(problem => {
+                const problemDoc = { type: problem.type, pid: problem.pid, title: problem.title };
+                if (problem.statement) problemDoc.statement = problem.statement;
+                if (problem.constraints) problemDoc.constraints = problem.constraints;
+                if (problem.testCase) problemDoc.testCase = problem.testCase;
+                if (problem.description) {
+                    problemDoc.description = { data: problem.description.data, contentType: problem.description.contentType };
                 }
-            }));
+                return problemDoc;
+            });
             updatedFields.problems = problemDocs;
         }
 
