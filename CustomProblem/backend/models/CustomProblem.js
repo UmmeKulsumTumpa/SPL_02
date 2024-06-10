@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-const tempProblemSchema = new mongoose.Schema({
-  problemId: { type: String, required: true },
+const customProblemSchema = new mongoose.Schema({
+  problemId: { type: String, required: true, unique: true },
   problemTitle: { type: String, required: true },
   timeLimit: { type: String, required: true },
   memoryLimit: { type: String, required: true },
@@ -10,6 +10,6 @@ const tempProblemSchema = new mongoose.Schema({
   outputFile: { type: Buffer, contentType: String },
 });
 
-const TempProblem = mongoose.model('TempProblem', tempProblemSchema);
+const CustomProblem = mongoose.model('CustomProblem', customProblemSchema);
 
-module.exports = TempProblem;
+module.exports = CustomProblem;

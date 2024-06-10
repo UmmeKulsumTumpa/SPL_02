@@ -1,23 +1,34 @@
 const express = require('express');
-const cors = require('cors');
 const mongoose = require('mongoose');
-const addProblemRouter = require('./routes/addProblem');
-const submitSolutionRouter = require('./routes/submitSolution');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const customProblemRoutes = require('./routes/custom_problem');
+const customSolutionRoutes = require('./routes/custom_solution');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://bsse1307:bsse1307@cluster0.nqcakei.mongodb.net/codesphere?retryWrites=true&w=majority&appName=Cluster0')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Error connecting to MongoDB:', err));
-
+// Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/addProblem', addProblemRouter);
-app.use('/submitSolution', submitSolutionRouter);
+// MongoDB connection
+const dbURI = 'mongodb+srv://bsse1307:bsse1307@cluster0.nqcakei.mongodb.net/codesphere?retryWrites=true&w=majority&appName=Cluster0';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected...'))
+    .catch(err => console.log('Error connecting to MongoDB:', err));
 
-const PORT = process.env.PORT || 3001;
+// Routes
+app.use('/api/custom-problems', customProblemRoutes);
+app.use('/api/custom-solutions', customSolutionRoutes);
+
+// Default route
+app.get('/', (req, res) => {
+    res.send('Welcome to the Custom Problem Solver API');
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
