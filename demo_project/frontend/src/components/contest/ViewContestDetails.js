@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Leaderboard from './LeaderBoard';
+import ProblemDetails from './ProblemDetails';
 import './styles/ViewContestDetails.css';
 
 const ViewContestDetails = () => {
     const { contestId } = useParams();
     const [contestDetails, setContestDetails] = useState(null);
     const [activeTab, setActiveTab] = useState('overview');
+    const [selectedProblem, setSelectedProblem] = useState(null);
 
     useEffect(() => {
         const fetchContestDetails = async () => {
@@ -20,10 +23,6 @@ const ViewContestDetails = () => {
 
         fetchContestDetails();
     }, [contestId]);
-
-    if (!contestDetails) {
-        return <div>Loading...</div>;
-    }
 
     const formatDateTime = (dateTime) => {
         const date = new Date(dateTime);
@@ -42,7 +41,18 @@ const ViewContestDetails = () => {
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
+        setSelectedProblem(null); // Reset selected problem when switching tabs
     };
+
+    const handleProblemClick = (problem) => {
+        console.log(problem);
+        setSelectedProblem(problem);
+        setActiveTab('problemDetails');
+    };
+
+    if (!contestDetails) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="view-contest-details__container">
@@ -80,29 +90,33 @@ const ViewContestDetails = () => {
                     Rank
                 </button>
             </div>
-            {activeTab === 'overview' && (
-                <table className="view-contest-details__problems">
-                    <thead>
-                        <tr>
-                            <th>Serial Number</th>
-                            <th>Problem Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {contestDetails.problems.map((problem, index) => (
-                            <tr key={problem.pid}>
-                                <td>{index + 1}</td>
-                                <td>{problem.title}</td>
+            {activeTab === 'overview' && !selectedProblem && (
+                <div className="view-contest-details__problems-container">
+                    <table className="view-contest-details__problems">
+                        <thead>
+                            <tr>
+                                <th>Serial Number</th>
+                                <th>Problem Name</th>
+                                <th>Alias Name</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-            {activeTab === 'rank' && (
-                <div className="view-contest-details__rank">
-                    {/* Rank details will go here */}
-                    Rank details not implemented yet.
+                        </thead>
+                        <tbody>
+                            {contestDetails.problems.map((problem, index) => (
+                                <tr key={problem.pid} onClick={() => handleProblemClick(problem)}>
+                                    <td>{index + 1}</td>
+                                    <td>{problem.title}</td>
+                                    <td>{problem.aliasName}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
+            )}
+            {activeTab === 'rank' && !selectedProblem && (
+                <Leaderboard contestId={contestId} />
+            )}
+            {activeTab === 'problemDetails' && selectedProblem && (
+                <ProblemDetails problem={selectedProblem} contestId={contestId} viewType="previous" />
             )}
         </div>
     );

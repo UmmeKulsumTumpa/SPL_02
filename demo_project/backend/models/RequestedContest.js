@@ -36,7 +36,8 @@ const baseProblemSchema = new Schema({
     pid: { type: String },
     statement: { type: String },
     constraints: { type: String },
-    testCase: { type: String }
+    testCase: { type: String },
+    aliasName: { type: String }
 });
 
 const contestSchema = new Schema({

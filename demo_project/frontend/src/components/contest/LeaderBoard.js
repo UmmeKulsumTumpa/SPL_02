@@ -5,25 +5,39 @@ import './styles/LeaderBoard.css';
 const LeaderBoard = ({ contestId }) => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [problems, setProblems] = useState([]);
+    const [contestEnded, setContestEnded] = useState(false);
 
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/api/approved_contest/${contestId}`);
-                setLeaderboard(response.data.leaderboard);
-                setProblems(response.data.problems);
+                const contestDetails = response.data;
+                const endTime = new Date(contestDetails.endTime);
+                const currentTime = new Date();
+
+                if (currentTime > endTime) {
+                    setContestEnded(true);
+                }
+
+                setLeaderboard(contestDetails.leaderboard);
+                setProblems(contestDetails.problems);
             } catch (error) {
                 console.error('Error fetching leaderboard:', error);
             }
         };
 
         fetchLeaderboard();
-    }, [contestId]);
+        const intervalId = setInterval(() => {
+            if (!contestEnded) {
+                fetchLeaderboard();
+            }
+        }, 10000);
+
+        return () => clearInterval(intervalId);
+    }, [contestId, contestEnded]);
 
     const renderProblemStatus = (submittedProblems, problemId) => {
-        console.log(submittedProblems, problemId);
         const submissionsForProblem = submittedProblems.filter(p => p.pid === problemId);
-
         if (submissionsForProblem.length === 0) {
             return <td></td>;
         }
@@ -32,8 +46,6 @@ const LeaderBoard = ({ contestId }) => {
             new Date(b.result[0].creationTimeSeconds * 1000) - new Date(a.result[0].creationTimeSeconds * 1000)
         )[0];
 
-        console.log(latestSubmission);
-
         if (latestSubmission && latestSubmission.result && latestSubmission.result[0] && latestSubmission.result[0].verdict === 'OK') {
             return <td className="problem-solved">✔</td>;
         } else {
@@ -41,10 +53,39 @@ const LeaderBoard = ({ contestId }) => {
         }
     };
 
+    const calculateRankings = (leaderboard) => {
+        return leaderboard.map(user => {
+            const solvedProblems = user.submittedProblems.reduce((acc, curr) => {
+                const problemId = curr.pid;
+                if (!acc[problemId] && curr.result && curr.result[0].verdict === 'OK') {
+                    acc[problemId] = curr.result[0].creationTimeSeconds;
+                }
+                return acc;
+            }, {});
+
+            const totalSolved = Object.keys(solvedProblems).length;
+            const firstCorrectSubmissionTime = Math.min(...Object.values(solvedProblems));
+
+            return {
+                ...user,
+                totalSolved,
+                firstCorrectSubmissionTime,
+            };
+        }).sort((a, b) => {
+            if (b.totalSolved === a.totalSolved) {
+                return a.firstCorrectSubmissionTime - b.firstCorrectSubmissionTime;
+            }
+            return b.totalSolved - a.totalSolved;
+        });
+    };
+
+    const rankedLeaderboard = calculateRankings(leaderboard);
+
     return (
         <table className="leaderboard">
             <thead>
                 <tr>
+                    <th>Rank</th>
                     <th>Participant</th>
                     {problems.map(problem => (
                         <th key={problem.pid}>{problem.title}</th>
@@ -52,8 +93,9 @@ const LeaderBoard = ({ contestId }) => {
                 </tr>
             </thead>
             <tbody>
-                {leaderboard.map((entry, index) => (
+                {rankedLeaderboard.map((entry, index) => (
                     <tr key={index}>
+                        <td>{index + 1}</td>
                         <td>{entry.username}</td>
                         {problems.map(problem => (
                             <td key={problem.pid}>{renderProblemStatus(entry.submittedProblems, problem.pid)}</td>

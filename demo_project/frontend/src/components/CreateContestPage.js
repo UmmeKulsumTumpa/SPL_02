@@ -112,17 +112,22 @@ const CreateContestPage = () => {
         setIsSubmitting(true);
 
         const requestData = problems.map((problem) => {
+            console.log(problem);
             if (problem.type === 'CF') {
-                return {
+                const problemData = {
                     type: problem.type,
                     pid: problem.pid,
                 };
+                if (problem.aliasName) problemData.aliasName = problem.aliasName;
+                return problemData;
             } else if (problem.type === 'CS') {
-                return {
+                const problemData = {
                     type: problem.type,
                     title: problem.title,
                     problemDescription: problem.problemDescription,
                 };
+                if (problem.aliasName) problemData.aliasName = problem.aliasName;
+                return problemData;
             }
             return problem;
         });
@@ -221,9 +226,9 @@ const CreateContestPage = () => {
                                     {errors[`problem-${index}-pid`] && <span className="error">{errors[`problem-${index}-pid`]}</span>}
                                     <input
                                         type="text"
-                                        placeholder="Alias"
-                                        value={problem.alias}
-                                        onChange={(e) => handleProblemChange(index, 'alias', e.target.value)}
+                                        placeholder="Alias Name"
+                                        value={problem.aliasName}
+                                        onChange={(e) => handleProblemChange(index, 'aliasName', e.target.value)}
                                     />
                                     <input
                                         type="text"

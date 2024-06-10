@@ -8,7 +8,8 @@ const approvedProblemSchema = new Schema({
     statement: { type: String },
     constraints: { type: String },
     testCase: { type: String },
-    description: { type: Buffer, contentType: String }
+    description: { type: Buffer, contentType: String },
+    aliasName: {type: String},
 });
 
 const contestSubmittedProblem = new Schema({

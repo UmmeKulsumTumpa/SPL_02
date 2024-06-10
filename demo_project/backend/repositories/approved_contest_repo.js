@@ -47,6 +47,7 @@ const createApprovedContest = async (req, res) => {
             if (problem.description) {
                 formattedProblem.description = { data: problem.description.data, contentType: problem.description.contentType };
             }
+            if(problem.aliasName) formattedProblem.aliasName = problem.aliasName;
             return formattedProblem;
         });
 

@@ -91,7 +91,7 @@ const ParticipateContest = () => {
                 <div className="participate-contest__progress-bar">
                     <div className="participate-contest__progress" style={{ width: `${progress}%` }}></div>
                 </div>
-                <span className="participate-contest__status">In Progress</span>
+                <span className="participate-contest__status">Running</span>
             </div>
             <div className="participate-contest__info">
                 <h1>{contestDetails.title}</h1>
@@ -125,7 +125,7 @@ const ParticipateContest = () => {
                             {contestDetails.problems.map((problem, index) => (
                                 <tr key={problem.pid} onClick={() => handleProblemClick(problem)}>
                                     <td>{index + 1}</td>
-                                    <td>{problem.title}</td>
+                                    <td>{problem.aliasName}</td>
                                 </tr>
                             ))}
                         </tbody>
