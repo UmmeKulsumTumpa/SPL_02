@@ -18,6 +18,12 @@ mongoose.connect('mongodb+srv://bsse1307:bsse1307@cluster0.nqcakei.mongodb.net/c
 // Middleware
 app.use(express.json());
 
+// app.use((req, res, next) => {
+// 	console.log(`Received request for: ${req.path}`);
+// 	next();
+//   });
+  
+
 // Import routes
 const problemsRouter = require('./routes/problem');
 const solutionRouter = require('./routes/solution');

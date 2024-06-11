@@ -11,13 +11,15 @@ const getNextContestId = async () => {
 
 const fetchProblemDetails = async (type, pid) => {
     console.log(pid);
+    const formattedPid = type === 'CS' ? pid.replace(/\//g, '%2F') : pid;
     const url = type === 'CF'
-        ? `http://localhost:8000/api/problem/retrieve/${type}/${pid}`
-        : `http://localhost:8000/api/add_custom_problem/get_problem/${pid}`;
+        ? `http://localhost:8000/api/problem/retrieve/${type}/${formattedPid}`
+        : `http://localhost:8000/api/add_custom_problem/get_problem/${formattedPid}`;
     const response = await axios.get(url);
     console.log(response.data);
     return response.data;
 };
+
 
 // Get all contests
 const getAllContests = async (req, res) => {
