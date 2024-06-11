@@ -20,18 +20,7 @@ router.post('/', upload.single('solutionFile'), async (req, res) => {
         res.json(result);
     } catch (error) {
         console.error('Error submitting solution:', error);
-        if (error.response) {
-            console.error('Error response data:', error.response.data);
-            console.error('Error response status:', error.response.status);
-            console.error('Error response headers:', error.response.headers);
-            res.status(error.response.status).json({ error: 'Piston API error', details: error.response.data });
-        } else if (error.request) {
-            console.error('Error request data:', error.request);
-            res.status(500).json({ error: 'No response from Piston API', details: error.message });
-        } else {
-            console.error('Error message:', error.message);
-            res.status(500).json({ error: 'Server error', details: error.message });
-        }
+        res.status(500).json({ error: 'Server error', details: error.message });
     }
 });
 
