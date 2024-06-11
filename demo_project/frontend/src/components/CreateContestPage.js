@@ -22,6 +22,7 @@ const CreateContestPage = () => {
     const [errors, setErrors] = useState({});
     const [authorEmail, setAuthorEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const customProblemRefs = useRef([]);
@@ -33,6 +34,7 @@ const CreateContestPage = () => {
                 setAuthorEmail(response.data.email);
             } catch (error) {
                 console.error('Error fetching author email:', error);
+                setErrorMessage('Error fetching author email');
             }
         };
         fetchAuthorEmail();
@@ -59,6 +61,7 @@ const CreateContestPage = () => {
                 .catch(error => {
                     const updatedProblemsWithError = updateProblem(updatedProblems, index, 'title', 'There might occurred some error');
                     setProblems(updatedProblemsWithError);
+                    setErrorMessage('Error fetching problem title');
                 });
         }
 
@@ -92,6 +95,7 @@ const CreateContestPage = () => {
         if (!description) newErrors.description = 'Description is required';
         if (!startTime) newErrors.startTime = 'Start time is required';
         if (!endTime) newErrors.endTime = 'End time is required';
+        if (new Date(startTime) >= new Date(endTime)) newErrors.endTime = 'End time must be greater than start time';
         if (problems.length === 0) newErrors.problems = 'At least one problem is required';
 
         problems.forEach((problem, index) => {
@@ -150,8 +154,6 @@ const CreateContestPage = () => {
 
         const requestTime = new Date().toISOString();
 
-        console.log(requestData);
-
         try {
             await axios.post('http://localhost:8000/api/requested_contest/create', {
                 title,
@@ -169,7 +171,12 @@ const CreateContestPage = () => {
         } catch (error) {
             console.error('Error creating contest:', error);
             setIsSubmitting(false);
+            setErrorMessage('Error creating contest');
         }
+    };
+
+    const handleCloseError = () => {
+        setErrorMessage('');
     };
 
     return (
@@ -274,6 +281,14 @@ const CreateContestPage = () => {
                 </div>
                 <button type="submit" disabled={isSubmitting}>Create Contest</button>
             </form>
+            {errorMessage && (
+                <div className="create-contest-error-dialog">
+                    <div className="create-contest-error-content">
+                        <span>{errorMessage}</span>
+                        <button onClick={handleCloseError}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
