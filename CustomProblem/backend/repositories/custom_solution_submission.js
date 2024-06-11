@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { execFile } = require('child_process');
+const { execFile, spawn } = require('child_process');
 const { promisify } = require('util');
 const Solution = require('../models/Solution');
 const CustomProblem = require('../models/CustomProblem');
@@ -51,8 +51,6 @@ const submitSolution = async (problemId, solutionFile) => {
     fs.writeFileSync(sourceFilePath, solutionCode);
     fs.writeFileSync(inputFilePath, problem.inputFile);
 
-    const compileCommand = `g++ ${sourceFilePath} -o ${sourceFilePath}.out`;
-
     try {
         await execFilePromise('g++', [sourceFilePath, '-o', `${sourceFilePath}.out`]);
     } catch (compileError) {
@@ -63,45 +61,85 @@ const submitSolution = async (problemId, solutionFile) => {
         fs.unlinkSync(inputFilePath);
         return {
             verdict: newSolution.verdict,
-            output: compileError.stderr
         };
     }
 
     const startTime = Date.now();
     let execTime = 0;
-    let output = '';
-    const hardTimeLimit = 5; // Hard limit in seconds
+    const hardTimeLimit = 3; // Hard limit in seconds
+    const softTimeLimit = parseLimit(problem.timeLimit); // Time limit from database
 
     const runPromise = new Promise((resolve, reject) => {
-        const child = execFile(`${sourceFilePath}.out`, {
+        const child = spawn(`${sourceFilePath}.out`, [], {
             stdio: ['pipe', 'pipe', 'pipe'],
-            timeout: hardTimeLimit * 1000
-        }, (error, stdout, stderr) => {
-            execTime = (Date.now() - startTime) / 1000;
-            if (error) {
-                if (error.killed || error.signal === 'SIGKILL') {
-                    reject(new Error('Time Limit Exceeded'));
-                } else {
-                    reject(new Error(stderr || 'Runtime Error'));
-                }
-            } else {
-                resolve(stdout);
+        });
+
+        // Track memory usage
+        let maxMemoryUsageMB = 0;
+        let stdoutData = '';
+        let stderrData = '';
+
+        child.stdout.on('data', (data) => {
+            stdoutData += data.toString();
+            const memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024; // Convert to MB
+            if (memoryUsage > maxMemoryUsageMB) {
+                maxMemoryUsageMB = memoryUsage;
             }
         });
 
+        child.stderr.on('data', (data) => {
+            stderrData += data.toString();
+        });
+
         // Write input to the child process
-        child.stdin.write(fs.readFileSync(inputFilePath));
+        const input = fs.readFileSync(inputFilePath);
+        child.stdin.write(input);
         child.stdin.end();
+
+        // Listen for process completion
+        child.on('close', (code) => {
+            execTime = (Date.now() - startTime) / 1000;
+            if (code === 0) {
+                // Execution successful
+                resolve({ output: stdoutData, maxMemoryUsageMB });
+            } else {
+                // Execution failed
+                reject({ message: 'Runtime Error', maxMemoryUsageMB, stderr: stderrData });
+            }
+        });
+
+        // Explicit timeout handling
+        const timeoutId = setTimeout(() => {
+            child.kill('SIGTERM');
+            reject({ message: 'Time Limit Exceeded', maxMemoryUsageMB });
+        }, hardTimeLimit * 1000);
+
+        // Clear timeout if process finishes early
+        child.on('exit', () => {
+            clearTimeout(timeoutId);
+        });
+
+        // Terminate the process if memory limit is exceeded
+        const memoryLimitMB = parseLimit(problem.memoryLimit);
+        const memoryCheckInterval = setInterval(() => {
+            const memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024; // Convert to MB
+            if (memoryUsage > memoryLimitMB) {
+                child.kill('SIGTERM');
+                clearInterval(memoryCheckInterval);
+                reject({ message: 'Memory Limit Exceeded', maxMemoryUsageMB });
+            }
+        }, 1000); // Check every second
     });
 
     try {
-        output = await runPromise;
-        output = output.trim().split('\n');
+        const { output: runOutput, maxMemoryUsageMB } = await runPromise;
+        const output = runOutput.trim().split('\n');
         const expectedOutput = problem.outputFile.toString('utf-8').trim().split('\n');
 
-        const problemTimeLimit = parseLimit(problem.timeLimit);
-        if (execTime > problemTimeLimit) {
+        if (execTime > softTimeLimit) {
             newSolution.verdict = 'Time Limit Exceeded';
+        } else if (maxMemoryUsageMB > parseLimit(problem.memoryLimit)) {
+            newSolution.verdict = 'Memory Limit Exceeded';
         } else if (output.length !== expectedOutput.length || !output.every((val, index) => val === expectedOutput[index])) {
             newSolution.verdict = 'Wrong Answer';
         } else {
@@ -109,15 +147,24 @@ const submitSolution = async (problemId, solutionFile) => {
         }
 
         newSolution.execTime = execTime;
+        newSolution.maxMemoryUsageMB = maxMemoryUsageMB;
+        newSolution.output = output;
     } catch (runError) {
-        if (runError.message === 'Time Limit Exceeded') {
-            console.error(`Execution timed out: ${runError.message}`);
-            newSolution.verdict = 'Time Limit Exceeded';
-        } else {
+        if (runError.message === 'Memory Limit Exceeded') {
+            console.error(`Execution memory limit exceeded: ${runError.message}`);
+            newSolution.verdict = 'Memory Limit Exceeded';
+        } else if (runError.message === 'Runtime Error') {
             console.error(`Runtime error: ${runError.message}`);
             newSolution.verdict = 'Runtime Error';
-            output = runError.message;
+        } else if (runError.message === 'Time Limit Exceeded') {
+            console.error(`Time limit exceeded: ${runError.message}`);
+            newSolution.verdict = 'Time Limit Exceeded';
+        } else {
+            console.error(`Unknown error: ${runError.message}`);
+            newSolution.verdict = 'Unknown Error';
         }
+        newSolution.maxMemoryUsageMB = runError.maxMemoryUsageMB;
+        newSolution.output = runError.stderr ? runError.stderr.split('\n') : [];
     }
 
     await newSolution.save();
@@ -131,16 +178,9 @@ const submitSolution = async (problemId, solutionFile) => {
         console.error(`Error cleaning up files: ${err.message}`);
     }
 
-    if (newSolution.verdict === 'Accepted' || newSolution.verdict === 'Wrong Answer') {
-        return {
-            verdict: newSolution.verdict,
-            output
-        };
-    } else {
-        return {
-            verdict: newSolution.verdict
-        };
-    }
+    return {
+        verdict: newSolution.verdict,
+    };
 };
 
 module.exports = { submitSolution };
