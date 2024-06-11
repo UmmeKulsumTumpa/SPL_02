@@ -1,37 +1,49 @@
 const express = require('express');
 const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+const CustomProblem = require('../models/CustomProblem');
 const { submitSolution } = require('../repositories/custom_solution_submission');
+const Solution = require('../models/Solution');
 
 const router = express.Router();
-const upload = multer();
+const upload = multer({ dest: 'uploads/' });
 
-// POST route to submit solution
-router.post('/', upload.single('solutionFile'), async (req, res) => {
+router.post('/submit/:contestId/:username', upload.single('solutionFile'), async (req, res) => {
+    const { contestId, username } = req.params;
+    const { problemId: pid } = req.body;
+
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded.' });
+    }
+
+    const solutionCode = fs.readFileSync(req.file.path, 'utf8');
+    console.log('solution', solutionCode);
+
     try {
-        const { problemId } = req.body;
-        const solutionFile = req.file;
-
-        if (!solutionFile) {
-            return res.status(400).json({ error: 'Solution file is required' });
-        }
-
-        const result = await submitSolution(problemId, solutionFile);
-
+        console.log('before submitting');
+        const result = await submitSolution(pid, req.file, contestId, username); // Pass contestId and username
         res.json(result);
     } catch (error) {
-        console.error('Error submitting solution:', error);
-        if (error.response) {
-            console.error('Error response data:', error.response.data);
-            console.error('Error response status:', error.response.status);
-            console.error('Error response headers:', error.response.headers);
-            res.status(error.response.status).json({ error: 'Piston API error', details: error.response.data });
-        } else if (error.request) {
-            console.error('Error request data:', error.request);
-            res.status(500).json({ error: 'No response from Piston API', details: error.message });
-        } else {
-            console.error('Error message:', error.message);
-            res.status(500).json({ error: 'Server error', details: error.message });
+        res.status(500).json({ error: error.message });
+    } finally {
+        // Clean up uploaded file
+        fs.unlinkSync(req.file.path);
+    }
+});
+
+// Added route to retrieve a solution by sid
+router.get('/solution/:sid', async (req, res) => {
+    const { sid } = req.params;
+
+    try {
+        const solution = await Solution.findOne({ sid });
+        if (!solution) {
+            return res.status(404).json({ error: 'Solution not found.' });
         }
+        res.json(solution);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 

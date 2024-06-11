@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import SubmitSolution from './SubmitSolution';
+import axios from "axios";
+import CustomSubmitSolution from './CustomSubmitSolution';
 import './styles/ProblemDetails.css';
 
 function initializeState() {
@@ -18,6 +19,7 @@ function initializeState() {
         memoryConsumedBytes: '',
         points: '',
         showSubmitModal: false,
+        error: null,
     };
 }
 
@@ -33,7 +35,8 @@ function CustomProblemDetails({ problem, username, contestId }) {
 
     if (!problem) return null;
 
-    const { pid, title, testCase, constraints, problemDescription, testCases } = problem;
+    const { pid, title, testCase, constraints, problemDescription } = problem;
+    // console.log(problem);
 
     // Check if testCase is a stringified JSON array and parse it
     const testCasesArray = JSON.parse(testCase);
@@ -44,52 +47,51 @@ function CustomProblemDetails({ problem, username, contestId }) {
     };
 
     // Function to handle submission of solution
-    const handleSubmit = (solution) => {
-        // Send the solution to the backend
-        fetch(`http://localhost:8000/api/approved_contest/submit/${contestId}/${username}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                type: 'CS',
-                pid: problem.pid,
-                solution: solution,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
+    const handleSubmit = (file) => {
+        const formData = new FormData();
+        formData.append('solutionFile', file);
+        formData.append('problemId', pid);
+
+        // Log the form data for debugging
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        axios
+            .post(`http://localhost:8000/api/custom_solution_submit/submit/${contestId}/${username}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then((response) => {
+                console.log('response from submission: ', response.data);
                 // Check if the response contains the expected data
-                if (data[0] && data[0].verdict) {
+                if (response.data.verdict) {
                     // Update state with submitted solution and verdict
                     setState((prevState) => ({
                         ...prevState,
-                        verdict: data[0].verdict,
-                        id: data[0].id,
-                        contestId: data[0].contestId,
-                        creationTimeSeconds: data[0].creationTimeSeconds,
-                        relativeTimeSeconds: data[0].relativeTimeSeconds,
-                        problem: data[0].problem,
-                        author: data[0].author,
-                        programmingLanguage: data[0].programmingLanguage,
-                        testset: data[0].testset,
-                        passedTestCount: data[0].passedTestCount,
-                        timeConsumedMillis: data[0].timeConsumedMillis,
-                        memoryConsumedBytes: data[0].memoryConsumedBytes,
-                        points: data[0].points,
+                        verdict: response.data.verdict,
+                        id: response.data.sid,
                         showSubmitModal: false,
                     }));
                 } else {
-                    console.error('Invalid response from the server:', data);
+                    setState((prevState) => ({
+                        ...prevState,
+                        error: 'Invalid response from the server.',
+                    }));
                 }
             })
-            .catch((error) => console.error('Error submitting solution:', error));
+            .catch((error) => {
+                setState((prevState) => ({
+                    ...prevState,
+                    error: error.message,
+                }));
+            });
     };
 
     return (
         <div className="problem-details-container">
             <h2>{title}</h2>
-            {/* <p>Problem ID: {pid}</p> */}
 
             {/* Constraints Section */}
             <h3>Constraints:</h3>
@@ -164,23 +166,32 @@ function CustomProblemDetails({ problem, username, contestId }) {
 
             {/* Modal for submitting solution */}
             {state.showSubmitModal && (
-                <SubmitSolution
+                <CustomSubmitSolution
                     onSubmit={handleSubmit}
                     onClose={() => setState((prevState) => ({ ...prevState, showSubmitModal: false }))} />
-            )}
-
-            {/* Displaying the submitted solution and verdict */}
-            {state.id !== '' && (
-                <div>
-                    <h2>Submission Result:</h2>
-                    <h3>Verdict:</h3>
-                    <p>{state.verdict}</p>
-                    <h3>ID:</h3>
-                    <p>{state.id}</p>
-                </div>
-            )}
-        </div>
-    );
-}
-
-export default CustomProblemDetails;
+                )}
+    
+                {/* Displaying the submitted solution and verdict */}
+                {state.id !== '' && (
+                    <div>
+                        <h2>Submission Result:</h2>
+                        <h3>Verdict:</h3>
+                        <p>{state.verdict}</p>
+                        <h3>ID:</h3>
+                        <p>{state.id}</p>
+                    </div>
+                )}
+    
+                {/* Displaying errors */}
+                {state.error && (
+                    <div className="error-message">
+                        <h3>Error:</h3>
+                        <p>{state.error}</p>
+                    </div>
+                )}
+            </div>
+        );
+    }
+    
+    export default CustomProblemDetails;
+    
