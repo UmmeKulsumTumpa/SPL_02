@@ -10,10 +10,12 @@ const getNextContestId = async () => {
 };
 
 const fetchProblemDetails = async (type, pid) => {
+    console.log(pid);
     const url = type === 'CF'
         ? `http://localhost:8000/api/problem/retrieve/${type}/${pid}`
-        : `http://localhost:8000/api/add_custom_problem/get/${pid}`;
+        : `http://localhost:8000/api/add_custom_problem/get_problem/${pid}`;
     const response = await axios.get(url);
+    console.log(response.data);
     return response.data;
 };
 
@@ -53,6 +55,7 @@ const createContest = async (req, res) => {
 
         const problemDocs = await Promise.all(problems.map(async (prob, index) => {
             const problemDetails = await fetchProblemDetails(prob.type, prob.pid);
+            console.log(problemDetails);
             if (prob.type === 'CF') {
                 const problemDoc = {
                     type: prob.type,
@@ -70,9 +73,12 @@ const createContest = async (req, res) => {
                     pid: `${prob.pid}`,
                     title: problemDetails.problemTitle,
                     problemDescription: problemDetails.problemDescription,
-                    testCases: problemDetails.testCases,
                     constraints: `Time Limit: ${problemDetails.timeLimit}\nMemory Limit: ${problemDetails.memoryLimit}`,
-                    testCase: JSON.stringify(problemDetails.testCases)
+                    testCase: JSON.stringify(problemDetails.testCases),
+                    inputFile: problemDetails.inputFile,
+                    inputFileContentType: problemDetails.inputFileContentType,
+                    outputFile: problemDetails.outputFile,
+                    outputFileContentType: problemDetails.outputFileContentType,
                 };
                 if (prob.aliasName) problemDoc.aliasName = prob.aliasName;
                 return problemDoc;

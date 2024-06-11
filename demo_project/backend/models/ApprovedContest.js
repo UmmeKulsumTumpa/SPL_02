@@ -1,15 +1,27 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const testCaseSchema = new mongoose.Schema({
+    input: { type: String, required: true },
+    output: { type: String, required: true },
+  });
+
 const approvedProblemSchema = new Schema({
     type: { type: String, required: true },
     pid: { type: String },
     title: { type: String, required: true },
-    statement: { type: String },
-    constraints: { type: String },
-    testCase: { type: String },
-    description: { type: Buffer, contentType: String },
-    aliasName: {type: String},
+    statement: { type: String }, // only cf
+    constraints: { type: String }, // only cf
+    testCase: { type: String }, // only cf
+    aliasName: { type: String },
+    timeLimit: { type: String },
+    memoryLimit: { type: String },
+    problemDescription: { type: String },
+    testCases: [testCaseSchema],
+    inputFile: { type: Buffer },
+    inputFileContentType: { type: String },
+    outputFile: { type: Buffer },
+    outputFileContentType: { type: String },
 });
 
 const contestSubmittedProblem = new Schema({

@@ -44,7 +44,9 @@ const createCustomProblem = async (req, res) => {
 const getCustomProblemById = async (req, res) => {
 	try {
 		const { problemId } = req.params;
-		const customProblem = await CustomProblem.findOne({ problemId });
+		console.log(problemId);
+		const customProblem = await CustomProblem.findOne({ problemId: problemId });
+		console.log(customProblem);
 
 		if (!customProblem) {
 			return res.status(404).json({ error: 'Problem not found' });

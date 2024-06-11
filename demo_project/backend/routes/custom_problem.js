@@ -12,10 +12,11 @@ router.post('/', upload.fields([
 ]), createCustomProblem);
 
 // Define the route for getting a custom problem by ID
-router.get('get_problem/:problemId', getCustomProblemById);
+router.get('/get_problem/:problemId', getCustomProblemById);
+
 
 // Define the route for updating a custom problem by ID
-router.put('update/:problemId', upload.fields([
+router.put('/update/:problemId', upload.fields([
   { name: 'inputFile' },
   { name: 'outputFile' },
 ]), updateCustomProblemById);
