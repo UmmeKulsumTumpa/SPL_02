@@ -8,6 +8,14 @@ const getNextContestId = async () => {
     return `CS${contestCount + 1}`;
 };
 
+// let reqcontestCounter = 0;
+
+// const getNextContestId = async () => {
+//     const highestContest = await ApprovedContest.findOne().sort({ acid: -1 });
+//     reqcontestCounter = highestContest ? parseInt(highestContest.acid.replace('CS', '')) : 0;
+//     return `CS${++reqcontestCounter}`;
+// };
+
 // Get all approved contests
 const getAllApprovedContests = async (req, res) => {
     try {

@@ -96,7 +96,7 @@ const ContestPage = () => {
                                 )}
                                 {status === 'previous' && (
                                     <td>
-                                        <button onClick={() => navigate(`/contest/${contest.acid}`)}>
+                                        <button onClick={() => navigate(`/view_contest/${contest.acid}/${username}`)}>
                                             View
                                         </button>
                                     </td>

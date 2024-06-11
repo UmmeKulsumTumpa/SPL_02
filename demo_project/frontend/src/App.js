@@ -19,6 +19,9 @@ import CreateContestPage from './components/CreateContestPage';
 import ParticipateContest from './components/contest/ParticipateContest';
 import CustomProblemDetails from './components/contest/CustomProblemDetails';
 import { AuthProvider } from './components/AuthContext';
+import Blog from './components/Blog/Blog';
+import BlogDetail from './components/Blog/BlogDetail';
+import WriteBlog from './components/Blog/WriteBlog';
 
 library.add(faHome, faFileAlt, faEnvelope, faBell, faMapMarkerAlt, faChartPie, faUser);
 
@@ -40,9 +43,12 @@ function App() {
                         <Route path="/admin/dashboard" element={<AdminDashboard />} />
                         <Route path="/contest" element={<ContestPage />} />
                         <Route path="/create-contest" element={<CreateContestPage />} />
-                        <Route path="/contest/:contestId" element={<ViewContestDetails />} />
+                        <Route path="/view_contest/:contestId/:username" element={<ViewContestDetails />} />
                         <Route path="/participate/:contestId/:username" element={<ParticipateContest/>} />
                         <Route path="/customProblemDetails/:contestId/:username/:problemId" component={CustomProblemDetails} />
+                        <Route path="/blog" element={<Blog />} />
+                        <Route path="/blog/:id" element={<BlogDetail />} />
+                        <Route path="/write-blog" element={<WriteBlog />} />
                     </Routes>
                     <Footer />
                 </div>

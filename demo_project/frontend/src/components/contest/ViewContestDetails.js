@@ -3,10 +3,11 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Leaderboard from './LeaderBoard';
 import ProblemDetails from './ProblemDetails';
+import CustomProblemDetails from './CustomProblemDetails';
 import './styles/ViewContestDetails.css';
 
 const ViewContestDetails = () => {
-    const { contestId } = useParams();
+    const { contestId, username } = useParams();
     const [contestDetails, setContestDetails] = useState(null);
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedProblem, setSelectedProblem] = useState(null);
@@ -47,7 +48,7 @@ const ViewContestDetails = () => {
     const handleProblemClick = (problem) => {
         console.log(problem);
         setSelectedProblem(problem);
-        setActiveTab('problemDetails');
+        setActiveTab(problem.type === 'CF' ? 'problemDetails' : 'customProblemDetails');
     };
 
     if (!contestDetails) {
@@ -117,6 +118,9 @@ const ViewContestDetails = () => {
             )}
             {activeTab === 'problemDetails' && selectedProblem && (
                 <ProblemDetails problem={selectedProblem} contestId={contestId} viewType="previous" />
+            )}
+            {activeTab === 'customProblemDetails' && selectedProblem?.type === 'CS' && (
+                <CustomProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
             )}
         </div>
     );

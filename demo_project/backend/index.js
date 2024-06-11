@@ -34,6 +34,7 @@ const requestedContestRouter = require('./routes/requested_contest');
 const approvedContestRouter = require('./routes/approved_contest');
 const addCustomProblemRouter = require('./routes/custom_problem');
 const submitCustomSolutionRouter = require('./routes/custom_solution');
+const blogRouter = require('./routes/blog'); // Add blog routes
 
 // Use routes
 app.use('/api/problem', problemsRouter);
@@ -45,6 +46,7 @@ app.use('/api/requested_contest', requestedContestRouter);
 app.use('/api/approved_contest', approvedContestRouter);
 app.use('/api/add_custom_problem', addCustomProblemRouter);
 app.use('/api/custom_solution_submit', submitCustomSolutionRouter);
+app.use('/api', blogRouter); // Use blog routes without JWT middleware
 
 // Start the server
 app.listen(PORT, () => {
