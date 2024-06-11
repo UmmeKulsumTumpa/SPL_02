@@ -38,7 +38,7 @@ const ContestDashboard = ({contestant}) => {
                     setContests(data);
                 } else if (activeTab === 'requested') {
                     const response = await axios.get('http://localhost:8000/api/requested_contest');
-                    const data = response.data.map(contest => ({
+                    const data = response.data.filter(contest => contest.author.authorName === username).map(contest => ({
                         contestId: contest.cid,
                         contestName: contest.title,
                         totalProblems: contest.problems.length

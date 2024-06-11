@@ -65,10 +65,14 @@
 }
 
 .registration-page .icon {
-    font-size: 2rem; /* Increase icon size */
+    font-size: 3rem; /* Increase icon size */
     margin-bottom: 10px; /* Space between icon and text */
     position: absolute;
-    top: -4.5rem; /* Adjust this value as needed */
+    top: -7.5rem; /* Adjust this value as needed */
     left: 50%;
     transform: translateX(-50%);
+	background: #ffffff;
+	color: hsl(209, 77%, 23%);
+	border-radius: 50%;
+    padding: 13px;
 }
