@@ -54,6 +54,7 @@ const SubmissionsView = ({ contestant }) => {
 
     return (
         <div className="submissions-view-container">
+            <h2 className='submissions-view-container username-title'>{username}&apos;s Submission History</h2>
             <table className="submissions-view-table">
                 <thead>
                     <tr>

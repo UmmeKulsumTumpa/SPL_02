@@ -94,14 +94,6 @@ const AdminDashboard = () => {
                     <FontAwesomeIcon icon={faEnvelope} className="admin-dashboard-icon" />
                     <span className="admin-dashboard-span">Blog</span>
                 </button>
-                <button className="admin-dashboard-button admin-dashboard-team-button" onClick={() => setActiveTab('team')}>
-                    <FontAwesomeIcon icon={faBell} className="admin-dashboard-icon" />
-                    <span className="admin-dashboard-span">Team</span>
-                </button>
-                <button className="admin-dashboard-button admin-dashboard-submissions-button" onClick={() => setActiveTab('submissions')}>
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="admin-dashboard-icon" />
-                    <span className="admin-dashboard-span">Submissions</span>
-                </button>
                 <button className="admin-dashboard-button admin-dashboard-contests-button" onClick={() => setActiveTab('contests')}>
                     <FontAwesomeIcon icon={faChartPie} className="admin-dashboard-icon" />
                     <span className="admin-dashboard-span">Manage Contest</span>

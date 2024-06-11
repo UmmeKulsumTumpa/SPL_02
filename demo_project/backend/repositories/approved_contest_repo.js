@@ -201,6 +201,10 @@ const submitProblemSolution = async (req, res) => {
 
         // Find the user in the leaderboard or add them if they don't exist
         const leaderboardEntry = contest.leaderboard.find(entry => entry.username === username);
+        const currentTime = new Date();
+        const contestStartTime = new Date(contest.startTime);
+        const submissionTime = Math.floor((currentTime - contestStartTime) / 1000); // Convert to seconds
+
         if (leaderboardEntry) {
             leaderboardEntry.submittedProblems.push({
                 type,
@@ -208,19 +212,26 @@ const submitProblemSolution = async (req, res) => {
                 solution,
                 result: submissionResult,
             });
-            // Update total solved and total submission time if needed
+
+            if (submissionResult.verdict === 'OK') {
+                leaderboardEntry.totalSolved += 1;
+            }
+
+            leaderboardEntry.totalSubmissionTime += submissionTime;
         } else {
-            contest.leaderboard.push({
+            const newEntry = {
                 username,
-                totalSolved: 0, // Update appropriately
-                totalSubmissionTime: 0, // Update appropriately
+                totalSolved: submissionResult.verdict === 'OK' ? 1 : 0,
+                totalSubmissionTime: submissionTime,
                 submittedProblems: [{
                     type,
                     pid,
                     solution,
                     result: submissionResult,
                 }],
-            });
+            };
+
+            contest.leaderboard.push(newEntry);
         }
 
         // Save the updated contest
@@ -231,6 +242,7 @@ const submitProblemSolution = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 // Get contests by contestant name
 const getContestsByContestantName = async (req, res) => {
