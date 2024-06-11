@@ -9,6 +9,7 @@
 .problem-details-container h2 {
   color: #333;
   font-size: 24px;
+  text-align: center;
 }
 
 .statement {

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Leaderboard from './LeaderBoard';
 import ProblemDetails from './ProblemDetails';
+import CustomProblemDetails from './CustomProblemDetails';
 import './styles/ParticipateContest.css';
 
 const ParticipateContest = () => {
@@ -68,7 +69,7 @@ const ParticipateContest = () => {
 
     const handleProblemClick = (problem) => {
         setSelectedProblem(problem);
-        setActiveTab('problemDetails');
+        setActiveTab(problem.type === 'CF' ? 'problemDetails' : 'customProblemDetails');
     };
 
     if (!contestDetails) {
@@ -125,7 +126,7 @@ const ParticipateContest = () => {
                             {contestDetails.problems.map((problem, index) => (
                                 <tr key={problem.pid} onClick={() => handleProblemClick(problem)}>
                                     <td>{index + 1}</td>
-                                    <td>{problem.aliasName}</td>
+                                    <td>{problem.type === "CF" ? problem.aliasName : problem.title}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -135,8 +136,11 @@ const ParticipateContest = () => {
             {activeTab === 'rank' && !selectedProblem && (
                 <Leaderboard contestId={contestId} />
             )}
-            {activeTab === 'problemDetails' && selectedProblem && (
+            {activeTab === 'problemDetails' && selectedProblem?.type === 'CF' && (
                 <ProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
+            )}
+            {activeTab === 'customProblemDetails' && selectedProblem?.type === 'CS' && (
+                <CustomProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
             )}
         </div>
     );

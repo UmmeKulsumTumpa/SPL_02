@@ -21,7 +21,7 @@ function initializeState() {
     };
 }
 
-function ProblemDetails({ problem, username, contestId }) {
+function CustomProblemDetails({ problem, username, contestId }) {
     const [state, setState] = useState(initializeState());
 
     useEffect(() => {
@@ -33,13 +33,10 @@ function ProblemDetails({ problem, username, contestId }) {
 
     if (!problem) return null;
 
-    const { pid, title, testCase, statement, constraints, aliasName } = problem;
+    const { pid, title, testCase, constraints, problemDescription, testCases } = problem;
 
     // Check if testCase is a stringified JSON array and parse it
     const testCasesArray = JSON.parse(testCase);
-
-    // Extracting elements from the statement object
-    const { text, inputSpec, outputSpec, notes } = JSON.parse(statement);
 
     // Function to copy text to clipboard
     const copyToClipboard = (text) => {
@@ -55,7 +52,7 @@ function ProblemDetails({ problem, username, contestId }) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                type: 'CF',
+                type: 'CS',
                 pid: problem.pid,
                 solution: solution,
             }),
@@ -91,7 +88,7 @@ function ProblemDetails({ problem, username, contestId }) {
 
     return (
         <div className="problem-details-container">
-            <h2>{aliasName}</h2>
+            <h2>{title}</h2>
             {/* <p>Problem ID: {pid}</p> */}
 
             {/* Constraints Section */}
@@ -104,19 +101,9 @@ function ProblemDetails({ problem, username, contestId }) {
             </div>
 
             {/* Statement Section */}
-            <h3>Statement:</h3>
+            <h3>Problem Description:</h3>
             <div className="statement">
-                {/* Displaying problem statement text */}
-                <h4>Problem Description:</h4>
-                <p>{text.join('\n')}</p>
-
-                {/* Displaying input specification */}
-                <h4>Input Specification:</h4>
-                <p>{inputSpec.join('\n')}</p>
-
-                {/* Displaying output specification */}
-                <h4>Output Specification:</h4>
-                <p>{outputSpec.join('\n')}</p>
+                <p>{problemDescription}</p>
             </div>
 
             {/* TestCases Section */}
@@ -169,16 +156,6 @@ function ProblemDetails({ problem, username, contestId }) {
                 ))}
             </div>
 
-            {/* Note Section */}
-            {notes.length > 0 && (
-                <>
-                    <h3>Note:</h3>
-                    <div className="notes">
-                        <p>{notes.join('\n')}</p>
-                    </div>
-                </>
-            )}
-
             {/* Submit Button */}
             <button className="submitButton"
                 onClick={() => setState((prevState) => ({ ...prevState, showSubmitModal: true }))}>
@@ -206,4 +183,4 @@ function ProblemDetails({ problem, username, contestId }) {
     );
 }
 
-export default ProblemDetails;
+export default CustomProblemDetails;

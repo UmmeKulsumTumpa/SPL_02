@@ -17,6 +17,7 @@ import ContestPage from './components/ContestPage';
 import ViewContestDetails from './components/contest/ViewContestDetails';
 import CreateContestPage from './components/CreateContestPage';
 import ParticipateContest from './components/contest/ParticipateContest';
+import CustomProblemDetails from './components/contest/CustomProblemDetails';
 import { AuthProvider } from './components/AuthContext';
 
 library.add(faHome, faFileAlt, faEnvelope, faBell, faMapMarkerAlt, faChartPie, faUser);
@@ -41,6 +42,7 @@ function App() {
                         <Route path="/create-contest" element={<CreateContestPage />} />
                         <Route path="/contest/:contestId" element={<ViewContestDetails />} />
                         <Route path="/participate/:contestId/:username" element={<ParticipateContest/>} />
+                        <Route path="/customProblemDetails/:contestId/:username/:problemId" component={CustomProblemDetails} />
                     </Routes>
                     <Footer />
                 </div>
