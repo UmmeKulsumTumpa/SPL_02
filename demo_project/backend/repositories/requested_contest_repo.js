@@ -10,13 +10,13 @@ const getNextContestId = async () => {
 };
 
 const fetchProblemDetails = async (type, pid) => {
-    console.log(pid);
+    // console.log(pid);
     const formattedPid = type === 'CS' ? pid.replace(/\//g, '%2F') : pid;
     const url = type === 'CF'
         ? `http://localhost:8000/api/problem/retrieve/${type}/${formattedPid}`
         : `http://localhost:8000/api/add_custom_problem/get_problem/${formattedPid}`;
     const response = await axios.get(url);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
 };
 
@@ -70,6 +70,7 @@ const createContest = async (req, res) => {
                 if (prob.aliasName) problemDoc.aliasName = prob.aliasName;
                 return problemDoc;
             } else if (prob.type === 'CS') {
+                console.log(problemDetails);
                 const problemDoc = {
                     type: prob.type,
                     pid: `${prob.pid}`,
@@ -89,7 +90,7 @@ const createContest = async (req, res) => {
             }
         }));
 
-        console.log(problemDocs);
+        // console.log(problemDocs);
 
         const newContest = new Contest({
             cid,
@@ -169,6 +170,7 @@ const updateContest = async (req, res) => {
 const deleteContest = async (req, res) => {
     try {
         const contest = await Contest.findOne({ cid: req.params.id });
+        // console.log('requested: ',contest);
         if (!contest) {
             return res.status(404).json({ error: 'Contest not found' });
         }

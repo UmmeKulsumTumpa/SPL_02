@@ -1,3 +1,5 @@
+// controllers/approvedContestRepo.js
+
 const ApprovedContest = require('../models/ApprovedContest');
 const axios = require('axios');
 
@@ -40,14 +42,26 @@ const createApprovedContest = async (req, res) => {
         }
 
         const formattedProblems = problems.map(problem => {
-            const formattedProblem = { type: problem.type, pid: problem.pid, title: problem.title };
-            if (problem.statement) formattedProblem.statement = problem.statement;
-            if (problem.constraints) formattedProblem.constraints = problem.constraints;
-            if (problem.testCase) formattedProblem.testCase = problem.testCase;
-            if (problem.description) {
-                formattedProblem.description = { data: problem.description.data, contentType: problem.description.contentType };
-            }
-            if(problem.aliasName) formattedProblem.aliasName = problem.aliasName;
+            const formattedProblem = {
+                type: problem.type,
+                pid: problem.pid,
+                title: problem.title,
+                statement: problem.statement,
+                constraints: problem.constraints,
+                testCase: problem.testCase,
+                aliasName: problem.aliasName,
+                timeLimit: problem.timeLimit,
+                memoryLimit: problem.memoryLimit,
+                problemDescription: problem.problemDescription,
+                testCases: problem.testCases.map(tc => ({
+                    input: tc.input,
+                    output: tc.output
+                })),
+                inputFile: problem.inputFile ? Buffer.from(problem.inputFile, 'base64') : undefined,
+                inputFileContentType: problem.inputFileContentType,
+                outputFile: problem.outputFile ? Buffer.from(problem.outputFile, 'base64') : undefined,
+                outputFileContentType: problem.outputFileContentType,
+            };
             return formattedProblem;
         });
 
@@ -64,6 +78,7 @@ const createApprovedContest = async (req, res) => {
         });
 
         const savedContest = await newApprovedContest.save();
+        // console.log('approved', savedContest);
         res.status(201).json(savedContest);
     } catch (err) {
         res.status(500).json({ error: 'Failed to create approved contest', details: err.message });
@@ -78,13 +93,26 @@ const updateApprovedContest = async (req, res) => {
 
         if (problems) {
             const problemDocs = problems.map(problem => {
-                const problemDoc = { type: problem.type, pid: problem.pid, title: problem.title };
-                if (problem.statement) problemDoc.statement = problem.statement;
-                if (problem.constraints) problemDoc.constraints = problem.constraints;
-                if (problem.testCase) problemDoc.testCase = problem.testCase;
-                if (problem.description) {
-                    problemDoc.description = { data: problem.description.data, contentType: problem.description.contentType };
-                }
+                const problemDoc = {
+                    type: problem.type,
+                    pid: problem.pid,
+                    title: problem.title,
+                    statement: problem.statement,
+                    constraints: problem.constraints,
+                    testCase: problem.testCase,
+                    aliasName: problem.aliasName,
+                    timeLimit: problem.timeLimit,
+                    memoryLimit: problem.memoryLimit,
+                    problemDescription: problem.problemDescription,
+                    testCases: problem.testCases.map(tc => ({
+                        input: tc.input,
+                        output: tc.output
+                    })),
+                    inputFile: problem.inputFile ? Buffer.from(problem.inputFile, 'base64') : undefined,
+                    inputFileContentType: problem.inputFileContentType,
+                    outputFile: problem.outputFile ? Buffer.from(problem.outputFile, 'base64') : undefined,
+                    outputFileContentType: problem.outputFileContentType,
+                };
                 return problemDoc;
             });
             updatedFields.problems = problemDocs;
@@ -117,7 +145,7 @@ const deleteApprovedContest = async (req, res) => {
 
         res.json({ message: 'Approved contest and its problems deleted successfully' });
     } catch (err) {
-        res.status(500).json({ error: 'Failed to delete approved contest', details: err.message });
+        res.status( 500 ).json({ error: 'Failed to delete approved contest', details: err.message });
     }
 };
 

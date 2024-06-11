@@ -1,10 +1,12 @@
+// models/ApprovedContest.js
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const testCaseSchema = new mongoose.Schema({
-    input: { type: String, required: true },
-    output: { type: String, required: true },
-  });
+    input: { type: String },
+    output: { type: String },
+});
 
 const approvedProblemSchema = new Schema({
     type: { type: String, required: true },
@@ -32,7 +34,7 @@ const contestSubmittedProblem = new Schema({
 }, { _id: false });
 
 const leaderboardSchema = new Schema({
-    username: { type: String, required: true },
+    username: { type: String },
     totalSolved: { type: Number, default: 0 },
     totalSubmissionTime: { type: Number, default: 0 },
     submittedProblems: [contestSubmittedProblem],

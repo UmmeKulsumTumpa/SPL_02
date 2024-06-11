@@ -36,6 +36,7 @@ const ManageContest = ({ admin }) => {
         if (approving) return; // Prevent multiple executions
         setApproving(true);
         try {
+            console.log('Contest: ' ,contest);
             const approvedContest = {
                 ...contest,
                 approvedBy: {
@@ -44,6 +45,8 @@ const ManageContest = ({ admin }) => {
                 },
                 approvalTime: new Date()
             };
+
+            console.log('Approved: ',approvedContest);
 
             const [createResponse, deleteResponse] = await Promise.all([
                 axios.post('http://localhost:8000/api/approved_contest/create', approvedContest),
