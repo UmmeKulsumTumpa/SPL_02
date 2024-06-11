@@ -232,6 +232,31 @@ const submitProblemSolution = async (req, res) => {
     }
 };
 
+// Get contests by contestant name
+const getContestsByContestantName = async (req, res) => {
+    try {
+        const { username } = req.params;
+
+        // Find contests where the leaderboard contains the given username
+        const contests = await ApprovedContest.find({
+            'leaderboard.username': username
+        });
+
+        // Filter the leaderboard to include only entries matching the given username
+        const filteredContests = contests.map(contest => {
+            const filteredLeaderboard = contest.leaderboard.filter(entry => entry.username === username);
+            return {
+                ...contest.toObject(),
+                leaderboard: filteredLeaderboard
+            };
+        });
+
+        res.json(filteredContests);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch contests by contestant name', details: err.message });
+    }
+};
+
 module.exports = {
     getAllApprovedContests,
     getApprovedContestById,
@@ -239,5 +264,6 @@ module.exports = {
     updateApprovedContest,
     deleteApprovedContest,
     registerUserForContest,
-    submitProblemSolution
+    submitProblemSolution,
+    getContestsByContestantName,
 };

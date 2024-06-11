@@ -1,5 +1,6 @@
 // utils/contestantDashboard.js
 import React from 'react';
+import SubmissionView from './contestantSidebar/SubmissionView';
 
 export const Profile = ({ contestant }) => (
     <div className="profile-container">
@@ -33,10 +34,9 @@ export const Team = () => (
     </div>
 );
 
-export const Submissions = () => (
+export const Submissions = ({ contestant }) => (
     <div className="submissions-container">
-        <h2>Submissions</h2>
-        <p>Submissions List</p>
+        <SubmissionView contestant={contestant} />
     </div>
 );
 

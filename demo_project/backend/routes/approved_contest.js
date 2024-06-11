@@ -23,4 +23,7 @@ router.post('/register/:id', approvedContestRepo.registerUserForContest);
 // Submit a problem solution for a contest
 router.post('/submit/:acid/:username', approvedContestRepo.submitProblemSolution);
 
+// get submission result of particular contestant
+router.get('/submission_history/:username', approvedContestRepo.getContestsByContestantName);
+
 module.exports = router;

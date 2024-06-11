@@ -64,7 +64,7 @@ const ContestantDashboard = () => {
             case 'team':
                 return <Team />;
             case 'submissions':
-                return <Submissions />;
+                return <Submissions contestant={contestant} />;
             case 'contests':
                 return <Contests />;
             default:
