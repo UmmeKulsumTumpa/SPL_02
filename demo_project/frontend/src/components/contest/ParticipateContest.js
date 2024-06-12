@@ -126,7 +126,7 @@ const ParticipateContest = () => {
                             {contestDetails.problems.map((problem, index) => (
                                 <tr key={problem.pid} onClick={() => handleProblemClick(problem)}>
                                     <td>{index + 1}</td>
-                                    <td>{problem.type === "CF" ? problem.aliasName : problem.title}</td>
+                                    <td>{(problem.type === "CF" && problem.aliasName) ? problem.aliasName : problem.title}</td>
                                 </tr>
                             ))}
                         </tbody>

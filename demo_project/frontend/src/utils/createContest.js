@@ -44,7 +44,7 @@ export const fetchProblemTitle = async (oj, pid) => {
         const response = await axios.get(`http://localhost:8000/api/problem/retrieve/${oj}/${pid}`);
         return response.data.title || 'No such problem exists!';
     } catch (error) {
-        return 'There might occurred some error';
+        return 'Loading...';
     }
 };
 
