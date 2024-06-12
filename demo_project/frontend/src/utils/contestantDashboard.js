@@ -2,13 +2,15 @@
 import React from 'react';
 import SubmissionView from './contestantSidebar/SubmissionView';
 import ContestDashboard from './contestantSidebar/ContestDashboard';
+import UserProfile from './contestantSidebar/UserProfile';
 
 export const Profile = ({ contestant }) => (
     <div className="profile-container">
-        <p>Rating: {contestant.rating}</p>
+        {/* <p>Rating: {contestant.rating}</p>
         <p>Total Solved Problems: {contestant.solvedProblems}</p>
         <p>Total Attempted Problems: {contestant.attemptedProblems}</p>
-        <p>Blog Contributions: {contestant.blogContributions}</p>
+        <p>Blog Contributions: {contestant.blogContributions}</p> */}
+        <UserProfile contestant={contestant} />
     </div>
 );
 

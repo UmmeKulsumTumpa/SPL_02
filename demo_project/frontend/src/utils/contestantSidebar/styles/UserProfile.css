@@ -1,0 +1,74 @@
+.user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f4f4f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-heading {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.profile-section {
+    width: 100%;
+    max-width: 800px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.section-heading {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.chart-heading {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #555;
+    text-align: center;
+}
+
+.radial-gauge-container, .bar-chart-container {
+    width: 45%;
+}
+
+.heatmap-calendar-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.color-empty {
+    background-color: #ebedf0;
+}
+
+.color-scale-1 {
+    background-color: #c6e48b;
+}
+
+.color-scale-2 {
+    background-color: #7bc96f;
+}
+
+.color-scale-3 {
+    background-color: #239a3b;
+}
+
+.color-scale-4 {
+    background-color: #196127;
+}
