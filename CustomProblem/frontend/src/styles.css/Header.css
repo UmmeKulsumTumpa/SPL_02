@@ -1,0 +1,115 @@
+.header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 10px 20px;
+  border-bottom: 0px solid #e0e0e0; /* Added a border for better distinction */
+  z-index: 1000; /* Ensure header is above other content */
+  height: 60px; /* Reduced height */
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  width: 100px; /* Adjusted size */
+  height: auto;
+}
+
+.header-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 10px; /* Reduced gap */
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+  justify-content: flex-start;
+}
+
+.header-nav-links li a {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+  padding: 5px 10px;
+  border: 1px solid #4984ae; /* Adjusted border */
+  border-radius: 5px;
+  background-color: #ffffff;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.header-nav-links li a:hover {
+  background-color: #4984ae;
+  color: #ffffff;
+}
+
+
+.header-login-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-username {
+    font-weight: bold;
+    color: #000;
+}
+
+.header-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.header-link-button {
+    text-decoration: none;
+    color: #fff;
+    background-color: #4984ae;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.header-link-button.register {
+    margin-right: 20px; /* Add space to the right of the register button */
+}
+
+.header-link-button.logout {
+    background-color: red;
+	margin-right: 18px
+}
+
+.header-link-button:hover {
+    background-color: #356b9b;
+}
+
+.header-link-button.logout:hover {
+    background-color: darkred;
+}
+
+.header-auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.marquee-text {
+    background-color: #4984ae;
+    color: #fff;
+    padding: 2px 0;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 1px;
+}
