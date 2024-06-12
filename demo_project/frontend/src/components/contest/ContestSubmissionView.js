@@ -61,13 +61,12 @@ const ContestSubmissionView = () => {
 
     return (
         <div className="contest-submissions__container">
-            <h2 className="contest-submissions__username-title">{username}&apos;s Submission History for Contest {contestId}</h2>
+            {/* <h2 className="contest-submissions__username-title">{username}&apos;s Submission History for Contest {contestId}</h2> */}
             <table className="contest-submissions__table">
                 <thead>
                     <tr>
                         <th>Contest ID</th>
                         <th>Contest Name</th>
-                        <th>Problem ID</th>
                         <th>Problem Name</th>
                         <th>Verdict</th>
                         <th>Time</th>
@@ -79,7 +78,6 @@ const ContestSubmissionView = () => {
                         <tr key={index}>
                             <td>{submission.contestId}</td>
                             <td>{submission.contestName}</td>
-                            <td>{submission.problemId}</td>
                             <td>{submission.problemName}</td>
                             <td className={`contest-submissions__verdict-${(submission.verdict === 'OK' || submission.verdict === 'Accepted') ? 'ok' : 'fail'}`}>
                                 {(submission.verdict === 'Accepted') ? 'OK' : submission.verdict}

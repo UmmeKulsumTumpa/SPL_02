@@ -143,14 +143,14 @@ const ParticipateContest = () => {
             {activeTab === 'rank' && !selectedProblem && (
                 <Leaderboard contestId={contestId} />
             )}
-            {activeTab === 'personalSubmissions' && !selectedProblem && (
+            {activeTab === 'personalSubmissions'  && (
                 <ContestSubmissionView contestId={contestId} username={username} />
             )}
             {activeTab === 'problemDetails' && selectedProblem?.type === 'CF' && (
-                <ProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
+                <ProblemDetails problem={selectedProblem} username={username} contestId={contestId} setActiveTab={setActiveTab} />
             )}
             {activeTab === 'customProblemDetails' && selectedProblem?.type === 'CS' && (
-                <CustomProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
+                <CustomProblemDetails problem={selectedProblem} username={username} contestId={contestId} setActiveTab={setActiveTab} />
             )}
         </div>
     );

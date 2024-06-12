@@ -18,10 +18,12 @@ function initializeState() {
         memoryConsumedBytes: '',
         points: '',
         showSubmitModal: false,
+        showErrorModal: false,
+        error: null,
     };
 }
 
-function ProblemDetails({ problem, username, contestId }) {
+function ProblemDetails({ problem, username, contestId, setActiveTab }) {
     const [state, setState] = useState(initializeState());
 
     useEffect(() => {
@@ -82,11 +84,29 @@ function ProblemDetails({ problem, username, contestId }) {
                         points: data[0].points,
                         showSubmitModal: false,
                     }));
+                    setActiveTab('personalSubmissions');
                 } else {
-                    console.error('Invalid response from the server:', data);
+                    setState((prevState) => ({
+                        ...prevState,
+                        error: 'Invalid response from the server.',
+                        showErrorModal: true,
+                    }));
                 }
             })
-            .catch((error) => console.error('Error submitting solution:', error));
+            .catch((error) => {
+                setState((prevState) => ({
+                    ...prevState,
+                    error: error.message,
+                    showErrorModal: true,
+                }));
+            });
+    };
+
+    const closeErrorModal = () => {
+        setState((prevState) => ({
+            ...prevState,
+            showErrorModal: false,
+        }));
     };
 
     return (
@@ -200,6 +220,17 @@ function ProblemDetails({ problem, username, contestId }) {
                     <p>{state.verdict}</p>
                     <h3>ID:</h3>
                     <p>{state.id}</p>
+                </div>
+            )}
+
+            {/* Displaying errors */}
+            {state.showErrorModal && (
+                <div className="error-modal">
+                    <div className="error-modal-content">
+                        <span className="close-button" onClick={closeErrorModal}>&times;</span>
+                        <h3>Error</h3>
+                        <p>{state.error}</p>
+                    </div>
                 </div>
             )}
         </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import CustomSubmitSolution from './CustomSubmitSolution';
 import './styles/ProblemDetails.css';
+import { useNavigate } from 'react-router-dom';
 
 function initializeState() {
     return {
@@ -19,12 +20,14 @@ function initializeState() {
         memoryConsumedBytes: '',
         points: '',
         showSubmitModal: false,
+        showErrorModal: false,
         error: null,
     };
 }
 
-function CustomProblemDetails({ problem, username, contestId }) {
+function CustomProblemDetails({ problem, username, contestId, setActiveTab }) {
     const [state, setState] = useState(initializeState());
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Reset state when a new problem is selected
@@ -36,7 +39,6 @@ function CustomProblemDetails({ problem, username, contestId }) {
     if (!problem) return null;
 
     const { pid, title, testCase, constraints, problemDescription } = problem;
-    // console.log(problem);
 
     // Check if testCase is a stringified JSON array and parse it
     const testCasesArray = JSON.parse(testCase);
@@ -52,11 +54,6 @@ function CustomProblemDetails({ problem, username, contestId }) {
         formData.append('solutionFile', file);
         formData.append('problemId', pid);
 
-        // Log the form data for debugging
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
         axios
             .post(`http://localhost:8000/api/custom_solution_submit/submit/${contestId}/${username}`, formData, {
                 headers: {
@@ -64,43 +61,33 @@ function CustomProblemDetails({ problem, username, contestId }) {
                 },
             })
             .then((response) => {
-                console.log('response from submission: ', response.data);
-                // Check if the response contains the expected data
                 if (response.data.verdict) {
-                    // Update state with submitted solution and verdict
-                    // setState((prevState) => ({
-                    //     ...prevState,
-                    //     verdict: response.data.verdict,
-                    //     id: response.data.sid,
-                    //     showSubmitModal: false,
-                    // }));
-
-                    // console.log("sid: ", response);
-
                     // Save the solution in the database
                     axios
                         .post(`http://localhost:8000/api/approved_contest/custom_submit_result/${contestId}/${username}`, {
                             sid: response.data.sid
                         })
                         .then((saveResponse) => {
-                            console.log('response from saving solution: ', saveResponse.data);
                             setState((prevState) => ({
                                 ...prevState,
                                 verdict: saveResponse.data.verdict,
                                 id: saveResponse.data.sid,
                                 showSubmitModal: false,
                             }));
+                            setActiveTab('personalSubmissions');
                         })
                         .catch((error) => {
                             setState((prevState) => ({
                                 ...prevState,
                                 error: error.message,
+                                showErrorModal: true,
                             }));
                         });
                 } else {
                     setState((prevState) => ({
                         ...prevState,
                         error: 'Invalid response from the server.',
+                        showErrorModal: true,
                     }));
                 }
             })
@@ -108,6 +95,7 @@ function CustomProblemDetails({ problem, username, contestId }) {
                 setState((prevState) => ({
                     ...prevState,
                     error: error.message,
+                    showErrorModal: true,
                 }));
             });
     };
@@ -119,7 +107,6 @@ function CustomProblemDetails({ problem, username, contestId }) {
             {/* Constraints Section */}
             <h3>Constraints:</h3>
             <div className="constraints">
-                {/* Displaying each constraint on a separate line */}
                 {constraints.split('\n').map((constraint, index) => (
                     <p key={index}>{constraint}</p>
                 ))}
@@ -134,7 +121,6 @@ function CustomProblemDetails({ problem, username, contestId }) {
             {/* TestCases Section */}
             <h3>Test Cases:</h3>
             <div className="testCases">
-                {/* Displaying each test case on separate lines */}
                 {testCasesArray.map((test, index) => (
                     <div key={index} className="testCase">
                         <table className="testTable">
@@ -192,29 +178,20 @@ function CustomProblemDetails({ problem, username, contestId }) {
                 <CustomSubmitSolution
                     onSubmit={handleSubmit}
                     onClose={() => setState((prevState) => ({ ...prevState, showSubmitModal: false }))} />
-                )}
-    
-                {/* Displaying the submitted solution and verdict */}
-                {state.id !== '' && (
-                    <div>
-                        <h2>Submission Result:</h2>
-                        <h3>Verdict:</h3>
-                        <p>{state.verdict}</p>
-                        <h3>ID:</h3>
-                        <p>{state.id}</p>
-                    </div>
-                )}
-    
-                {/* Displaying errors */}
-                {state.error && (
-                    <div className="error-message">
-                        <h3>Error:</h3>
+            )}
+
+            {/* Displaying errors */}
+            {state.showErrorModal && (
+                <div className="error-modal">
+                    <div className="error-modal-content">
+                        <span className="close-button" onClick={() => setState((prevState) => ({ ...prevState, showErrorModal: false }))}>&times;</span>
+                        <h3>Error</h3>
                         <p>{state.error}</p>
                     </div>
-                )}
-            </div>
-        );
-    }
-    
-    export default CustomProblemDetails;
-    
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default CustomProblemDetails;
