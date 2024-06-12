@@ -64,7 +64,7 @@ const SubmissionsView = ({ contestant }) => {
                         <th>Problem Name</th>
                         <th>Verdict</th>
                         <th>Time</th>
-                        <th>Memory</th>
+                        {/* <th>Memory</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -74,9 +74,11 @@ const SubmissionsView = ({ contestant }) => {
                             <td>{submission.contestName}</td>
                             <td>{submission.problemId}</td>
                             <td>{submission.problemName}</td>
-                            <td className={`submissions-view-verdict-${submission.verdict === 'OK' ? 'ok' : 'fail'}`}>{submission.verdict}</td>
+                            <td className={`submissions-view-verdict-${(submission.verdict === 'OK' || submission.verdict === 'Accepted') ? 'ok' : 'fail'}`}>
+                                {(submission.verdict === 'Accepted') ? 'OK' : submission.verdict}
+                            </td>
                             <td>{submission.time} ms</td>
-                            <td>{submission.memory} bytes</td>
+                            {/* <td>{submission.memory} bytes</td> */}
                         </tr>
                     ))}
                 </tbody>

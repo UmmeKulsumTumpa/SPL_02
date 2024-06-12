@@ -46,10 +46,10 @@ const LeaderBoard = ({ contestId }) => {
             new Date(b.result?.[0]?.creationTimeSeconds * 1000) - new Date(a.result?.[0]?.creationTimeSeconds * 1000)
         )[0];
 
-        if (latestSubmission?.result?.[0]?.verdict === 'OK' || latestSubmission?.result?.verdict === 'OK') {
+        if (latestSubmission?.result?.[0]?.verdict === 'OK' || latestSubmission?.result?.verdict === 'Accepted') {
             return <td className="problem-solved">✔</td>;
         } else {
-            return <td></td>;
+            return <td className="wrong-submission">✗</td>;
         }
     };
 
@@ -58,8 +58,8 @@ const LeaderBoard = ({ contestId }) => {
             const solvedProblems = user.submittedProblems.reduce((acc, curr) => {
                 const problemId = curr.pid;
                 if (!acc[problemId] && curr.result && 
-                    (curr.result?.[0]?.verdict === 'OK' || curr.result?.verdict === 'OK')) {
-                    acc[problemId] = curr.result?.[0]?.creationTimeSeconds;
+                    (curr.result?.[0]?.verdict === 'OK' || curr.result?.verdict === 'Accepted')) {
+                    acc[problemId] = curr.result?.[0]?.creationTimeSeconds || curr.result?.creationTimeSeconds;
                 }
                 return acc;
             }, {});

@@ -14,6 +14,12 @@
     background-color: #f2f2f2;
 }
 
-.problem-solved {
+.leaderboard .problem-solved {
     background-color: lightgreen;
+}
+
+.leaderboard .wrong-submission {
+    background-color: lightcoral;
+    font-weight: bold;
+    padding-right: 13px;
 }
