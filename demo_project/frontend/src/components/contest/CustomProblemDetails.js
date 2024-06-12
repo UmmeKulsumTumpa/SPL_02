@@ -68,12 +68,35 @@ function CustomProblemDetails({ problem, username, contestId }) {
                 // Check if the response contains the expected data
                 if (response.data.verdict) {
                     // Update state with submitted solution and verdict
-                    setState((prevState) => ({
-                        ...prevState,
-                        verdict: response.data.verdict,
-                        id: response.data.sid,
-                        showSubmitModal: false,
-                    }));
+                    // setState((prevState) => ({
+                    //     ...prevState,
+                    //     verdict: response.data.verdict,
+                    //     id: response.data.sid,
+                    //     showSubmitModal: false,
+                    // }));
+
+                    // console.log("sid: ", response);
+
+                    // Save the solution in the database
+                    axios
+                        .post(`http://localhost:8000/api/approved_contest/custom_submit_result/${contestId}/${username}`, {
+                            sid: response.data.sid
+                        })
+                        .then((saveResponse) => {
+                            console.log('response from saving solution: ', saveResponse.data);
+                            setState((prevState) => ({
+                                ...prevState,
+                                verdict: saveResponse.data.verdict,
+                                id: saveResponse.data.sid,
+                                showSubmitModal: false,
+                            }));
+                        })
+                        .catch((error) => {
+                            setState((prevState) => ({
+                                ...prevState,
+                                error: error.message,
+                            }));
+                        });
                 } else {
                     setState((prevState) => ({
                         ...prevState,

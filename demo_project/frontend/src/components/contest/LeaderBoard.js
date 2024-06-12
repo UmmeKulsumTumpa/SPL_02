@@ -19,8 +19,8 @@ const LeaderBoard = ({ contestId }) => {
                     setContestEnded(true);
                 }
 
-                setLeaderboard(contestDetails.leaderboard);
-                setProblems(contestDetails.problems);
+                setLeaderboard(contestDetails.leaderboard || []);
+                setProblems(contestDetails.problems || []);
             } catch (error) {
                 console.error('Error fetching leaderboard:', error);
             }
@@ -43,10 +43,10 @@ const LeaderBoard = ({ contestId }) => {
         }
 
         const latestSubmission = submissionsForProblem.sort((a, b) => 
-            new Date(b.result[0].creationTimeSeconds * 1000) - new Date(a.result[0].creationTimeSeconds * 1000)
+            new Date(b.result?.[0]?.creationTimeSeconds * 1000) - new Date(a.result?.[0]?.creationTimeSeconds * 1000)
         )[0];
 
-        if (latestSubmission && latestSubmission.result && latestSubmission.result[0] && latestSubmission.result[0].verdict === 'OK') {
+        if (latestSubmission?.result?.[0]?.verdict === 'OK' || latestSubmission?.result?.verdict === 'OK') {
             return <td className="problem-solved">✔</td>;
         } else {
             return <td></td>;
@@ -57,14 +57,15 @@ const LeaderBoard = ({ contestId }) => {
         return leaderboard.map(user => {
             const solvedProblems = user.submittedProblems.reduce((acc, curr) => {
                 const problemId = curr.pid;
-                if (!acc[problemId] && curr.result && curr.result[0].verdict === 'OK') {
-                    acc[problemId] = curr.result[0].creationTimeSeconds;
+                if (!acc[problemId] && curr.result && 
+                    (curr.result?.[0]?.verdict === 'OK' || curr.result?.verdict === 'OK')) {
+                    acc[problemId] = curr.result?.[0]?.creationTimeSeconds;
                 }
                 return acc;
             }, {});
 
             const totalSolved = Object.keys(solvedProblems).length;
-            const firstCorrectSubmissionTime = Math.min(...Object.values(solvedProblems));
+            const firstCorrectSubmissionTime = Math.min(...Object.values(solvedProblems).filter(Boolean));
 
             return {
                 ...user,

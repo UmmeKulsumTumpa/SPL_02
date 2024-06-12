@@ -251,6 +251,78 @@ const submitProblemSolution = async (req, res) => {
     }
 };
 
+// Submit a custom problem solution
+const customSubmitSolution = async (req, res) => {
+    const { acid, username } = req.params;
+    const { sid } = req.body;
+
+    try {
+        console.log('sid: ', sid);
+        // Fetch the submission result from the custom problem submission route using the sid
+        const response = await axios.get(`http://localhost:8000/api/custom_solution_submit/solution/${sid}`);
+        const submissionResult = response.data;
+        console.log('response:', response.data);
+
+        // Declare and assign the verdict
+        let verdict;
+        if (submissionResult.verdict === 'Accepted') {
+            verdict = 'OK';
+        } else {
+            verdict = submissionResult.verdict;
+        }
+
+        // Update the contest's leaderboard with the submission result
+        const contest = await ApprovedContest.findOne({ acid });
+        if (!contest) {
+            return res.status(404).json({ error: 'Contest not found' });
+        }
+
+        // Find the user in the leaderboard or add them if they don't exist
+        const leaderboardEntry = contest.leaderboard.find(entry => entry.username === username);
+        const currentTime = new Date();
+        const contestStartTime = new Date(contest.startTime);
+        const submissionTime = Math.floor((currentTime - contestStartTime) / 1000); // Convert to seconds
+
+        if (leaderboardEntry) {
+            leaderboardEntry.submittedProblems.push({
+                type: 'CS',
+                pid: submissionResult.problemId,
+                solution: submissionResult.solutionCode,
+                result: submissionResult,
+            });
+
+            if (verdict === 'OK') {
+                leaderboardEntry.totalSolved += 1;
+            }
+
+            leaderboardEntry.totalSubmissionTime += submissionTime;
+        } else {
+            const newEntry = {
+                username,
+                totalSolved: verdict === 'OK' ? 1 : 0,
+                totalSubmissionTime: submissionTime,
+                submittedProblems: [{
+                    type: 'CS',
+                    pid: submissionResult.problemId,
+                    solution: submissionResult.solutionCode,
+                    result: submissionResult,
+                }],
+            };
+
+            contest.leaderboard.push(newEntry);
+        }
+
+        // Save the updated contest
+        const updatedContest = await contest.save();
+
+        res.json(submissionResult);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+
 
 // Get contests by contestant name
 const getContestsByContestantName = async (req, res) => {
@@ -286,4 +358,5 @@ module.exports = {
     registerUserForContest,
     submitProblemSolution,
     getContestsByContestantName,
+    customSubmitSolution,
 };

@@ -21,9 +21,9 @@ const SubmissionsView = ({ contestant }) => {
                                 contestName: contest.title,
                                 problemId: problem.pid,
                                 problemName: problemDetails ? problemDetails.title : 'Unknown Problem',
-                                verdict: problem.result[0].verdict,
-                                time: problem.result[0].timeConsumedMillis,
-                                memory: problem.result[0].memoryConsumedBytes
+                                verdict: problem.result[0]?.verdict || problem.result.verdict,
+                                time: problem.result[0]?.timeConsumedMillis || problem.result.execTime,
+                                memory: problem.result[0]?.memoryConsumedBytes || problem.result.maxMemoryUsageMB,
                             };
                         });
                     }).flat();

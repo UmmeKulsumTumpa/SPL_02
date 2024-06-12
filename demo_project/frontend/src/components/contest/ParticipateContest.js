@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Leaderboard from './LeaderBoard';
 import ProblemDetails from './ProblemDetails';
@@ -8,6 +8,7 @@ import './styles/ParticipateContest.css';
 
 const ParticipateContest = () => {
     const { contestId, username } = useParams();
+    const navigate = useNavigate();
     const [contestDetails, setContestDetails] = useState(null);
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedProblem, setSelectedProblem] = useState(null);
@@ -65,6 +66,9 @@ const ParticipateContest = () => {
     const handleTabClick = (tab) => {
         setActiveTab(tab);
         setSelectedProblem(null); // Reset selected problem when switching tabs
+        if (tab === 'personalSubmissions') {
+            navigate(`/personal_submissions/${contestId}/${username}`);
+        }
     };
 
     const handleProblemClick = (problem) => {
@@ -111,6 +115,12 @@ const ParticipateContest = () => {
                     onClick={() => handleTabClick('rank')}
                 >
                     Rank
+                </button>
+                <button
+                    className={`participate-contest__tab ${activeTab === 'personalSubmissions' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('personalSubmissions')}
+                >
+                    Personal Submissions
                 </button>
             </div>
             {activeTab === 'overview' && !selectedProblem && (
