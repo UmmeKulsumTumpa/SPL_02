@@ -1,0 +1,48 @@
+.contest-submissions__container {
+    padding: 20px;
+}
+
+.contest-submissions__loading,
+.contest-submissions__error,
+.contest-submissions__empty {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.contest-submissions__username-title {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.contest-submissions__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.contest-submissions__table th,
+.contest-submissions__table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.contest-submissions__table th {
+    background-color: #f5f5f5;
+}
+
+.contest-submissions__verdict-ok {
+    color: green;
+    font-weight: bold;
+}
+
+.contest-submissions__verdict-fail {
+    color: red;
+    font-weight: bold;
+}
+
+.contest-submissions__table tr:hover {
+    background-color: #f1f1f1;
+}

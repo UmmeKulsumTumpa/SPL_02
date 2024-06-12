@@ -22,6 +22,7 @@ import { AuthProvider } from './components/AuthContext';
 import Blog from './components/Blog/Blog';
 import BlogDetail from './components/Blog/BlogDetail';
 import WriteBlog from './components/Blog/WriteBlog';
+import ContestSubmissionView from './components/contest/ContestSubmissionView';
 
 library.add(faHome, faFileAlt, faEnvelope, faBell, faMapMarkerAlt, faChartPie, faUser);
 
@@ -49,6 +50,7 @@ function App() {
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/blog/:id" element={<BlogDetail />} />
                         <Route path="/write-blog" element={<WriteBlog />} />
+                        <Route path="/personal_submissions/:contestId/:username" element={< ContestSubmissionView />} />
                     </Routes>
                     <Footer />
                 </div>

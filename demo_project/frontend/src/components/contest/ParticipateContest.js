@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Leaderboard from './LeaderBoard';
 import ProblemDetails from './ProblemDetails';
 import CustomProblemDetails from './CustomProblemDetails';
+import ContestSubmissionView from './ContestSubmissionView';
 import './styles/ParticipateContest.css';
 
 const ParticipateContest = () => {
     const { contestId, username } = useParams();
-    const navigate = useNavigate();
     const [contestDetails, setContestDetails] = useState(null);
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedProblem, setSelectedProblem] = useState(null);
@@ -66,9 +66,6 @@ const ParticipateContest = () => {
     const handleTabClick = (tab) => {
         setActiveTab(tab);
         setSelectedProblem(null); // Reset selected problem when switching tabs
-        if (tab === 'personalSubmissions') {
-            navigate(`/personal_submissions/${contestId}/${username}`);
-        }
     };
 
     const handleProblemClick = (problem) => {
@@ -145,6 +142,9 @@ const ParticipateContest = () => {
             )}
             {activeTab === 'rank' && !selectedProblem && (
                 <Leaderboard contestId={contestId} />
+            )}
+            {activeTab === 'personalSubmissions' && !selectedProblem && (
+                <ContestSubmissionView contestId={contestId} username={username} />
             )}
             {activeTab === 'problemDetails' && selectedProblem?.type === 'CF' && (
                 <ProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
