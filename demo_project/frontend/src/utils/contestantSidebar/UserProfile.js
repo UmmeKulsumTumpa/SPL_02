@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Chart, registerables } from 'chart.js';
+import { Chart } from 'chart.js';
 import 'chartjs-chart-radial-gauge';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import './styles/UserProfile.css';
-
-Chart.register(...registerables);
 
 const UserProfile = ({ contestant }) => {
     const { username } = contestant;
@@ -42,16 +40,7 @@ const UserProfile = ({ contestant }) => {
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.raw + '%';
-                                }
-                            }
-                        }
-                    },
+                    legend: { display: false },
                     centerPercentage: 80,
                     trackColor: 'rgba(54, 162, 235, 0.2)',
                 },
@@ -70,13 +59,11 @@ const UserProfile = ({ contestant }) => {
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    legend: { display: false },
                     scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                        yAxes: [{
+                            ticks: { beginAtZero: true }
+                        }]
                     }
                 }
             });
@@ -119,11 +106,11 @@ const UserProfile = ({ contestant }) => {
                         classForValue={(value) => {
                             if (!value) {
                                 return 'color-empty';
-                            } else if (value.count >= 1 && value.count <= 3) {
+                            } else if (value.count <= 3) {
                                 return 'color-scale-1';
-                            } else if (value.count >= 4 && value.count <= 6) {
+                            } else if (value.count <= 6) {
                                 return 'color-scale-2';
-                            } else if (value.count >= 7 && value.count <= 9) {
+                            } else if (value.count <= 9) {
                                 return 'color-scale-3';
                             } else {
                                 return 'color-scale-4';

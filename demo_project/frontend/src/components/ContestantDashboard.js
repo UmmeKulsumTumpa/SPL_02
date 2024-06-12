@@ -58,9 +58,7 @@ const ContestantDashboard = () => {
             case 'profile':
                 return <Profile contestant={contestant} />;
             case 'settings':
-                return <Settings />;
-            case 'blog':
-                return <Blog />;
+                return <Settings contestant={contestant} />;
             case 'submissions':
                 return <Submissions contestant={contestant} />;
             case 'contests':
@@ -87,10 +85,6 @@ const ContestantDashboard = () => {
                 <button className="contestant-dashboard-button contestant-dashboard-settings-button" onClick={() => setActiveTab('settings')}>
                     <FontAwesomeIcon icon={faFileAlt} className="contestant-dashboard-icon" />
                     <span className="contestant-dashboard-span">Settings</span>
-                </button>
-                <button className="contestant-dashboard-button contestant-dashboard-blog-button" onClick={() => setActiveTab('blog')}>
-                    <FontAwesomeIcon icon={faEnvelope} className="contestant-dashboard-icon" />
-                    <span className="contestant-dashboard-span">Blog</span>
                 </button>
                 <button className="contestant-dashboard-button contestant-dashboard-submissions-button" onClick={() => setActiveTab('submissions')}>
                     <FontAwesomeIcon icon={faMapMarkerAlt} className="contestant-dashboard-icon" />

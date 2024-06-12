@@ -8,7 +8,8 @@ const {
     getContestantByUsername,
     getContestantByEmail,
     submitProblemSolution,
-    checkContestantExists
+    checkContestantExists,
+    updateContestantPassword // Import the new function
 } = require('../repositories/contestant_repo');
 
 router.get('/', getAllContestants);
@@ -26,5 +27,8 @@ router.get('/email/:email', getContestantByEmail);
 router.post('/submit/:username', submitProblemSolution);
 
 router.get('/contestantExist/:username', checkContestantExists);
+
+// Add the new route for updating password
+router.post('/change-password/:username', updateContestantPassword);
 
 module.exports = router;

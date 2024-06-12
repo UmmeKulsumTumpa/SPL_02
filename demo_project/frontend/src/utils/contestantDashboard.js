@@ -3,6 +3,7 @@ import React from 'react';
 import SubmissionView from './contestantSidebar/SubmissionView';
 import ContestDashboard from './contestantSidebar/ContestDashboard';
 import UserProfile from './contestantSidebar/UserProfile';
+import AccountSettings from './contestantSidebar/AccountSettings';
 
 export const Profile = ({ contestant }) => (
     <div className="profile-container">
@@ -14,11 +15,12 @@ export const Profile = ({ contestant }) => (
     </div>
 );
 
-export const Settings = () => (
+export const Settings = ({ contestant }) => (
     <div className="settings-container">
-        <h2>Settings</h2>
+        {/* <h2>Settings</h2>
         <p>Update Email</p>
-        <p>Change Password</p>
+        <p>Change Password</p> */}
+        <AccountSettings contestant={contestant} />
     </div>
 );
 

@@ -1,6 +1,7 @@
 const Contestant = require('../models/Contestant');
 const axios = require('axios');
 const role = 'contestant';
+const bcrypt = require('bcrypt');
 
 // Function to get all contestants
 const getAllContestants = async (req, res) => {
@@ -159,6 +160,34 @@ const checkContestantExists = async (req, res) => {
     }
 };
 
+// Function to update a contestant's password
+const updateContestantPassword = async (req, res) => {
+    const { username } = req.params;
+    const { currentPassword, newPassword } = req.body;
+
+    try {
+        // Find the contestant by username
+        const contestant = await Contestant.findOne({ username });
+
+        if (!contestant) {
+            return res.status(404).json({ error: 'Contestant not found' });
+        }
+
+        // Check if the current password matches
+        if (contestant.password !== currentPassword) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        // Update the contestant's password
+        contestant.password = newPassword;
+        await contestant.save();
+
+        res.json({ success: true, message: 'Password updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 module.exports = {
     getAllContestants,
     addNewContestant,
@@ -168,4 +197,5 @@ module.exports = {
     getContestantByEmail,
     submitProblemSolution,
     checkContestantExists,
+    updateContestantPassword, // Add the new function to the exports
 };
