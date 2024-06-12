@@ -26,7 +26,12 @@ const ManageContest = ({ admin }) => {
     const fetchApprovedContests = async () => {
         try {
             const response = await axios.get('http://localhost:8000/api/approved_contest');
-            setApprovedContests(response.data);
+            const sortedData = response.data.sort((a, b) => {
+                const aNum = parseInt(a.acid.replace(/\D/g, ''), 10);
+                const bNum = parseInt(b.acid.replace(/\D/g, ''), 10);
+                return bNum - aNum;
+            });
+            setApprovedContests(sortedData);
         } catch (error) {
             showError('Error fetching approved contests');
         }

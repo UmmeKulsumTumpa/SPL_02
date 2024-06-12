@@ -50,7 +50,7 @@ const UserProfile = ({ contestant }) => {
             new Chart(barChartRef.current, {
                 type: 'bar',
                 data: {
-                    labels: ['Total Submitted Problems', 'Total Solved Problems'],
+                    labels: ['Total Attempted Problems', 'Total Solved Problems'],
                     datasets: [{
                         label: 'Problems',
                         data: [totalSubmittedProblems, totalSolvedProblems],
@@ -62,7 +62,7 @@ const UserProfile = ({ contestant }) => {
                     legend: { display: false },
                     scales: {
                         yAxes: [{
-                            ticks: { beginAtZero: true }
+                            ticks: { beginAtZero: true, stepSize: 1 }
                         }]
                     }
                 }

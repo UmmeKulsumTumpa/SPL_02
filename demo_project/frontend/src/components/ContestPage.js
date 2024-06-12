@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     formatDateTime,
     calculateLength,
@@ -17,28 +17,47 @@ const ContestPage = () => {
     const [searchValue, setSearchValue] = useState('');
     const [contestData, setContestData] = useState([]);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
+    const location = useLocation();
+    const contestsPerPage = 10;
 
     useEffect(() => {
+        // Restore state from URL parameters if available
+        const params = new URLSearchParams(location.search);
+        const tab = params.get('tab');
+        const page = params.get('page');
+
+        if (tab) setActiveTab(tab);
+        if (page) setCurrentPage(Number(page));
+
         // Fetch contest data from the backend API
         const fetchContestData = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/api/approved_contest');
-                setContestData(response.data);
+                const sortedData = response.data.sort((a, b) => {
+                    const aNum = parseInt(a.acid.replace(/\D/g, ''), 10);
+                    const bNum = parseInt(b.acid.replace(/\D/g, ''), 10);
+                    return bNum - aNum;
+                });
+                setContestData(sortedData);
             } catch (error) {
                 console.error('Error fetching contest data:', error);
             }
         };
 
         fetchContestData();
-    }, []);
+    }, [location]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
+        setCurrentPage(1);
+        navigate(`?tab=${tab}&page=1`);
     };
 
     const handleSearch = (e) => {
         setSearchValue(e.target.value);
+        setCurrentPage(1); // Reset to first page on search
     };
 
     const navigateToCreateContest = () => {
@@ -63,6 +82,11 @@ const ContestPage = () => {
             contest.title.toLowerCase().includes(searchValue.toLowerCase())
         );
 
+        const totalPages = Math.ceil(filteredContestData.length / contestsPerPage);
+        const indexOfLastContest = currentPage * contestsPerPage;
+        const indexOfFirstContest = indexOfLastContest - contestsPerPage;
+        const currentContests = filteredContestData.slice(indexOfFirstContest, indexOfLastContest);
+
         return (
             <div className="contest-page-list">
                 <table>
@@ -79,7 +103,7 @@ const ContestPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredContestData.map((contest) => (
+                        {currentContests.map((contest) => (
                             <tr key={contest.acid}>
                                 <td>{contest.acid}</td>
                                 <td>{contest.title}</td>
@@ -105,6 +129,27 @@ const ContestPage = () => {
                         ))}
                     </tbody>
                 </table>
+                <div className="pagination">
+                    <button
+                        onClick={() => {
+                            setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+                            navigate(`?tab=${activeTab}&page=${Math.max(currentPage - 1, 1)}`);
+                        }}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </button>
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <button
+                        onClick={() => {
+                            setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
+                            navigate(`?tab=${activeTab}&page=${Math.min(currentPage + 1, totalPages)}`);
+                        }}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         );
     };
