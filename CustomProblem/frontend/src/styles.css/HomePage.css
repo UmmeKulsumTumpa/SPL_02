@@ -1,0 +1,253 @@
+/* General container style */
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: 50px; /* Adjusted to match the reduced height of your footer */
+  height: calc(100vh - 60px); /* 100vh minus header height */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  overflow: hidden; /* Ensure no scrollbar is shown */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content style */
+main {
+  text-align: center;
+  margin-top: 150px; /* Main content starts 150px from the top */
+  padding-bottom: 50px; /* Ensure space for the footer */
+  flex-grow: 1;
+  overflow-y: auto; /* Allow main content to scroll */
+}
+
+/* Navigation styles */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+nav ul li {
+  margin-bottom: 10px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+/* Header styles */
+.header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 10px 20px;
+  z-index: 1000; /* Ensure header is above other content */
+  height: 80px; /* Reduced height */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  width: 100px; /* Adjusted size */
+  height: auto;
+}
+
+.header-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 10px; /* Reduced gap */
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+  justify-content: flex-start;
+}
+
+.header-nav-links li a {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+  padding: 5px 10px;
+  border: 1px solid #4984ae; /* Adjusted border */
+  border-radius: 5px;
+  background-color: #ffffff;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.header-nav-links li a:hover {
+  background-color: #4984ae;
+  color: #ffffff;
+}
+
+/* Footer styles */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f8f9fa;
+  padding: 5px 0; /* Reduced padding */
+  border-top: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  z-index: 1000; /* Ensure footer is above other content */
+  height: 50px; /* Reduced height */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.contact-info {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: flex-start; /* Align content to the top */
+  padding: 0 20px;
+}
+
+.contact-section {
+  text-align: left;
+  margin-right: auto; /* Align to the left */
+}
+
+.contact-section h3 {
+  margin: 0 0 10px; /* Adjust margin to create space between sections */
+  font-size: 20px;
+  color: #333;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.contact-section p {
+  margin: 0; /* Remove margin for paragraphs */
+}
+
+.contact-icons {
+  display: flex;
+  justify-content: center; /* Center the logos horizontally */
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px; /* Add margin to separate from other content */
+}
+
+.contact-icons a {
+  margin: 0 10px;
+}
+
+.contact-icons img {
+  height: 29px;
+}
+
+.contact-details {
+  text-align: right; /* Align to the right */
+  font-family: "Times New Roman", Times, serif;
+  margin-right: 60px;
+  margin-top: 40px;
+}
+
+.contact-details h2 {
+  margin: 0; /* Remove margin for heading */
+}
+
+.contact-details p {
+  margin: 0; /* Remove margin for paragraphs */
+}
+
+/* Existing styles */
+.content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.left-section {
+  width: 27%;
+  text-align: left;
+}
+
+.middle-section {
+  width: 30%;
+  text-align: left; /* Adjust text alignment if needed */
+}
+
+.right-section {
+  width: 40%;
+}
+
+.gif-image img {
+  width: 400px;
+  height: 200px;
+  padding-top: 100px;
+}
+
+.fade-animation {
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.rise-animation {
+  animation: rise 1s ease-in-out;
+}
+
+.rise-anima {
+  animation: pan 2s forwards;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Custom styles */
+h1 {
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: bold;
+  color: rgb(120, 18, 164);
+  font-size: 40px; /* Adjust font size */
+}
+
+.about-us {
+  font-family: "Times New Roman", Times, serif;
+  background-color: none;
+  color: hsl(271, 53%, 51%);
+  display: inline-block;
+  font-size: 20px; /* Adjust font size */
+  border: none; /* Remove border */
+}
+
+.about h2 {
+  font-family: "Times New Roman", Times, serif;
+  color: hsl(271, 53%, 51%); /* Blue color for "What's New" */
+  font-size: 24px; /* Adjust font size if needed */
+}
+
+p {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 20px; /* Adjust font size */
+}
+
+/* Adjust gif position */
+.gif-image {
+  text-align: center;
+}
