@@ -59,4 +59,67 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Route for adding an array of contest problems
+router.post('/add_contest_problems/:contestId', async (req, res) => {
+  try {
+    const { contestId } = req.params;
+    const { problems } = req.body;
+
+    // Iterate over the problems array
+    for (const problemDetails of problems) {
+      const {
+        type,
+        pid,
+        title,
+        statement,
+        constraints,
+        testCase,
+        aliasName,
+        timeLimit,
+        memoryLimit,
+        problemDescription,
+        testCases,
+        inputFile,
+        inputFileContentType,
+        outputFile,
+        outputFileContentType,
+      } = problemDetails;
+
+      // Check if the problem already exists in the database
+      const existingProblem = await Problem.findOne({ pid });
+
+      if (!existingProblem) {
+        // Create a new problem object with the fields from the request body
+        const newProblem = new Problem({
+          type: type || '',
+          pid: pid || '',
+          title: title || '',
+          statement: statement || '',
+          constraints: constraints || '',
+          testCase: testCase || '',
+          aliasName: aliasName || '',
+          timeLimit: timeLimit || '',
+          memoryLimit: memoryLimit || '',
+          problemDescription: problemDescription || '',
+          testCases: testCases || [],
+          inputFile: inputFile || null,
+          inputFileContentType: inputFileContentType || '',
+          outputFile: outputFile || null,
+          outputFileContentType: outputFileContentType || '',
+          contestId: contestId || '',
+        });
+
+        // Save the new problem to the database
+        await newProblem.save();
+      }
+    }
+
+    // Send a success response
+    res.json({ status: 'success', message: 'Problems added successfully' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message });
+  }
+});
+
 module.exports = router;
+
