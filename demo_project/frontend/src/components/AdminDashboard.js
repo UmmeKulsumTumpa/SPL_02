@@ -58,13 +58,7 @@ const AdminDashboard = () => {
             case 'profile':
                 return <Profile admin={admin} />;
             case 'settings':
-                return <Settings />;
-            case 'blog':
-                return <Blog />;
-            case 'team':
-                return <Team />;
-            case 'submissions':
-                return <Submissions />;
+                return <Settings admin={admin} />;
             case 'contests':
                 return <Contests admin={admin}/>;
             default:
@@ -89,10 +83,6 @@ const AdminDashboard = () => {
                 <button className="admin-dashboard-button admin-dashboard-settings-button" onClick={() => setActiveTab('settings')}>
                     <FontAwesomeIcon icon={faFileAlt} className="admin-dashboard-icon" />
                     <span className="admin-dashboard-span">Settings</span>
-                </button>
-                <button className="admin-dashboard-button admin-dashboard-blog-button" onClick={() => setActiveTab('blog')}>
-                    <FontAwesomeIcon icon={faEnvelope} className="admin-dashboard-icon" />
-                    <span className="admin-dashboard-span">Blog</span>
                 </button>
                 <button className="admin-dashboard-button admin-dashboard-contests-button" onClick={() => setActiveTab('contests')}>
                     <FontAwesomeIcon icon={faChartPie} className="admin-dashboard-icon" />

@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import SuccessDialog from './SuccessDialog';
 import '../styles/CreateContestPage.css';
 import {
     addProblem,
@@ -23,7 +24,9 @@ const CreateContestPage = () => {
     const [authorEmail, setAuthorEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false); // Added state for success dialog
     const navigate = useNavigate();
+    const successMsg = "Contest created successfully!" + "\n" +"Keep patience for Admin approval";
 
     const customProblemRefs = useRef([]);
 
@@ -167,7 +170,7 @@ const CreateContestPage = () => {
                 },
                 requestTime,
             });
-            navigate('/contest');
+            setShowSuccess(true); // Show success dialog
         } catch (error) {
             console.error('Error creating contest:', error);
             setIsSubmitting(false);
@@ -177,6 +180,11 @@ const CreateContestPage = () => {
 
     const handleCloseError = () => {
         setErrorMessage('');
+    };
+
+    const handleSuccessClose = () => {
+        setShowSuccess(false);
+        navigate('/contest'); // Redirect to contest page
     };
 
     return (
@@ -288,6 +296,13 @@ const CreateContestPage = () => {
                         <button onClick={handleCloseError}>Close</button>
                     </div>
                 </div>
+            )}
+            {showSuccess && (
+                <SuccessDialog
+                    // message="Contest created successfully!"
+                    message={successMsg}
+                    onClose={handleSuccessClose}
+                />
             )}
         </div>
     );

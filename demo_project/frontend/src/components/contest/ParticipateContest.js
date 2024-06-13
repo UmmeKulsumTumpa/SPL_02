@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Leaderboard from './LeaderBoard';
 import ProblemDetails from './ProblemDetails';
 import CustomProblemDetails from './CustomProblemDetails';
 import ContestSubmissionView from './ContestSubmissionView';
+import SuccessDialog from '../SuccessDialog'
 import './styles/ParticipateContest.css';
 
 const ParticipateContest = () => {
@@ -13,6 +14,27 @@ const ParticipateContest = () => {
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedProblem, setSelectedProblem] = useState(null);
     const [progress, setProgress] = useState(0);
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isAdmin, setIsAdmin] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkIfAdmin = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/admin/checkUserExist/${username}`);
+                if (response.data.exists) {
+                    setIsAdmin(true);
+                    setSuccessMessage('Admins cannot participate in contests. Please contact support if you need assistance.');
+                    setShowSuccessDialog(true);
+                }
+            } catch (error) {
+                console.error('Error checking if user is admin:', error);
+            }
+        };
+
+        checkIfAdmin();
+    }, [username]);
 
     useEffect(() => {
         const fetchContestDetails = async () => {
@@ -32,6 +54,7 @@ const ParticipateContest = () => {
         const interval = setInterval(() => {
             if (contestDetails) {
                 updateProgress(contestDetails.startTime, contestDetails.endTime);
+                checkContestEndTime(contestDetails.endTime);
             }
         }, 1000);
 
@@ -46,6 +69,15 @@ const ParticipateContest = () => {
         const elapsedTime = currentTime - start;
         const progressPercentage = Math.min((elapsedTime / totalDuration) * 100, 100);
         setProgress(progressPercentage);
+    };
+
+    const checkContestEndTime = (endTime) => {
+        const currentTime = new Date();
+        const end = new Date(endTime);
+        if (currentTime >= end && !showSuccessDialog) {
+            setSuccessMessage('The contest has ended. You will be redirected to the previous page.');
+            setShowSuccessDialog(true);
+        }
     };
 
     const formatDateTime = (dateTime) => {
@@ -72,6 +104,22 @@ const ParticipateContest = () => {
         setSelectedProblem(problem);
         setActiveTab(problem.type === 'CF' ? 'problemDetails' : 'customProblemDetails');
     };
+
+    if (isAdmin) {
+        return (
+            <>
+                {showSuccessDialog && (
+                    <SuccessDialog
+                        message={successMessage}
+                        onClose={() => {
+                            setShowSuccessDialog(false);
+                            navigate(-1); // Redirect to the previous state
+                        }}
+                    />
+                )}
+            </>
+        );
+    }
 
     if (!contestDetails) {
         return <div>Loading...</div>;
@@ -143,7 +191,7 @@ const ParticipateContest = () => {
             {activeTab === 'rank' && !selectedProblem && (
                 <Leaderboard contestId={contestId} />
             )}
-            {activeTab === 'personalSubmissions'  && (
+            {activeTab === 'personalSubmissions' && (
                 <ContestSubmissionView contestId={contestId} username={username} />
             )}
             {activeTab === 'problemDetails' && selectedProblem?.type === 'CF' && (
@@ -151,6 +199,15 @@ const ParticipateContest = () => {
             )}
             {activeTab === 'customProblemDetails' && selectedProblem?.type === 'CS' && (
                 <CustomProblemDetails problem={selectedProblem} username={username} contestId={contestId} setActiveTab={setActiveTab} />
+            )}
+            {showSuccessDialog && (
+                <SuccessDialog
+                    message={successMessage}
+                    onClose={() => {
+                        setShowSuccessDialog(false);
+                        navigate(-1); // Redirect to the previous state
+                    }}
+                />
             )}
         </div>
     );

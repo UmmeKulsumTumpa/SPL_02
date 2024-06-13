@@ -55,26 +55,6 @@ const removeAdmin = async (req, res) => {
     }
 };
 
-// Function to update admin's password
-const updateAdminPassword = async (req, res) => {
-    const { username } = req.params;
-    const { password } = req.body;
-
-    try {
-        const updatedAdmin = await Admin.findOneAndUpdate(
-            { username },
-            { password },
-            { new: true }
-        );
-        if (!updatedAdmin) {
-            return res.status(404).json({ error: 'Admin not found' });
-        }
-        res.json(updatedAdmin);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
 // Function to update admin's email
 const updateAdminEmail = async (req, res) => {
     const { username } = req.params;
@@ -138,6 +118,34 @@ const checkUserExists = async (req, res) => {
         const admin = await Admin.findOne({ username });
         //console.log(admin);
         res.json({ exists: !!admin });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Function to update a admin's password
+const updateAdminPassword = async (req, res) => {
+    const { username } = req.params;
+    const { currentPassword, newPassword } = req.body;
+
+    try {
+        // Find the admin by username
+        const admin = await Admin.findOne({ username });
+
+        if (!admin) {
+            return res.status(404).json({ error: 'admin not found' });
+        }
+
+        // Check if the current password matches
+        if (admin.password !== currentPassword) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        // Update the admin's password
+        admin.password = newPassword;
+        await admin.save();
+
+        res.json({ success: true, message: 'Password updated successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

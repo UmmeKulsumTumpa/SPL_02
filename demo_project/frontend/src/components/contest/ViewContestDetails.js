@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import Leaderboard from './LeaderBoard';
+import FreezedLeaderBoard from './FreezedLeaderBoard';
 import ProblemDetails from './ProblemDetails';
 import CustomProblemDetails from './CustomProblemDetails';
+import ContestSubmissionView from './ContestSubmissionView';
 import './styles/ViewContestDetails.css';
 
 const ViewContestDetails = () => {
@@ -11,12 +12,17 @@ const ViewContestDetails = () => {
     const [contestDetails, setContestDetails] = useState(null);
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedProblem, setSelectedProblem] = useState(null);
+    const [leaderboardData, setLeaderboardData] = useState([]);
+    const [problemsData, setProblemsData] = useState([]);
 
     useEffect(() => {
         const fetchContestDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/api/approved_contest/${contestId}`);
-                setContestDetails(response.data);
+                const contestData = response.data;
+                setContestDetails(contestData);
+                setLeaderboardData(contestData.leaderboard || []);
+                setProblemsData(contestData.problems || []);
             } catch (error) {
                 console.error('Error fetching contest details:', error);
             }
@@ -46,7 +52,6 @@ const ViewContestDetails = () => {
     };
 
     const handleProblemClick = (problem) => {
-        console.log(problem);
         setSelectedProblem(problem);
         setActiveTab(problem.type === 'CF' ? 'problemDetails' : 'customProblemDetails');
     };
@@ -90,6 +95,12 @@ const ViewContestDetails = () => {
                 >
                     Rank
                 </button>
+                <button
+                    className={`view-contest-details__tab ${activeTab === 'personalSubmissions' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('personalSubmissions')}
+                >
+                    Personal Submissions
+                </button>
             </div>
             {activeTab === 'overview' && !selectedProblem && (
                 <div className="view-contest-details__problems-container">
@@ -114,13 +125,16 @@ const ViewContestDetails = () => {
                 </div>
             )}
             {activeTab === 'rank' && !selectedProblem && (
-                <Leaderboard contestId={contestId} />
+                <FreezedLeaderBoard leaderboard={leaderboardData} problems={problemsData} />
+            )}
+            {activeTab === 'personalSubmissions' && (
+                <ContestSubmissionView contestId={contestId} username={username} />
             )}
             {activeTab === 'problemDetails' && selectedProblem && (
-                <ProblemDetails problem={selectedProblem} contestId={contestId} viewType="previous" />
+                <ProblemDetails problem={selectedProblem} contestId={contestId} viewType="previous" setActiveTab={setActiveTab} />
             )}
             {activeTab === 'customProblemDetails' && selectedProblem?.type === 'CS' && (
-                <CustomProblemDetails problem={selectedProblem} username={username} contestId={contestId} />
+                <CustomProblemDetails problem={selectedProblem} username={username} contestId={contestId} setActiveTab={setActiveTab} />
             )}
         </div>
     );

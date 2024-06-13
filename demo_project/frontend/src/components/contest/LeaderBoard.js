@@ -8,7 +8,7 @@ const LeaderBoard = ({ contestId }) => {
     const [contestEnded, setContestEnded] = useState(false);
 
     useEffect(() => {
-        const fetchLeaderboard = async () => {
+        const fetchContestDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/api/approved_contest/${contestId}`);
                 const contestDetails = response.data;
@@ -22,15 +22,33 @@ const LeaderBoard = ({ contestId }) => {
                 setLeaderboard(contestDetails.leaderboard || []);
                 setProblems(contestDetails.problems || []);
             } catch (error) {
-                console.error('Error fetching leaderboard:', error);
+                console.error('Error fetching contest details:', error);
             }
         };
 
-        fetchLeaderboard();
-        const intervalId = setInterval(() => {
+        const fetchLeaderboard = async () => {
             if (!contestEnded) {
-                fetchLeaderboard();
+                try {
+                    const response = await axios.get(`http://localhost:8000/api/approved_contest/${contestId}`);
+                    const contestDetails = response.data;
+                    const endTime = new Date(contestDetails.endTime);
+                    const currentTime = new Date();
+
+                    if (currentTime > endTime) {
+                        setContestEnded(true);
+                    }
+
+                    setLeaderboard(contestDetails.leaderboard || []);
+                } catch (error) {
+                    console.error('Error fetching leaderboard:', error);
+                }
             }
+        };
+
+        fetchContestDetails();
+
+        const intervalId = setInterval(() => {
+            fetchLeaderboard();
         }, 10000);
 
         return () => clearInterval(intervalId);

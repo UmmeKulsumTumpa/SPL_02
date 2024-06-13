@@ -10,6 +10,7 @@ import {
 import '../styles/ContestPage.css';
 import { AuthContext } from './AuthContext';
 import LoginPrompt from './LoginPrompt';
+import ErrorDialog from './ErrorDialog';
 
 const ContestPage = () => {
     const { username } = useContext(AuthContext);
@@ -17,6 +18,8 @@ const ContestPage = () => {
     const [searchValue, setSearchValue] = useState('');
     const [contestData, setContestData] = useState([]);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [showErrorDialog, setShowErrorDialog] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const location = useLocation();
@@ -60,9 +63,25 @@ const ContestPage = () => {
         setCurrentPage(1); // Reset to first page on search
     };
 
-    const navigateToCreateContest = () => {
+    const checkIfAdmin = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/admin/checkUserExist/${username}`);
+            return response.data.exists;
+        } catch (error) {
+            console.error('Error checking if user is admin:', error);
+            return false;
+        }
+    };
+
+    const navigateToCreateContest = async () => {
         if (username) {
-            navigate('/create-contest');
+            const isAdmin = await checkIfAdmin();
+            if (isAdmin) {
+                setErrorMessage('Admins cannot create contests. Please contact support if you need assistance.');
+                setShowErrorDialog(true);
+            } else {
+                navigate('/create-contest');
+            }
         } else {
             setShowLoginPrompt(true);
         }
@@ -195,6 +214,12 @@ const ContestPage = () => {
             {activeTab === 'running' && renderContestList(contestData, 'running')}
             {activeTab === 'previous' && renderContestList(contestData, 'previous')}
             {showLoginPrompt && <LoginPrompt onClose={() => setShowLoginPrompt(false)} />}
+            {showErrorDialog && (
+                <ErrorDialog
+                    message={errorMessage}
+                    onClose={() => setShowErrorDialog(false)}
+                />
+            )}
         </div>
     );
 };

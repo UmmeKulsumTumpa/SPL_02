@@ -1,5 +1,6 @@
 import React from 'react';
 import ManageContest from './adminSidebar/manageContest';
+import AccountSettings from './adminSidebar/AccountSettings';
 
 export const Profile = ({ admin }) => (
     <div className="adminDashboard-profile-container">
@@ -9,11 +10,12 @@ export const Profile = ({ admin }) => (
     </div>
 );
 
-export const Settings = () => (
+export const Settings = ({ admin}) => (
     <div className="adminDashboard-settings-container">
-        <h2>Settings</h2>
+        {/* <h2>Settings</h2>
         <p>Update Email</p>
-        <p>Change Password</p>
+        <p>Change Password</p> */}
+        <AccountSettings admin={admin} />
     </div>
 );
 
