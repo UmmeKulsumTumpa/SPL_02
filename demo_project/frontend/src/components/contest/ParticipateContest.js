@@ -42,13 +42,19 @@ const ParticipateContest = () => {
                 const response = await axios.get(`http://localhost:8000/api/approved_contest/${contestId}`);
                 setContestDetails(response.data);
                 updateProgress(response.data.startTime, response.data.endTime);
+
+                // Check if the user is the contest author
+                if (response.data.author.authorName === username) {
+                    setSuccessMessage('You cannot participate in your own contest.');
+                    setShowSuccessDialog(true);
+                }
             } catch (error) {
                 console.error('Error fetching contest details:', error);
             }
         };
 
         fetchContestDetails();
-    }, [contestId]);
+    }, [contestId, username]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -105,7 +111,7 @@ const ParticipateContest = () => {
         setActiveTab(problem.type === 'CF' ? 'problemDetails' : 'customProblemDetails');
     };
 
-    if (isAdmin) {
+    if (isAdmin || (contestDetails && contestDetails.author.authorName === username)) {
         return (
             <>
                 {showSuccessDialog && (
