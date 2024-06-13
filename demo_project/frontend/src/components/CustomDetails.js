@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
-import CustomSubmitSolution from './CustomSubmitSolution';
-import './styles/ProblemDetails.css';
+import axios from 'axios';
+import CustomSubmitSolution from './contest/CustomSubmitSolution';
+// import './styles/ProblemDetails.css';
 import { useNavigate } from 'react-router-dom';
 
 function initializeState() {
@@ -25,19 +25,32 @@ function initializeState() {
     };
 }
 
-function CustomProblemDetails({ problem, username, contestId, setActiveTab }) {
-    console.log('came');
+function CustomDetails({ problemId }) {
+    console.log('id', problemId);
     const [state, setState] = useState(initializeState());
+    const [problem, setProblem] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Reset state when a new problem is selected
-        if (problem) {
-            setState(initializeState());
-        }
-    }, [problem]);
+        const fetchProblemDetails = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/add_custom_problem/get_problem/${problemId}`);
+                setProblem(response.data);
+                setState(initializeState());
+            } catch (err) {
+                console.error('Error fetching problem details:', err);
+                setState((prevState) => ({
+                    ...prevState,
+                    error: 'Error fetching problem details. Please try again later.',
+                    showErrorModal: true,
+                }));
+            }
+        };
 
-    if (!problem) return null;
+        fetchProblemDetails();
+    }, [problemId]);
+
+    if (!problem) return <div>Loading...</div>;
 
     const { pid, title, testCase, constraints, problemDescription } = problem;
 
@@ -47,58 +60,6 @@ function CustomProblemDetails({ problem, username, contestId, setActiveTab }) {
     // Function to copy text to clipboard
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-    };
-
-    // Function to handle submission of solution
-    const handleSubmit = (file) => {
-        const formData = new FormData();
-        formData.append('solutionFile', file);
-        formData.append('problemId', pid);
-
-        axios
-            .post(`http://localhost:8000/api/custom_solution_submit/submit/${contestId}/${username}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-            .then((response) => {
-                if (response.data.verdict) {
-                    // Save the solution in the database
-                    axios
-                        .post(`http://localhost:8000/api/approved_contest/custom_submit_result/${contestId}/${username}`, {
-                            sid: response.data.sid
-                        })
-                        .then((saveResponse) => {
-                            setState((prevState) => ({
-                                ...prevState,
-                                verdict: saveResponse.data.verdict,
-                                id: saveResponse.data.sid,
-                                showSubmitModal: false,
-                            }));
-                            setActiveTab('personalSubmissions');
-                        })
-                        .catch((error) => {
-                            setState((prevState) => ({
-                                ...prevState,
-                                error: error.message,
-                                showErrorModal: true,
-                            }));
-                        });
-                } else {
-                    setState((prevState) => ({
-                        ...prevState,
-                        error: 'Invalid response from the server.',
-                        showErrorModal: true,
-                    }));
-                }
-            })
-            .catch((error) => {
-                setState((prevState) => ({
-                    ...prevState,
-                    error: error.message,
-                    showErrorModal: true,
-                }));
-            });
     };
 
     return (
@@ -177,7 +138,7 @@ function CustomProblemDetails({ problem, username, contestId, setActiveTab }) {
             {/* Modal for submitting solution */}
             {state.showSubmitModal && (
                 <CustomSubmitSolution
-                    onSubmit={handleSubmit}
+                    onSubmit={() => {}}
                     onClose={() => setState((prevState) => ({ ...prevState, showSubmitModal: false }))} />
             )}
 
@@ -195,4 +156,4 @@ function CustomProblemDetails({ problem, username, contestId, setActiveTab }) {
     );
 }
 
-export default CustomProblemDetails;
+export default CustomDetails;

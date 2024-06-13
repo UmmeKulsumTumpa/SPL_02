@@ -77,10 +77,20 @@ const ParticipateContest = () => {
         setProgress(progressPercentage);
     };
 
+    const saveProblemsToDatabase = async () => {
+        try {
+            const problems = contestDetails.problems;
+            await axios.post('http://localhost:8000/api/problem/add_contest_problems/${contestId}', { problems });
+        } catch (error) {
+            console.error('Error saving problems to the database:', error);
+        }
+    };
+
     const checkContestEndTime = (endTime) => {
         const currentTime = new Date();
         const end = new Date(endTime);
         if (currentTime >= end && !showSuccessDialog) {
+            saveProblemsToDatabase();
             setSuccessMessage('The contest has ended. You will be redirected to the previous page.');
             setShowSuccessDialog(true);
         }
