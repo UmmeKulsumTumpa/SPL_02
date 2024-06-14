@@ -1,0 +1,52 @@
+<mxfile host="app.diagrams.net" modified="2024-03-27T12:54:27.497Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="Zmcr2Nmpr15SwQczfcNB" version="24.2.0" type="device">
+  <diagram id="aOxzZUITciDglM7q0u0G" name="Page-1">
+    <mxGraphModel dx="1050" dy="565" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="X58BzX_eYOel72UcdStA-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="400" y="70" width="510" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-3" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Admin Picture&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="780" y="100" width="120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="-Mmpdkr7Lsc0l2bNvJgI-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="X58BzX_eYOel72UcdStA-4" target="-Mmpdkr7Lsc0l2bNvJgI-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-4" value="&lt;b&gt;Pending Approval&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="420" y="217.5" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-5" value="&lt;b&gt;Reports&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="420" y="280" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-6" value="&lt;b&gt;User name&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="612" y="127" width="160" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-7" value="Total Approved Contest: -" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="232.5" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-8" value="Total Rejected Contest: -" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="270" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-9" value="Block users: -" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="310" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-11" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Send Notification&lt;/font&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;gradientColor=#ffd966;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="146" y="232.5" width="162" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.568;entryY=1.008;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="X58BzX_eYOel72UcdStA-5" target="X58BzX_eYOel72UcdStA-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-14" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Logout&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e51400;strokeColor=#B20000;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="604" y="364" width="90" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="X58BzX_eYOel72UcdStA-16" value="&lt;b&gt;Settings&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="423" y="127" width="97" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="-Mmpdkr7Lsc0l2bNvJgI-1" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Status: Approved/Rejected&lt;/font&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;gradientColor=#ffd966;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="146" y="147" width="162" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
