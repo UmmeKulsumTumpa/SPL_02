@@ -90,7 +90,7 @@
   <p style="font-size: 1.1em; color: #7f8c8d;">The user login page allows users to securely access their accounts.</p>
 </div>
 
-div align="center">
+<div align="center">
   <h3>User Registration</h3>
   <img src="pictures_for_readme/registration.png" alt="Admin Registration">
   <p style="font-size: 1.1em; color: #7f8c8d;">Separate registration for Admin and Contestant</p>
