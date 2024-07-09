@@ -88,7 +88,7 @@ CodeSphere ensures fairness by restricting contest creators from participating i
 
 ### Participate in Contest
 
-![Participate in Contest](pictures_for_readmeo/participate-contest.png)
+![Participate in Contest](pictures_for_readme/participate-contest.png)
 Users can participate in contests, view contest details, and track their progress in real-time.
 
 ### Previous Contest Results
@@ -113,7 +113,7 @@ The user profile page provides an overview of a user's performance, submission a
 
 ### User Submissions
 
-![User Submissions](pictures_for_readmeo/user-submission.png)
+![User Submissions](pictures_for_readme/user-submission.png)
 Users can view their submission history, including problem details, verdicts, and execution times.
 
 > ## Future Scopes
