@@ -40,3 +40,5 @@ CodeSphere is a collaborative coding platform designed to enhance the coding lea
 
    ```bash
    git clone https://github.com/UmmeKulsumTumpa/SPL_02.git
+
+> ## Future Scopes
