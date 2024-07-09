@@ -15,11 +15,21 @@
 	padding: 0 20px;
 }
 
+.header-container .header-logo {
+	width: 70px;
+	/* Adjusted size */
+	height: auto;
+}
+
 .header-container .header-nav-links {
 	list-style: none;
 	display: flex;
+	gap: 10px;
+	/* Reduced gap */
 	margin: 0;
 	padding: 0;
+	flex-grow: 1;
+	justify-content: flex-start;
 }
 
 .header-container .header-nav-links li {
@@ -30,69 +40,82 @@
 	text-decoration: none;
 	color: #000000;
 	font-size: 16px;
+	font-weight: bold;
 	padding: 5px 10px;
-	background-color: #f0f0f0;
+	border: 1px solid #4984ae;
+	/* Adjusted border */
 	border-radius: 5px;
+	background-color: #ffffff;
+	transition: background-color 0.3s, color 0.3s;
 }
 
 .header-container .header-nav-links li a:hover {
-	background-color: #e0e0e0;
+	background-color: #4984ae;
+	color: #ffffff;
 }
 
 .header-container .header-login-section {
 	display: flex;
 	align-items: center;
+	gap: 10px;
 }
 
 .header-container .header-user {
 	display: flex;
 	align-items: center;
-}
-
-.header-container .header-link {
-	color: #007bff;
-	cursor: pointer;
-	font-size: 16px;
-	text-decoration: none;
-	padding: 0 5px;
-}
-
-.header-container .header-link:hover {
-	text-decoration: underline;
+	gap: 10px;
 }
 
 .header-container .header-link-button {
-	background: none;
+	/* background: none;
 	border: none;
 	cursor: pointer;
-	/* padding: 0; */
 
 	color: #007bff;
 	cursor: pointer;
 	font-size: 16px;
 	text-decoration: none;
-	padding: 0 5px;
+	padding: 0 5px; */
+
+	text-decoration: none;
+	color: #fff;
+	background-color: #4984ae;
+	border-radius: 5px;
+	padding: 10px 20px;
+	font-weight: bold;
+	transition: background-color 0.3s;
+}
+
+.header-container .header-link-button.register {
+	margin-right: 20px;
+	/* Add space to the right of the register button */
+}
+
+.header-container .header-link-button.logout {
+	background-color: red;
+	margin-right: 18px
 }
 
 .header-container .header-link-button:hover {
-	text-decoration: underline;
+	background-color: #356b9b;
+}
+
+.header-container .header-link-button.logout:hover {
+	background-color: darkred;
 }
 
 .header-auth-buttons {
 	display: flex;
 	align-items: center;
+	gap: 10px;
 }
 
-.header-auth-buttons .header-link {
-	margin: 0 5px;
-}
-
-.header-user .header-link {
-	margin: 0 5px;
-}
-
-.header-separator {
-	margin: 0 5px;
-	color: #000;
-	font-size: 16px;
+.marquee-text {
+	background-color: #4984ae;
+	color: #fff;
+	padding: 2px 0;
+	font-weight: bold;
+	width: 100%;
+	margin-top: 1px;
+	margin-bottom: -15px;
 }
