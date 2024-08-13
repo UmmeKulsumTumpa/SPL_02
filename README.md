@@ -66,16 +66,16 @@
     <pre><code>Open it in VS Code or similar IDE </code></pre>
   </li>
   <li>Run Backend:
-    <pre><code>cd demo_project</code></pre>
-    <pre><code>cd backend</code></pre>
-    <pre><code>npm install</code></pre>
-    <pre><code>node index.js</code></pre>
+    <pre><code>cd demo_project</code>
+    <code>cd backend</code>
+    <code>npm install</code>
+    <code>node index.js</code></pre>
   </li>
    <li>Run Frontend:
-    <pre><code>cd demo_project</code></pre>
-    <pre><code>cd frontend</code></pre>
-    <pre><code>npm install</code></pre>
-    <pre><code>npm start</code></pre>
+    <pre><code>cd demo_project</code>
+    <code>cd frontend</code>
+    <code>npm install</code>
+    <code>npm start</code></pre>
   </li>
 </ol>
 
