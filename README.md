@@ -62,20 +62,20 @@
 ## How to run this Project
 
 <ol style="font-size: 1.1em; color: #2c3e50; line-height: 1.6;">
-  <li>Download Zip file 
-    <pre><code>Open it in VS Code or similar IDE </code></pre>
+  <li>Download Zip file & Open it in VS Code or similar IDE
+  </li>
+  <li>Navigate to the project directory:
+    <pre><code>cd demo_project</code></pre>
   </li>
   <li>Run Backend:
-    <pre><code>cd demo_project</code>
     <code>cd backend</code>
     <code>npm install</code>
-    <code>node index.js</code></pre>
+    <code>node index.js</code>
   </li>
    <li>Run Frontend:
-    <pre><code>cd demo_project</code>
     <code>cd frontend</code>
     <code>npm install</code>
-    <code>npm start</code></pre>
+    <code>npm start</code>
   </li>
 </ol>
 
