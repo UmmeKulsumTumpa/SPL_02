@@ -68,14 +68,14 @@
     <pre><code>cd demo_project</code></pre>
   </li>
   <li>Run Backend:
-    <code>cd backend</code>
-    <code>npm install</code>
-    <code>node index.js</code>
+    <pre><code>cd backend</code></pre>
+    <pre><code>npm install</code></pre>
+    <pre><code>node index.js</code></pre>
   </li>
    <li>Run Frontend:
-    <code>cd frontend</code>
-    <code>npm install</code>
-    <code>npm start</code>
+    <pre><code>cd frontend</code></pre>
+    <pre><code>npm install</code></pre>
+    <pre><code>npm start</code></pre>
   </li>
 </ol>
 
