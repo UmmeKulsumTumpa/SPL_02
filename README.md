@@ -75,12 +75,12 @@
    <li>Run Frontend:
     <pre><code>cd frontend</code></pre>
     <pre><code>npm install</code></pre>
-    <pre><code>npm install axios</code></pre>
+  <!--  <pre><code>npm install axios</code></pre>
     <pre><code>npm install chart.js</code></pre></code></pre>
     <pre><code>npm install chartjs-chart-radial-gauge</code></pre>
     <pre><code>npm install react-calendar-heatmap</code></pre>
-    <pre><code>npm install chart.js@2.7.3</code></pre>
-    <pre><code>npm start</code></pre>
+    <pre><code>npm install chart.js@2.7.3</code></pre> -->
+    <pre><code>npm start</code></pre> 
   </li>
 </ol>
 
