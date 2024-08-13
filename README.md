@@ -84,7 +84,7 @@
   </li>
 </ol>
 
-> ## Installation
+> ## Installation (Cloning)
 
 <ol style="font-size: 1.1em; color: #2c3e50; line-height: 1.6;">
   <li>Clone the repository:
