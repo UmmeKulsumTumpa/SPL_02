@@ -62,7 +62,7 @@
 > ## How to run this Project
 
 <ol style="font-size: 1.1em; color: #2c3e50; line-height: 1.6;">
-  <li>Download Zip file & Open it in VS Code or similar IDE
+  <li>Download Zip file & Open it in VS Code or similar IDE. Open XAMPP & start Apache and MySQL
   </li>
   <li>Navigate to the project directory:
     <pre><code>cd demo_project</code></pre>
