@@ -1,27 +1,142 @@
+/* General container style */
 .container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 20px;
+	/* padding-bottom: 50px;  */
+	/* height: calc(100vh - 60px); */
+	box-sizing: border-box;
+	/* Include padding and border in the element's total width and height */
+	overflow: hidden;
+	/* Ensure no scrollbar is shown */
+	display: flex;
+	flex-direction: column;
 }
 
+/* Main content style */
 main {
-  text-align: center;
+	text-align: center;
+	padding-bottom: 50px;
+	flex-grow: 1;
+	overflow-y: auto;
+	/* Allow main content to scroll */
 }
 
+/* Navigation styles */
 nav ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 20px 0;
+	list-style-type: none;
+	padding: 0;
+	margin: 20px 0;
 }
 
 nav ul li {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 nav ul li a {
-  text-decoration: none;
-  color: #333;
-  padding: 5px 10px;
-  background-color: #f0f0f0;
-  border-radius: 4px;
+	text-decoration: none;
+	color: #333;
+	padding: 5px 10px;
+	background-color: #f0f0f0;
+	border-radius: 4px;
+}
+
+.content {
+	display: flex;
+	justify-content: space-between;
+}
+
+.left-section {
+	width: 27%;
+	text-align: left;
+}
+
+.middle-section {
+	width: 30%;
+	text-align: left;
+	/* Adjust text alignment if needed */
+}
+
+.right-section {
+	width: 40%;
+}
+
+.gif-image img {
+	width: 400px;
+	height: 200px;
+	padding-top: 100px;
+}
+
+.fade-animation {
+	animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.rise-animation {
+	animation: rise 1s ease-in-out;
+}
+
+.rise-anima {
+	animation: pan 2s forwards;
+}
+
+@keyframes rise {
+	0% {
+		transform: translateY(50px);
+		opacity: 0;
+	}
+
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+/* Custom styles */
+h1 {
+	font-family: "Times New Roman", Times, serif;
+	font-style: italic;
+	font-weight: bold;
+	color: rgb(120, 18, 164);
+	font-size: 40px;
+	/* Adjust font size */
+}
+
+.about-us {
+	font-family: "Times New Roman", Times, serif;
+	background-color: none;
+	color: hsl(271, 53%, 51%);
+	display: inline-block;
+	font-size: 20px;
+	/* Adjust font size */
+	border: none;
+	/* Remove border */
+}
+
+.about h2 {
+	font-family: "Times New Roman", Times, serif;
+	color: hsl(271, 53%, 51%);
+	/* Blue color for "What's New" */
+	font-size: 24px;
+	/* Adjust font size if needed */
+}
+
+p {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 20px;
+	/* Adjust font size */
+}
+
+/* Adjust gif position */
+.gif-image {
+	text-align: center;
 }
