@@ -59,7 +59,32 @@
   </li>
 </ul>
 
-> ## Installation
+> ## How to run this Project
+
+<ol style="font-size: 1.1em; color: #2c3e50; line-height: 1.6;">
+  <li>Download Zip & Open it in VS Code or similar IDE. Open XAMPP & start Apache and MySQL
+  </li>
+  <li>Navigate to the project directory:
+    <pre><code>cd demo_project</code></pre>
+  </li>
+  <li>Run Backend:
+    <pre><code>cd backend</code></pre>
+    <pre><code>npm install</code></pre>
+    <pre><code>node index.js</code></pre>
+  </li>
+   <li>Run Frontend:
+    <pre><code>cd frontend</code></pre>
+    <pre><code>npm install</code></pre>
+  <!--  <pre><code>npm install axios</code></pre>
+    <pre><code>npm install chart.js</code></pre></code></pre>
+    <pre><code>npm install chartjs-chart-radial-gauge</code></pre>
+    <pre><code>npm install react-calendar-heatmap</code></pre>
+    <pre><code>npm install chart.js@2.7.3</code></pre> -->
+    <pre><code>npm start</code></pre> 
+  </li>
+</ol>
+
+> ## Installation (Cloning)
 
 <ol style="font-size: 1.1em; color: #2c3e50; line-height: 1.6;">
   <li>Clone the repository:
