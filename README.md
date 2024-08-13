@@ -59,7 +59,7 @@
   </li>
 </ul>
 
-## How to run this Project
+> ## How to run this Project
 
 <ol style="font-size: 1.1em; color: #2c3e50; line-height: 1.6;">
   <li>Download Zip file & Open it in VS Code or similar IDE
